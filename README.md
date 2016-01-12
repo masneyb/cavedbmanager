@@ -1,8 +1,20 @@
 # cavedbmanager
 
-A web interface written in Python that is used by the West Virginia
-Speleological Survey to manage the list of caves within the state
-of West Virginia. The web interface is only available to its members.
+This project was written to simplify the data management for a state
+and/or county survey. It eliminates the need for the manual duplication
+data, which will help to save time and minimize errors. The system will
+automatically generate various types of files based on what you upload
+to the database: 1) GIS files: SHP, KML, GPX, and PNG (topo maps and
+aerial imagery), 2) a PDF that is suitable for publication, and 3) a ISO
+CD image that can be included with the book that includes select entrance
+photos, maps, and references. It eliminates the hassle of formatting the
+book and allows the user to concentrate on the collection of data. This
+system was to publish the book _WVASS Bulletin #18: The Caves and Karst
+of Tucker County, WV_.
+
+This project is currently used by the West Virginia Speleological Survey
+to manage the list of caves within the state. The web interface is only
+available to its members.
 
 
 ## Dependencies
@@ -18,9 +30,9 @@ of West Virginia. The web interface is only available to its members.
 * xsltproc and libxml2-utils Debian packages
 * A webserver such as Apache to serve the content (apache2 Debian package)
 
-I installed the application in /usr/local/cavedbmanager and the application
-data in /usr/local/cavedbmanager-data. If you install them in different 
-locations, then be sure to edit the main settings.py file with that 
+By default, install the application in /usr/local/cavedbmanager and the
+application data in /usr/local/cavedbmanager-data. If you install them in
+different locations, then be sure to edit the main settings.py file with that 
 information.
 
 You will also need to setup your GIS maps. Put your GIS layers in 
@@ -28,4 +40,17 @@ You will also need to setup your GIS maps. Put your GIS layers in
 /usr/local/cavedbmanager-data/gis_maps/cave.map to customize how those
 layers will look on the map. See the Mapserver documentation for more 
 information about how to customize it.
+
+
+## Authors
+
+* Brian Masney - [masneyb](https://github.com/masneyb)
+* David A. Riggs - [riggsd](https://github.com/riggsd)
+
+Note: This interface stopped being actively developed around 2011. It needs
+to be upgraded to a newer version of Python and Django.
+
+## Screenshot
+
+![Search Page](media/img/wvass-cavedb-search-feature.png "Search Page")
 
