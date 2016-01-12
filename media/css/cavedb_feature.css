@@ -1,0 +1,23 @@
+input#id_additional_index_names, input#id_alternate_names, textarea#id_description, textarea#id_geology, textarea#id_history, textarea#id_biology, textarea#id_geology_hydrology, textarea#id_hazards, input#id_owner_name, input#id_owner_address, input#id_todo_descr, input#id_access_descr, textarea#id_refs { width: 70em; }
+
+td.rotate_degrees input { width: 3em; }
+
+td.elevation_ft input { width: 5em; }
+
+td.caption input { width: 25ex; }
+td.photographer input { width: 15ex; }
+
+td.utmeast input { width: 9ex; }
+td.utmnorth input { width: 9ex; }
+td.latitude input { width: 15ex; }
+td.longitude input { width: 15ex; }
+
+td.author input { width: 25ex; }
+td.title input { width: 25ex; }
+td.book input { width: 25ex; }
+td.volume input { width: 6ex; }
+td.number input { width: 6ex; }
+td.pages input { width: 6ex; }
+td.url input { width: 15ex; }
+td.date input { width: 15ex; }
+td.extra input { width: 15ex; }
