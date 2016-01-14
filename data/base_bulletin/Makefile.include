@@ -1,0 +1,234 @@
+# Some input files
+CAVE_SRC_XML=$(DOC_BASE_DIR)/output/$(DOCPREFIX).xml
+
+# Stylesheets
+LATEX_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2latex.xsl
+GPX_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2gpx.xsl
+KML_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2kml.xsl
+TEXT_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2text.xsl
+CSV_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2csv.xsl
+MXF_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2mxf.xsl
+GIS_MAPS_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2gis_map.xsl
+GIS_EXTENTS_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2gis_region_extents.xsl
+MAPSERVER_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2mapserver_project.xsl 
+QGIS_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2qgis_project.xsl
+TODO_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2todo.xsl
+DVD_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2dvd.xsl
+
+# GIS project
+SHP_DIR=$(OUTPUTDIR)/shp
+SHP_LAYER_NAME=karst_feature_locations
+SHP=$(SHP_DIR)/$(SHP_LAYER_NAME).shp
+OVF_FILE=$(OUTPUTDIR)/virtual.ovf
+
+EXTENTS_SHP_LAYER_NAME=region_extents
+EXTENTS_CSV_BASE=region_extents
+EXTENTS_CSV=$(SHP_DIR)/$(EXTENTS_CSV_BASE).csv
+
+MAPSERVER_AERIAL_PROJECT_FILE=aerial.map
+MAPSERVER_AERIAL_PROJECT_FULLPATH=$(GIS_OUTPUT_DIR)/$(MAPSERVER_AERIAL_PROJECT_FILE)
+MAPSERVER_TOPO_PROJECT_FILE=cave.map
+MAPSERVER_TOPO_PROJECT_FULLPATH=$(GIS_OUTPUT_DIR)/$(MAPSERVER_TOPO_PROJECT_FILE)
+QGIS_PROJECT_FILE=cave.qgs
+QGIS_PROJECT_FULLPATH=$(GIS_OUTPUT_DIR)/$(QGIS_PROJECT_FILE)
+
+GIS_BIN=shp2img
+GIS_OUTPUT_DIR=./output/gis_maps/
+GIS_XBUFFER=0.005
+GIS_YBUFFER=0.005
+GIS_BOTTOM_BUFFER=0 # For the legend
+GIS_XSLT_OPTS=--stringparam gis_bin $(GIS_BIN) --stringparam gis_output_dir $(GIS_OUTPUT_DIR) --stringparam gis_xBuffer $(GIS_XBUFFER) --stringparam gis_yBuffer $(GIS_YBUFFER) --stringparam gis_bottom_buffer $(GIS_BOTTOM_BUFFER)
+
+PDF_BW_OUTPUTDIR=$(OUTPUTDIR)/pdf_bw
+PDF_BW_LATEX_CAVES=$(PDF_BW_OUTPUTDIR)/$(DOCPREFIX).tex
+PDF=$(PDF_BW_OUTPUTDIR)/$(DOCPREFIX).pdf
+
+PDF_COLOR_OUTPUTDIR=$(OUTPUTDIR)/pdf_color
+PDF_COLOR_LATEX_CAVES=$(PDF_COLOR_OUTPUTDIR)/$(DOCPREFIX).tex
+PDF_COLOR=$(PDF_COLOR_OUTPUTDIR)/$(DOCPREFIX).pdf
+
+PDF_DRAFT_OUTPUTDIR=$(OUTPUTDIR)/pdf_draft
+PDF_DRAFT_LATEX_CAVES=$(PDF_DRAFT_OUTPUTDIR)/$(DOCPREFIX).tex
+PDF_DRAFT=$(PDF_DRAFT_OUTPUTDIR)/$(DOCPREFIX).pdf
+
+MXF_OUTPUTDIR=$(OUTPUTDIR)/mxf
+MXF=$(MXF_OUTPUTDIR)/$(DOCPREFIX).mxf
+
+CSV_OUTPUTDIR=$(OUTPUTDIR)/csv
+CSV=$(CSV_OUTPUTDIR)/$(DOCPREFIX).csv
+
+KML_OUTPUTDIR=$(OUTPUTDIR)/kml
+KML=$(KML_OUTPUTDIR)/$(DOCPREFIX).kml
+
+TEXT_OUTPUTDIR=$(OUTPUTDIR)/text
+TEXT=$(TEXT_OUTPUTDIR)/$(DOCPREFIX).txt
+
+GPX_OUTPUTDIR=$(OUTPUTDIR)/gpx
+GPX=$(GPX_OUTPUTDIR)/$(DOCPREFIX).gpx
+
+TODO_OUTPUTDIR=$(OUTPUTDIR)/todo
+TODO_HTML=$(TODO_OUTPUTDIR)/$(DOCPREFIX)_todo.html
+TODO_PDF=$(TODO_OUTPUTDIR)/$(DOCPREFIX)_todo.pdf
+
+LOCKFILE=$(DOC_BASE_DIR)/build-in-progress.lock
+
+.PHONY: all todo_pdf gpx mxf kml text csv ovf shp gis_maps validate print clean dvd pdf color_pdf draft_pdf 
+
+all: init clean validate $(TODO_PDF) $(GPX) $(KML) $(TEXT) $(CSV) $(SHP) $(MXF) dvd $(PDF) $(PDF_COLOR) $(PDF_DRAFT)
+	rm -f $(LOCKFILE)
+
+init:
+	touch $(LOCKFILE)
+
+$(PDF_BW_LATEX_CAVES): $(LATEX_STYLESHEET)
+	if [ ! -d $(PDF_BW_OUTPUTDIR) ]; then    mkdir $(PDF_BW_OUTPUTDIR) ;     fi
+
+	xsltproc $(GIS_XSLT_OPTS) --stringparam feature_photo secondary --stringparam bulletin_type black_and_white $(LATEX_STYLESHEET) $(CAVE_SRC_XML) \
+	| sed "/Title Page/,$$ s/\\#/\\\\#/g" \
+	> $(PDF_BW_LATEX_CAVES)
+
+pdf: $(PDF)
+
+$(PDF): $(CAVE_SRC_XML) $(PDF_BW_LATEX_CAVES)
+	pdflatex -output-directory $(PDF_BW_OUTPUTDIR) $(PDF_BW_LATEX_CAVES)
+	makeindex $(PDF_BW_OUTPUTDIR)/$(DOCPREFIX).idx
+	pdflatex -output-directory $(PDF_BW_OUTPUTDIR) $(PDF_BW_LATEX_CAVES)
+
+$(PDF_COLOR_LATEX_CAVES): $(LATEX_STYLESHEET)
+	if [ ! -d $(PDF_COLOR_OUTPUTDIR) ]; then    mkdir $(PDF_COLOR_OUTPUTDIR) ;     fi
+
+	xsltproc $(GIS_XSLT_OPTS) --stringparam feature_photo primary --stringparam bulletin_type color $(LATEX_STYLESHEET) $(CAVE_SRC_XML) \
+	| sed "/Title Page/,$$ s/\\#/\\\\#/g" \
+	> $(PDF_COLOR_LATEX_CAVES)
+
+color_pdf: $(PDF_COLOR)
+
+$(PDF_COLOR): $(CAVE_SRC_XML) $(PDF_COLOR_LATEX_CAVES)
+	pdflatex -output-directory $(PDF_COLOR_OUTPUTDIR) $(PDF_COLOR_LATEX_CAVES)
+	makeindex $(PDF_COLOR_OUTPUTDIR)/$(DOCPREFIX).idx
+	pdflatex -output-directory $(PDF_COLOR_OUTPUTDIR) $(PDF_COLOR_LATEX_CAVES)
+
+$(PDF_DRAFT_LATEX_CAVES): $(LATEX_STYLESHEET)
+	if [ ! -d $(PDF_DRAFT_OUTPUTDIR) ]; then    mkdir $(PDF_DRAFT_OUTPUTDIR) ;     fi
+
+	xsltproc $(GIS_XSLT_OPTS) --stringparam feature_photo primary --stringparam draft_mode 1 --stringparam bulletin_type black_and_white $(LATEX_STYLESHEET) $(CAVE_SRC_XML) \
+	| sed "/Title Page/,$$ s/\\#/\\\\#/g" \
+	> $(PDF_DRAFT_LATEX_CAVES)
+
+draft_pdf: $(PDF_DRAFT)
+
+$(PDF_DRAFT): $(CAVE_SRC_XML) $(PDF_DRAFT_LATEX_CAVES)
+	pdflatex -output-directory $(PDF_DRAFT_OUTPUTDIR) $(PDF_DRAFT_LATEX_CAVES)
+	makeindex $(PDF_DRAFT_OUTPUTDIR)/$(DOCPREFIX).idx
+	pdflatex -output-directory $(PDF_DRAFT_OUTPUTDIR) $(PDF_DRAFT_LATEX_CAVES)
+
+todo_pdf: $(TODO_PDF)
+
+$(TODO_PDF): $(CAVE_SRC_XML) $(PDF_DRAFT_LATEX_CAVES)
+	if [ ! -d $(TODO_OUTPUTDIR) ]; then    mkdir $(TODO_OUTPUTDIR) ;     fi
+	xsltproc $(TODO_STYLESHEET) $(CAVE_SRC_XML) > $(TODO_HTML)
+	htmldoc --header "   " --footer "   " --outfile $(TODO_PDF) --webpage $(TODO_HTML)
+
+mxf: $(MXF)
+
+$(MXF): $(MXF_STYLESHEET)
+	if [ ! -d $(MXF_OUTPUTDIR) ]; then    mkdir $(MXF_OUTPUTDIR) ;     fi
+
+	xsltproc -o $(MXF) $(MXF_STYLESHEET) $(CAVE_SRC_XML)
+
+gpx: $(GPX)
+
+$(GPX): $(GPX_STYLESHEET)
+	if [ ! -d $(GPX_OUTPUTDIR) ]; then    mkdir $(GPX_OUTPUTDIR) ;     fi
+
+	xsltproc -o $(GPX) $(GPX_STYLESHEET) $(CAVE_SRC_XML)
+
+kml: $(KML)
+
+$(KML): $(KML_STYLESHEET)
+	if [ ! -d $(KML_OUTPUTDIR) ]; then    mkdir $(KML_OUTPUTDIR) ;     fi
+
+	xsltproc -o $(KML) $(KML_STYLESHEET) $(CAVE_SRC_XML)
+
+text: $(TEXT)
+
+$(TEXT): $(TEXT_STYLESHEET)
+	if [ ! -d $(TEXT_OUTPUTDIR) ]; then    mkdir $(TEXT_OUTPUTDIR) ;     fi
+
+	xsltproc -o $(TEXT) $(TEXT_STYLESHEET) $(CAVE_SRC_XML)
+
+csv: $(CSV)
+
+$(CSV): $(CSV_STYLESHEET)
+	if [ ! -d $(CSV_OUTPUTDIR) ]; then    mkdir $(CSV_OUTPUTDIR) ;     fi
+
+	xsltproc -o $(CSV) $(CSV_STYLESHEET) $(CAVE_SRC_XML)
+
+dvd: $(DVD_STYLESHEET)
+	xsltproc $(DVD_STYLESHEET) $(CAVE_SRC_XML) | sh -v
+
+shp: $(SHP)
+
+$(SHP): $(CSV)
+	rm -rf $(SHP_DIR)
+
+	# Generate a SHP file that contains the feature coordinates
+	echo "<OGRVRTDataSource> <OGRVRTLayer name=\"$(SHP_LAYER_NAME)\"> <SrcDataSource>$(CSV)</SrcDataSource> <SrcLayer>$(DOCPREFIX)</SrcLayer> <GeometryType>wkbPoint</GeometryType> <GeometryField encoding=\"PointFromColumns\" x=\"nad27_utmeast\" y=\"nad27_utmnorth\" z=\"elevation\"/> </OGRVRTLayer> </OGRVRTDataSource>" > $(OVF_FILE)
+	ogr2ogr -f "ESRI Shapefile" $(SHP_DIR) $(OVF_FILE)
+
+
+	# Generate a SHP file for the region extents
+	xsltproc $(GIS_XSLT_OPTS) $(GIS_EXTENTS_STYLESHEET) $(CAVE_SRC_XML) > $(EXTENTS_CSV)
+	echo "<OGRVRTDataSource> <OGRVRTLayer name=\"$(EXTENTS_SHP_LAYER_NAME)\"> <SrcDataSource>$(EXTENTS_CSV)</SrcDataSource> <SrcLayer>$(EXTENTS_CSV_BASE)</SrcLayer> <GeometryType>wkbPolygon</GeometryType> <GeometryField encoding=\"WKT\" x=\"utmeast\" field=\"wkt\"/> </OGRVRTLayer> </OGRVRTDataSource>" > $(OVF_FILE)
+	ogr2ogr -f "ESRI Shapefile" $(SHP_DIR) $(OVF_FILE)
+	rm -f $(EXTENTS_CSV)
+
+
+	rm -f $(OVF_FILE)
+	zip -jr $(SHP_DIR)/$(SHP_LAYER_NAME).zip $(SHP_DIR)/
+
+$(QGIS_PROJECT_FULLPATH): $(QGIS_STYLESHEET) $(CAVE_SRC_XML)
+	mkdir -p $(GIS_OUTPUT_DIR)
+	xsltproc $(QGIS_STYLESHEET) $(CAVE_SRC_XML) > $(QGIS_PROJECT_FULLPATH)
+
+gis_maps: $(SHP) $(GIS_MAPS_STYLESHEET) $(QGIS_PROJECT_FULLPATH) 
+	mkdir -p $(GIS_OUTPUT_DIR)
+	if [ ! -f $(GIS_OUTPUT_DIR)/fonts.list ] ; then ln -s $(DOC_BASE_DIR)/../../gis_maps/fonts.list $(GIS_OUTPUT_DIR) ; fi
+	if [ ! -f $(GIS_OUTPUT_DIR)/symbols.sym ] ; then ln -s $(DOC_BASE_DIR)/../../gis_maps/symbols.sym $(GIS_OUTPUT_DIR) ; fi
+
+	# Aerial maps
+	for name in `xgrep -x /regions/aerial_maps/aerial_map/@name $(CAVE_SRC_XML) | grep "^ name" | cut -d\" -f2` ; do \
+		xsltproc --stringparam INCLUDE $(DOC_BASE_DIR)/../../gis_maps/$$name.map --stringparam OVERRIDE_LABEL_COLOR "255 255 255" --stringparam SHOW_ON_MAPS Aerial $(MAPSERVER_STYLESHEET) $(CAVE_SRC_XML) > $(MAPSERVER_AERIAL_PROJECT_FULLPATH) ; \
+		xsltproc $(GIS_XSLT_OPTS) --stringparam gis_project $(MAPSERVER_AERIAL_PROJECT_FULLPATH) --stringparam gis_file_suffix "_gis_"$$name"_aerial_map.jpg" $(GIS_MAPS_STYLESHEET) $(CAVE_SRC_XML) | sh -v ; \
+	done
+
+	# Topo maps
+	xsltproc --stringparam SHOW_ON_MAPS Topo $(MAPSERVER_STYLESHEET) $(CAVE_SRC_XML) > $(MAPSERVER_TOPO_PROJECT_FULLPATH)
+	xsltproc $(GIS_XSLT_OPTS) --stringparam gis_project $(MAPSERVER_TOPO_PROJECT_FULLPATH) --stringparam gis_file_suffix _gis_map.jpg $(GIS_MAPS_STYLESHEET) $(CAVE_SRC_XML) | sh -v
+
+
+validate: $(CAVE_SRC_XML)
+	xmllint -noout $(CAVE_SRC_XML)
+	xmllint -noout $(LATEX_STYLESHEET)
+	xmllint -noout $(GPX_STYLESHEET)
+	xmllint -noout $(KML_STYLESHEET)
+	xmllint -noout $(TEXT_STYLESHEET)
+	xmllint -noout $(CSV_STYLESHEET)
+
+print: $(PDF)
+	pdftops -paper letter $(PDF) $(OUTPUTDIR)/$(DOCPREFIX).ps
+	pstops 2:0 $(OUTPUTDIR)/$(DOCPREFIX).ps $(OUTPUTDIR)/$(DOCPREFIX)-odd.ps
+	pstops 2:1 $(OUTPUTDIR)/$(DOCPREFIX).ps $(OUTPUTDIR)/$(DOCPREFIX)-even.ps
+	rm $(OUTPUTDIR)/$(DOCPREFIX).ps
+
+clean:
+	rm -rf $(PDF_DRAFT_OUTPUTDIR)
+	rm -rf $(PDF_BW_OUTPUTDIR)
+	rm -rf $(PDF_COLOR_OUTPUTDIR)
+	rm -rf $(CSV_OUTPUTDIR)
+	rm -rf $(GPX_OUTPUTDIR)
+	rm -rf $(KML_OUTPUTDIR)
+	rm -rf $(TEXT_OUTPUTDIR)
+	rm -rf $(MXF_OUTPUTDIR)
+	rm -rf $(SHP_DIR)
+	rm -rf $(TODO_OUTPUTDIR)
