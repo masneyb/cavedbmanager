@@ -17,6 +17,11 @@ to manage the list of caves within the state. The web interface is only
 available to its members.
 
 
+## Screenshots
+
+Screenshots are available in the [screenshots](screenshots) directory.
+
+
 ## Dependencies
 
 * Python
