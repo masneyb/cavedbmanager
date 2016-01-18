@@ -52,10 +52,3 @@ information about how to customize it.
 * Brian Masney - [masneyb](https://github.com/masneyb)
 * David A. Riggs - [riggsd](https://github.com/riggsd)
 
-Note: This interface stopped being actively developed around 2011. It needs
-to be upgraded to a newer version of Python and Django.
-
-## Screenshot
-
-![Search Page](media/img/wvass-cavedb-search-feature.png "Search Page")
-
