@@ -1,16 +1,16 @@
 # cavedbmanager
 
 This project was written to simplify the data management for a state
-and/or county survey. It eliminates the need for the manual duplication
+and/or county cave survey. It eliminates the need for the manual duplication
 data, which will help to save time and minimize errors. The system will
 automatically generate various types of files based on what you upload
 to the database: 1) GIS files: SHP, KML, GPX, and PNG (topo maps and
-aerial imagery), 2) a PDF that is suitable for publication, and 3) a ISO
-CD image that can be included with the book that includes select entrance
-photos, maps, and references. It eliminates the hassle of formatting the
-book and allows the user to concentrate on the collection of data. This
-system was to publish the book _WVASS Bulletin #18: The Caves and Karst
-of Tucker County, WV_.
+aerial imagery), 2) a PDF that is suitable for publication, and 3) a 
+CD/DVD image that can be included with the book that includes select
+entrance photos, maps, and references. It eliminates the hassle of
+formatting the book and allows the user to concentrate on the collection
+of data. This system was used to publish the book _WVASS Bulletin #18:
+The Caves and Karst of Tucker County, WV_.
 
 This project is currently used by the West Virginia Speleological Survey
 to manage the list of caves within the state. The web interface is only
