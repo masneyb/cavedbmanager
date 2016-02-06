@@ -22,29 +22,36 @@ available to its members.
 Screenshots are available in the [screenshots](screenshots) directory.
 
 
-## Dependencies
+## Installation
 
-* Python
-* Python Imaging Library (python-imaging Debian package)
-* Python GDAL Library (python-gdal Debian package)
-* Django web framework >= 1.0 (http://www.djangoproject.com/)
-* A database such as MySQL (mysql-server-5.0 and mysql-client-5.0 Debian packages)
-* Mapserver >= 4.10 (mapserver-bin Debian package)
-* LaTeX (texlive Debian package)
-* zip Debian package
-* xsltproc and libxml2-utils Debian packages
-* A webserver such as Apache to serve the content (apache2 Debian package)
-
-By default, install the application in /usr/local/cavedbmanager and the
-application data in /usr/local/cavedbmanager-data. If you install them in
-different locations, then be sure to edit the main settings.py file with that 
-information.
-
-You will also need to setup your GIS maps. Put your GIS layers in 
-/usr/local/cavedbmanager-data/gis_maps/layers and edit
-/usr/local/cavedbmanager-data/gis_maps/cave.map to customize how those
-layers will look on the map. See the Mapserver documentation for more 
-information about how to customize it.
+* These directions have only been tested on Ubuntu 12.04. Support for a newer
+  release is coming soon.
+* Install the [postgis-data-importer](https://github.com/masneyb/postgis-data-importer)
+  project to support setting up your GIS layers in a PostgreSQL database. The
+  installation for that project does not support the older releases of PostGIS
+  found in Ubuntu 12.04. Create your PostgreSQL database and then install the
+  PostGIS extension by running:
+  * `cat /usr/share/postgresql/9.1/contrib/postgis-1.5/postgis.sql | psql wvgis`
+  * `cat /usr/share/postgresql/9.1/contrib/postgis-1.5/spatial_ref_sys.sql | psql wvgis`
+* Install package dependencies: `apt-get install -y mysql-client mysql-server python-mysqldb python-django python-imaging python-dateutil python-gdal htmldoc texlive texlive-latex-extra python2.7 apache2 libapache2-mod-python python-boto postgresql-9.1 postgresql-9.1-postgis postgresql-client-9.1 postgresql-client-common postgresql-common postgis gdal-bin libgeotiff2 libxml2-utils xsltproc zip xgrep mapserver-bin ttf-freefont make`
+* Create an empty MySQL database for the cave data:
+  `echo "create database cavedb;" | mysql -uroot -proot`
+* Update your database settings in _settings.py_. Be sure to change
+  the SECRET_KEY setting to random data if you are running the server
+  on a non-loopback interface.
+* Create the tables in the new database: `make installdb`. It will prompt you
+  to create a Django admin user that you will use to log into the website.
+* Set a user profile for the django user added by the step above:
+  `echo "insert into cavedb_caveuserprofile values (1, 1, 1, 1, 1);" | mysql -uroot -proot cavedb`
+* Optional: Install West Virginia base data:
+  `cat data/wv-base-data.sql | mysql -uroot -proot cavedb`. This is for the
+  GIS layers, counties, topo quads, topo quad / county relationships, and UTM
+  zones for the entire state.
+* Copy base files required for building the documents
+  * `mkdir -p /usr/local/cavedbmanager-data/`
+  * `sudo cp -dpRv data/* /usr/local/cavedbmanager-data/`
+  * `WHOAMI=$(whoami) && sudo chown -R "${WHOAMI}":"${WHOAMI}" /usr/local/cavedbmanager-data/
+* Start the server: `make run`
 
 
 ## Authors
