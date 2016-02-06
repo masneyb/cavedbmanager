@@ -1,26 +1,33 @@
 # cavedbmanager
 
 This project was written to simplify the data management for a state
-and/or county cave survey. It eliminates the need for the manual duplication
-data, which will help to save time and minimize errors. The system will
-automatically generate various types of files based on what you upload
-to the database:
+and/or county cave survey. It eliminates the need for the manual
+duplication data, which will help to save time and minimize errors.
+This significantly reduces the hassle of formatting the book and
+allows the user to concentrate on the collection of data. The
+system will dynamically generate various types of files based on
+the data that you upload to the database:
 
-* GIS files: SHP, KML, GPX, and PNG (topo maps and aerial imagery)
-* A PDF that is suitable for publication
-* a CD/DVD image that can be included with the book that includes
-  select entrance photos, maps, and references.
-
-This system eliminates the hassle of formatting the book and allows the
-user to concentrate on the collection of data. This system was used to
-publish the book _WVASS Bulletin #18: The Caves and Karst of Tucker
-County, WV_. Note: That book is currently only available for sale to NSS
-members through the
-[West Virginia Speleological Survey](http://www.wvass.org/publications.html).
+* GIS files: SHP, KML (Google Earth), GPX, Maptech, and PNG
+  (topo maps and aerial imagery).
+* A PDF that is suitable for publication.
+* An IS09660 CD/DVD image that can be included with the book that
+  includes select entrance photos, maps, and references. All of the
+  filenames are standardized to a common naming convetion.
+* TODO list
+* CSV file (Spreadsheet)
 
 This project is currently used by the West Virginia Speleological Survey
 to manage the cave data within the state. The web interface is only
 available to its members.
+
+This system was used to publish the book _WVASS Bulletin #18: The
+Caves and Karst of Tucker County, WV_. This book is available for
+sale to [NSS members](http://caves.org/) through the
+[West Virginia Speleological Survey](http://www.wvass.org/publications.html).
+It is also available for purchase through the
+[NSS Bookstore](https://bookstore.caves.org/index.php?mode=store&submode=showitem&itemnumber=01-0687)
+to NSS members.
 
 
 ## Screenshots
