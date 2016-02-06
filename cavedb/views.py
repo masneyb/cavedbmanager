@@ -889,7 +889,7 @@ def generate_gis_section (basedir, f, bulletin_id):
         if (map.filename != None and map.filename != ''):
             f.write('<data>%s</data>\n' % (map.filename))
         else:
-            f.write('<data>the_geom from %s</data>\n' % (map.table_name))
+            f.write('<data>geom from %s</data>\n' % (map.table_name))
 
         f.write('<display>%s</display>\n' % (int(map.display)))
         f.write('<type>%s</type>\n' % (map.type))
