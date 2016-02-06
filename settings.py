@@ -2,7 +2,7 @@
 
 import os
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -12,9 +12,9 @@ ADMINS = (
 MANAGERS = ADMINS
 
 DATABASE_ENGINE = 'mysql'
-DATABASE_NAME = 'CHANGEME'
-DATABASE_USER = 'CHANGEME'
-DATABASE_PASSWORD = 'CHANGEME'
+DATABASE_NAME = 'cavedb'
+DATABASE_USER = 'root'
+DATABASE_PASSWORD = 'root'
 DATABASE_HOST = 'localhost'
 DATABASE_PORT = ''
 
@@ -33,7 +33,7 @@ MEDIA_ROOT = '/usr/local/cavedbmanager-data'
 MEDIA_URL = CONTEXT_PATH + 'cavedb/'
 ADMIN_MEDIA_PREFIX = '/media/'
 
-SECRET_KEY = 'CHANGEME'
+SECRET_KEY = 'FIXME_CHANGE_THIS_SECRET_KEY'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.load_template_source',
     'django.template.loaders.app_directories.load_template_source',
@@ -64,4 +64,4 @@ INSTALLED_APPS = (
 )
 
 GIS_CONNECTION_TYPE = 'postgis'
-GIS_CONNECTION = 'dbname=caves'
+GIS_CONNECTION = 'dbname=wvgis'
