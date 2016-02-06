@@ -8,6 +8,7 @@ help:
 	@echo
 
 run: installdb
+	#./manage.py runserver 0.0.0.0:8000 --adminmedia=media
 	./manage.py runserver 8000 --adminmedia=media
 
 installdb:
