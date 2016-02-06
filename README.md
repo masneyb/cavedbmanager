@@ -14,7 +14,7 @@ the data that you upload to the database:
 * An IS09660 CD/DVD image that can be included with the book that
   includes select entrance photos, maps, and references. All of the
   filenames are standardized to a common naming convetion.
-* TODO list
+* To-do list
 * CSV file (Spreadsheet)
 
 This project is currently used by the West Virginia Speleological Survey
@@ -48,23 +48,26 @@ Screenshots are available in the [screenshots](screenshots) directory.
   * `cat /usr/share/postgresql/9.1/contrib/postgis-1.5/spatial_ref_sys.sql | psql wvgis`
 * Install package dependencies: `apt-get install -y mysql-client mysql-server python-mysqldb python-django python-imaging python-dateutil python-gdal htmldoc texlive texlive-latex-extra python2.7 apache2 libapache2-mod-python python-boto postgresql-9.1 postgresql-9.1-postgis postgresql-client-9.1 postgresql-client-common postgresql-common postgis gdal-bin libgeotiff2 libxml2-utils xsltproc zip xgrep mapserver-bin ttf-freefont make`
 * Create an empty MySQL database for the cave data:
-  `echo "create database cavedb;" | mysql -uroot -proot`
+  `echo "create database cavedb;" | mysql -uroot`
 * Update your database settings in _settings.py_. Be sure to change
   the SECRET_KEY setting to random data if you are running the server
   on a non-loopback interface.
 * Create the tables in the new database: `make installdb`. It will prompt you
   to create a Django admin user that you will use to log into the website.
 * Set a user profile for the django user added by the step above:
-  `echo "insert into cavedb_caveuserprofile values (1, 1, 1, 1, 1);" | mysql -uroot -proot cavedb`
+  `echo "insert into cavedb_caveuserprofile values (1, 1, 1, 1, 1);" | mysql -uroot cavedb`
 * Optional: Install West Virginia base data:
-  `cat data/wv-base-data.sql | mysql -uroot -proot cavedb`. This is for the
+  `cat data/wv-base-data.sql | mysql -uroot cavedb`. This is for the
   GIS layers, counties, topo quads, topo quad / county relationships, and UTM
   zones for the entire state.
 * Copy base files required for building the documents
-  * `mkdir -p /usr/local/cavedbmanager-data/`
+  * `sudo mkdir -p /usr/local/cavedbmanager-data/`
   * `sudo cp -dpRv data/* /usr/local/cavedbmanager-data/`
-  * `WHOAMI=$(whoami) && sudo chown -R "${WHOAMI}":"${WHOAMI}" /usr/local/cavedbmanager-data/
-* Start the server: `make run`
+  * `WHOAMI=$(whoami) && sudo chown -R "${WHOAMI}":"${WHOAMI}" /usr/local/cavedbmanager-data/`
+* Start the server: `make run`. The server will only listen to the
+  loopback interface. Use `make runRemote` to have it bind to
+  all network interfaces. The latter is useful if you are testing
+  from inside a virtual machine.
 
 
 ## Authors
