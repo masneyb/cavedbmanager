@@ -1,8 +1,3 @@
-Features for 0.1 release
-
-* Remove bulletin id off of attachment filenames
-* Problem with _ on bulletin
-
 DB Changes
 * Automatically generate the TODO list and store the results in the database in a new field.
 * Allow referencing an attachment on another feature
@@ -10,16 +5,19 @@ DB Changes
 * Drop cavedb_featurereference table
 
 Other
-* Update the welcome page
+* Remove bulletin id off of attachment filenames
+* Problem with _ on bulletin
 * Only allow one bulletin to be generated at a time
 * Make sure all database fields show up in the CSV/SHP file.
-
-Features for a future release
-
-* Find a way to optimize the SQL queries
-* Allow splitting a map up onto multiple pages. (Like the Organ Cave bulletin). Must have overlap between pages.
+* Optimize the SQL queries
 * Automatically generate the survey ID field
-* Allow filtering on bulletim, county and topo quad
+* Allow filtering on bulletin, county and topo quad
 * Allow storing sketches and photos. Make this fully searchable
-* Add link to each cave to show the cave on the map. The user will be redirected to kaMap, where they can zoom and pan. Clicking on cave entrance will show popup with entrance photo and cave description. Clicking on a particular part of a lineplot will bring up that set of sketches if they are available. Allow geo-referencing in-cave photos and show them on the map as well.
+* Add link to each cave to show the cave on the map. The user will be
+  redirected to kaMap, where they can zoom and pan. Clicking on cave
+  entrance will show popup with entrance photo and cave description.
+  Clicking on a particular part of a lineplot will bring up that set of
+  sketches if they are available. Allow geo-referencing in-cave photos
+  and show them on the map as well.
 * Add 11 reasons a cave can be significant to WVASS
+
