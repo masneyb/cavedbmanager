@@ -74,7 +74,7 @@ LOCKFILE=$(DOC_BASE_DIR)/build-in-progress.lock
 
 .PHONY: all todo_pdf gpx mxf kml text csv ovf shp gis_maps validate print clean dvd pdf color_pdf draft_pdf 
 
-all: init clean validate $(TODO_PDF) $(GPX) $(KML) $(TEXT) $(CSV) $(SHP) $(MXF) dvd $(PDF) $(PDF_COLOR) $(PDF_DRAFT)
+all: init clean validate $(TODO_PDF) $(GPX) $(KML) $(TEXT) $(CSV) $(SHP) $(MXF) dvd gis_maps $(PDF) $(PDF_COLOR) $(PDF_DRAFT)
 	rm -f $(LOCKFILE)
 
 init:
