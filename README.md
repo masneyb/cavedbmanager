@@ -108,6 +108,6 @@ Screenshots are available in the [screenshots](screenshots) directory.
 
 ## Authors
 
-* Brian Masney - [masneyb](https://github.com/masneyb)
-* David A. Riggs - [riggsd](https://github.com/riggsd)
+* [Brian Masney](https://github.com/masneyb)
+* [David A. Riggs](https://github.com/riggsd)
 
