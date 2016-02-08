@@ -61,10 +61,10 @@ Screenshots are available in the [screenshots](screenshots) directory.
   to create a Django admin user that you will use to log into the website.
 * Set a user profile for the django user added by the step above:
   `echo "insert into cavedb_caveuserprofile values (1, 1, 1, 1, 1);" | mysql -uroot cavedb`
-* Optional: Install West Virginia base data:
-  `cat data/wv-base-data.sql | mysql -uroot cavedb`. This is for the
-  GIS layers, counties, topo quads, topo quad / county relationships, and UTM
-  zones for the entire state.
+* Optional: Install West Virginia base data. This is for the GIS layers, counties,
+  topo quads, topo quad / county relationships, and UTM zones for the entire state.
+  * `cat data/wv-base-data.sql | mysql -uroot cavedb`.
+  * `sudo ln -s /home/ubuntu/postgis-data-importer/download/us_wv/aerial/USDA-2014/2014.map /usr/local/cavedbmanager-data/gis_maps/`. Be sure to replace the path to your checked out version of the postgis-data-importer project. The 2014 matches the name column in the cavedb_gisaerialmap table.
 * Copy base files required for building the documents
   * `sudo mkdir -p /usr/local/cavedbmanager-data/`
   * `sudo cp -dpRv data/* /usr/local/cavedbmanager-data/`
