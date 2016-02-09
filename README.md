@@ -76,23 +76,23 @@ the following procedure.
   counties, topo quads, topo quad / county relationships, and UTM zones
   for the entire state.
   `cat sample-bulletin/wv-base-data.sql | mysql -uroot cavedb`.
-* Add the aerial imagery. `ln -s /home/ubuntu/postgis-data-importer/download/us_wv/aerial/USDA-2014/2014.map /usr/local/cavedbmanager-data/gis_maps/`. Be sure to replace the path to your checked out version of the postgis-data-importer project. The 2014 matches the name column in the cavedb_gisaerialmap table.
-* When importing your GIS data, you will only need to include the
+* Add the aerial imagery. `ln -s /home/ubuntu/postgis-data-importer/download/us_wv/aerial/USDA-2014/2014.map /usr/local/cavedbmanager-data/gis_maps/`. Be sure to replace the path to your checked out version of the postgis-data-importer project. The 2014.map matches the name column in the cavedb_gisaerialmap table (without the .map extension).
+* When importing your GIS data, you only need to include the
   DEMs and aerial imagery for the Aurora, Lake Lynn and Lead Mine
-  7.5 minute quads. The import script will automatically download
-  this data, along with all of the other 7.5 minute quads in West
-  Virginia that are underlain by karst.
-* Copy sample bulletin feature attachments:
+  7.5 minute quads. By default, the import script will download
+  the data for these quads, along with all of the other 7.5 minute
+  quads in West Virginia that are underlain by karst.
+* Copy sample entrance photos and maps:
   `cp -dpRv sample-bulletin/feature_attachments/ /usr/local/cavedbmanager-data/`
 * Add sample bulletin data to MySQL:
   `cat sample-bulletin/sample-bulletin.sql | mysql -uroot cavedb`
-* Start the server and log into the web interface. Click on the
-  Bulletins link on the main page. In the documents column, click on
-  the generate link. After a few minutes, refresh the page and you
-  should see generated documents if everything went well. Build output
-  is stored in
-  /usr/local/cavedbmanager-data/bulletins/bulletin_1/bulletin-build-output.txt.
-  if you need to troubleshoot any issues.
+* Start the server and log into the web interface.
+  * Click on the Bulletins link on the main page. In the documents column,
+    click on the generate link. After a few minutes, refresh the page and
+    you should see generated documents if everything went well.
+  * Build output is stored in
+    /usr/local/cavedbmanager-data/bulletins/bulletin_1/bulletin-build-output.txt.
+    if you need to troubleshoot any issues.
 * A few notes about the generated PDF:
   * The title page, preamble page and contributor pages (i, ii, and iii) can
     all be edited in the bulletin section of the web interface. The content
@@ -113,10 +113,15 @@ the following procedure.
 
 ## Publications
 
-This system was used to publish the book _WVASS Bulletin #18: The
-Caves and Karst of Tucker County, WV_. This book is available for
-sale to [NSS members](http://caves.org/) through the
-[West Virginia Speleological Survey](http://www.wvass.org/publications.html).
+This system was used to publish the book:
+
+* West Virginia Speleological Survey Bulletin #18: The Caves and Karst of
+  Tucker County by Doug McCarty and Brian Masney, 2011. Includes 304 cave and
+  karst features, 155 photos, and 96 maps; contains CD-ROM with full-sized
+  color versions of all maps and photos, plus extras.
+
+This book is available for sale to [NSS members](http://caves.org/) through
+the [West Virginia Speleological Survey](http://www.wvass.org/publications.html).
 It is also available for purchase through the
 [NSS Bookstore](https://bookstore.caves.org/index.php?mode=store&submode=showitem&itemnumber=01-0687)
 to NSS members.
