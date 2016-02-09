@@ -80,11 +80,13 @@ the following procedure.
 * Install the West Virginia base data. This is for the GIS layers,
   counties, topo quads, topo quad / county relationships, and UTM zones
   for the entire state.
-  * `cat sample-bulletin/wv-base-data.sql | mysql -uroot cavedb`.
-  * `sudo ln -s /home/ubuntu/postgis-data-importer/download/us_wv/aerial/USDA-2014/2014.map /usr/local/cavedbmanager-data/gis_maps/`. Be sure to replace the path to your checked out version of the postgis-data-importer project. The 2014 matches the name column in the cavedb_gisaerialmap table.
+  `cat sample-bulletin/wv-base-data.sql | mysql -uroot cavedb`.
+* Add the aerial imagery. `sudo ln -s /home/ubuntu/postgis-data-importer/download/us_wv/aerial/USDA-2014/2014.map /usr/local/cavedbmanager-data/gis_maps/`. Be sure to replace the path to your checked out version of the postgis-data-importer project. The 2014 matches the name column in the cavedb_gisaerialmap table.
 * When importing your GIS data, you will only need to include the
-  DEMs and aerial imagery for these 7.5 minute quads: Aurora,
-  Lake Lynn and Lead Mine.
+  DEMs and aerial imagery for the Aurora, Lake Lynn and Lead Mine
+  7.5 minute quads. The import script will automatically download
+  this data, along with all of the other 7.5 minute quads in West
+  Virginia that are underlain by karst.
 * Copy sample bulletin feature attachments:
   `cp -dpRv sample-bulletin/feature_attachments/ /usr/local/cavedbmanager-data/`
 * Add sample bulletin data to MySQL:
@@ -105,9 +107,9 @@ the following procedure.
   * The map on page v shows the position of all of the regions as they relate
     to each other. The rectangles labeled Coopers Rock and Test Region were
     dynamically drawn based on the extent of all features that are present
-    inside each region. If you add a new feature outside of the region, then
-    the rectangle will be expanded the next time that the bulletin is
-    regenerated.
+    inside each region. If you add a new feature outside of the rectangle,
+    then the rectangle will be dynamically expanded the next time that
+    the bulletin is regenerated.
   * The maps on pages 1, 2, 7 and 8 were all dynamically generated based on
     the features associated with each region.
   * Additional terms can be added to the index on page 13. Edit the bulletin
