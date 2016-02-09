@@ -16,7 +16,7 @@ INSERT INTO `cavedb_gislayer` VALUES (15,'Interstates','Both','wv_interstates',N
 INSERT INTO `cavedb_gislayer` VALUES (16,'100\' Contour Lines','Topo','wv_100ft_contours',NULL,1,60000.00,'LINE','169 169 169','ele','0 0 0',6,21,'punkt',2,'wvgis.wvu.edu','Automatically generated from DEM using gdal_contour.');
 INSERT INTO `cavedb_gislayer` VALUES (17,'20\' Contour Lines','Topo','wv_20ft_contours',NULL,1,10000.00,'LINE','211 211 211','','',NULL,20,'',NULL,'wvgis.wvu.edu','Automatically generated from DEM using gdal_contour.');
 
-insert into cavedb_gisaerialmap values (1, '2014', 'USDA National Agriculture Imaging Program - 2014', 'http://www.fsa.usda.gov/programs-and-services/aerial-photography/imagery-programs/naip-imagery/', 'http://wvgis.wvu.edu/data/dataset.php?ID=461');
+insert into cavedb_gisaerialmap values (1, '2014', 'USDA National Agriculture Imaging Program', 'http://www.fsa.usda.gov/programs-and-services/aerial-photography/imagery-programs/naip-imagery/', 'http://wvgis.wvu.edu/data/dataset.php?ID=461');
 
 INSERT INTO `cavedb_county` VALUES (1,'Monongalia','MON','2008-07-17 23:17:15','2008-07-17 23:17:15');
 INSERT INTO `cavedb_county` VALUES (2,'Preston','PRE','2008-07-17 23:17:15','2008-07-17 23:17:15');

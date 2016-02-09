@@ -50,6 +50,8 @@ Screenshots are available in the [screenshots](screenshots) directory.
   * `cat /usr/share/postgresql/9.1/contrib/postgis-1.5/spatial_ref_sys.sql | psql wvgis`
   * `git clone https://github.com/masneyb/postgis-data-importer.git`
   * `cd postgis-data-importer/`
+  * If you are planning to generate the sample bulletin, see the note about
+    the GIS data in the Sample Bulletin section below.
   * `make us_wv`
 * Install package dependencies: `sudo apt-get install -y mysql-client mysql-server python-mysqldb python-django python-imaging python-dateutil python-gdal htmldoc texlive texlive-latex-extra python2.7 apache2 libapache2-mod-python python-boto postgresql-9.1 postgresql-9.1-postgis postgresql-client-9.1 postgresql-client-common postgresql-common postgis gdal-bin libgeotiff2 libxml2-utils xsltproc zip xgrep mapserver-bin ttf-freefont make`
 * Create an empty MySQL database for the cave data:
@@ -61,53 +63,39 @@ Screenshots are available in the [screenshots](screenshots) directory.
   to create a Django admin user that you will use to log into the website.
 * Set a user profile for the django user added by the step above:
   `echo "insert into cavedb_caveuserprofile values (1, 1, 1, 1, 1);" | mysql -uroot cavedb`
-* Optional: Install West Virginia base data. This is for the GIS layers, counties,
-  topo quads, topo quad / county relationships, and UTM zones for the entire state.
-  * `cat data/wv-base-data.sql | mysql -uroot cavedb`.
-  * `sudo ln -s /home/ubuntu/postgis-data-importer/download/us_wv/aerial/USDA-2014/2014.map /usr/local/cavedbmanager-data/gis_maps/`. Be sure to replace the path to your checked out version of the postgis-data-importer project. The 2014 matches the name column in the cavedb_gisaerialmap table.
 * Copy base files required for building the documents
   * `sudo mkdir -p /usr/local/cavedbmanager-data/`
   * `sudo cp -dpRv data/* /usr/local/cavedbmanager-data/`
   * `WHOAMI=$(whoami) && sudo chown -R "${WHOAMI}":"${WHOAMI}" /usr/local/cavedbmanager-data/`
+* Optional: Install sample bulletin data. See Sample Bulletin section below
+  for details.
 * Start the server: `make run`. The server will only listen to the
   loopback interface. Use `make runRemote` to have it bind to
   all network interfaces. The latter is useful if you are testing
   from inside a virtual machine.
 
-## How to populate initial data to generate your documents.
+## Sample Bulletin
 
-* A few terms need to be defined before you start populating data:
-  * _Bulletin_ - This is the book that you will be working on.
-    This could be an entire county, state or region.
-  * _Bulletin Region_ - This is a small area inside the bulletin.
-    You want the area to be small enough so that the generated maps
-    have enough detail.
-  * _Feature_* - This is a cave or other karst feature.
-* Go to the Bulletins page from the main page of the web interface,
-  and then click on Add Bulletin at the top right. Populate 'Name',
-  'Short Name', and 'Editors' fields. You'll need at least one
-  region. The only fields you need to populate are 'Region Name',
-  'Map Region Name', and 'Sort Order'. Set the sort order to 1 for
-  now.
-* Your user now needs to have access to the new bulletin that you
-  just added. Click on the Home link at the top left, Users, 
-  click on your username, and at the bottom of the page you will see
-  your new bulletin that was added. Click once on it to select it
-  and click Save at the bottom right.
-* You are now ready to add a new feature. Click on the Home link at the
-  top left, click on Features and then Add Feature at the top right.
-* Populate the bold faced fields at a minimum. Be sure to enter a
-  GPS coordinate. Try 39.6398198, -79.8182217 for a coordinate in
-  West Virginia.
-* You are now ready to generate the documents. Click on Home at the
-  top left, then Bulletins. In the documents column, click on the
-  generate link. After a minute, refresh the page and you should
-  see generated documents if everything went well. Build output is
-  stored in
+The sample bulletin included with this repository can be generated with
+the following procedure.
+
+* Install the West Virginia base data. This is for the GIS layers,
+  counties, topo quads, topo quad / county relationships, and UTM zones
+  for the entire state.
+  * `cat sample-bulletin/wv-base-data.sql | mysql -uroot cavedb`.
+  * `sudo ln -s /home/ubuntu/postgis-data-importer/download/us_wv/aerial/USDA-2014/2014.map /usr/local/cavedbmanager-data/gis_maps/`. Be sure to replace the path to your checked out version of the postgis-data-importer project. The 2014 matches the name column in the cavedb_gisaerialmap table.
+* When importing your GIS data, you will only need to include the
+  DEMs and aerial imagery for these 7.5 minute quads: Aurora,
+  Lake Lynn and Lead Mine.
+* Copy sample bulletin feature attachments:
+  `cp -dpRv sample-bulletin/feature_attachments/ /usr/local/cavedbmanager-data/`
+* Add sample bulletin data to MySQL:
+  `cat sample-bulletin/sample-bulletin.sql | mysql -uroot cavedb`
+* Start the server and log into the web interface. Click on the
+  Bulletins link on the main page. In the documents column, click on
+  the generate link. After a few minutes, refresh the page and you
+  should see generated documents if everything went well. Build output
+  is stored in
   /usr/local/cavedbmanager-data/bulletins/bulletin_1/bulletin-build-output.txt.
-
-## Authors
-
-* [Brian Masney](https://github.com/masneyb)
-* [David A. Riggs](https://github.com/riggsd)
+  if you need to troubleshoot any issues.
 
