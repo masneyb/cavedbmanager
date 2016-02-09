@@ -21,14 +21,6 @@ This project is currently used by the West Virginia Speleological Survey
 to manage the cave data within the state. The web interface is only
 available to its members.
 
-This system was used to publish the book _WVASS Bulletin #18: The
-Caves and Karst of Tucker County, WV_. This book is available for
-sale to [NSS members](http://caves.org/) through the
-[West Virginia Speleological Survey](http://www.wvass.org/publications.html).
-It is also available for purchase through the
-[NSS Bookstore](https://bookstore.caves.org/index.php?mode=store&submode=showitem&itemnumber=01-0687)
-to NSS members.
-
 
 ## Sample Document
 
@@ -121,3 +113,14 @@ the following procedure.
   * Additional terms can be added to the index on page 13. Edit the bulletin
     and add your terms to the Indexed Terms section. Separate each term with
     a newline.
+
+## Publications
+
+This system was used to publish the book _WVASS Bulletin #18: The
+Caves and Karst of Tucker County, WV_. This book is available for
+sale to [NSS members](http://caves.org/) through the
+[West Virginia Speleological Survey](http://www.wvass.org/publications.html).
+It is also available for purchase through the
+[NSS Bookstore](https://bookstore.caves.org/index.php?mode=store&submode=showitem&itemnumber=01-0687)
+to NSS members.
+
