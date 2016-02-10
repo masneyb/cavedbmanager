@@ -33,16 +33,6 @@ Screenshots of the web application and other generated artifacts are available
 in the [screenshots](screenshots) directory.
 
 
-## Current Software Stack
-
-* Web interface: Python 2.7 and Django 1.7.7
-* Use text-based file formats when possible, otherwise use open file formats
-  for long-term data preservation. No vendor lock in.
-* Type Setting: \LaTeX
-* GIS Maps: Mapserver, GDAL, PostGIS, PostgreSQL
-* Many other open source libraries.
-
-
 ## Installation
 
 * These directions have only been tested on a fresh install of Debian Jessie
