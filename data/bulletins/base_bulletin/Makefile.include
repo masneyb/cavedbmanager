@@ -91,7 +91,7 @@ pdf: $(PDF)
 
 $(PDF): $(CAVE_SRC_XML) $(PDF_BW_LATEX_CAVES)
 	pdflatex -output-directory $(PDF_BW_OUTPUTDIR) $(PDF_BW_LATEX_CAVES)
-	makeindex $(PDF_BW_OUTPUTDIR)/$(DOCPREFIX).idx
+	openout_any=a makeindex $(PDF_BW_OUTPUTDIR)/$(DOCPREFIX).idx
 	pdflatex -output-directory $(PDF_BW_OUTPUTDIR) $(PDF_BW_LATEX_CAVES)
 
 $(PDF_COLOR_LATEX_CAVES): $(LATEX_STYLESHEET)
@@ -105,7 +105,7 @@ color_pdf: $(PDF_COLOR)
 
 $(PDF_COLOR): $(CAVE_SRC_XML) $(PDF_COLOR_LATEX_CAVES)
 	pdflatex -output-directory $(PDF_COLOR_OUTPUTDIR) $(PDF_COLOR_LATEX_CAVES)
-	makeindex $(PDF_COLOR_OUTPUTDIR)/$(DOCPREFIX).idx
+	openout_any=a makeindex $(PDF_COLOR_OUTPUTDIR)/$(DOCPREFIX).idx
 	pdflatex -output-directory $(PDF_COLOR_OUTPUTDIR) $(PDF_COLOR_LATEX_CAVES)
 
 $(PDF_DRAFT_LATEX_CAVES): $(LATEX_STYLESHEET)
@@ -119,7 +119,7 @@ draft_pdf: $(PDF_DRAFT)
 
 $(PDF_DRAFT): $(CAVE_SRC_XML) $(PDF_DRAFT_LATEX_CAVES)
 	pdflatex -output-directory $(PDF_DRAFT_OUTPUTDIR) $(PDF_DRAFT_LATEX_CAVES)
-	makeindex $(PDF_DRAFT_OUTPUTDIR)/$(DOCPREFIX).idx
+	openout_any=a makeindex $(PDF_DRAFT_OUTPUTDIR)/$(DOCPREFIX).idx
 	pdflatex -output-directory $(PDF_DRAFT_OUTPUTDIR) $(PDF_DRAFT_LATEX_CAVES)
 
 todo_pdf: $(TODO_PDF)

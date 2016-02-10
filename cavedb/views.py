@@ -16,7 +16,7 @@ from xml.sax.saxutils import escape
 import re
 
 try:
-    import osr
+    import osgeo.osr
 except ImportError:
     print >> stderr, 'Python GDAL library required, try `apt-get install python-gdal`'
     sys.exit(1)
@@ -233,21 +233,21 @@ def show_feature_gis_lineplot(request, feature_id, filename):
 ###############################################################################
 
 def get_wgs84(in_srs, x, y):
-    out_srs = osr.SpatialReference()
+    out_srs = osgeo.osr.SpatialReference()
     out_srs.SetWellKnownGeogCS('WGS84')
 
-    ct = osr.CoordinateTransformation(in_srs, out_srs)
+    ct = osgeo.osr.CoordinateTransformation(in_srs, out_srs)
 
     (newx, newy, newz) = ct.TransformPoint(x, y)
     return (newx, newy)
 
 
 def get_nad27(in_srs, utmzone, x, y):
-    out_srs = osr.SpatialReference()
+    out_srs = osgeo.osr.SpatialReference()
     out_srs.SetUTM(utmzone.utm_zone, utmzone.utm_north)
     out_srs.SetWellKnownGeogCS('NAD27')
 
-    ct = osr.CoordinateTransformation(in_srs, out_srs)
+    ct = osgeo.osr.CoordinateTransformation(in_srs, out_srs)
 
     (newx, newy, newz) = ct.TransformPoint(x, y)
     return (newx, newy)
@@ -257,7 +257,7 @@ def transform_coordinate(entrance):
    utmzone = entrance.utmzone
    nad27_utmeast, nad27_utmnorth, wgs84_lat, wgs84_lon = '', '', '', ''
 
-   in_srs = osr.SpatialReference()
+   in_srs = osgeo.osr.SpatialReference()
    in_srs.SetWellKnownGeogCS(entrance.datum.encode('ascii'))
 
    if (entrance.utmeast != None and entrance.utmeast != 0 and entrance.utmnorth != None and entrance.utmnorth != 0):

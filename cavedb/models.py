@@ -427,9 +427,9 @@ class FeaturePhoto(models.Model):
     show_in_pdf = models.BooleanField('Show in PDF', null=False, default=True)
     include_on_dvd = models.BooleanField('Include on DVD', null=False, default=True)
     show_at_end = models.BooleanField('Show at End', null=False, default=False)
-    rotate_degrees = models.IntegerField('Rotate X degrees in PDF', default='0')
+    rotate_degrees = models.IntegerField('Rotate X degrees in PDF', default=0)
     scale = models.CharField('Size in PDF', max_length=64, choices=PHOTO_SCALE_CHOICES, default='column')
-    sort_order = models.IntegerField(default='1')
+    sort_order = models.IntegerField(default=1)
 
     create_date = models.DateTimeField("Creation Date", auto_now_add=True, editable=False, null=True)
     mod_date = models.DateTimeField("Modification Date", auto_now=True, editable=False, null=True)
@@ -662,7 +662,7 @@ class Feature(models.Model):
 ###############################################################################
 
 class CaveUserProfile(models.Model):
-    user = models.ForeignKey(User, unique=True)
+    user = models.OneToOneField(User)
     bulletins = models.ManyToManyField(Bulletin, help_text='Select the bulletins the user is allowed to edit. ')
     can_download_docs = models.BooleanField(default=True)
     can_download_gis_maps = models.BooleanField(default=True)

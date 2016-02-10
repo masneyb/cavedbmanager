@@ -26,7 +26,7 @@ class ThreadLocals(object):
         user = get_current_user()
 
         if (not isinstance(user, AnonymousUser)):
-            for id in user.get_profile().bulletins.get_query_set():
+            for id in user.caveuserprofile.bulletins.get_query_set():
                 valid_bulletins.append(id.id)
 
         _thread_locals.valid_bulletins = valid_bulletins

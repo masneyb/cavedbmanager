@@ -23,7 +23,7 @@ def send_file(request, localfile, remotefile):
     if (mimetype == None):
         mimetype = "application/octet-stream"
 
-    response = HttpResponse(output, mimetype=mimetype)
+    response = HttpResponse(output, content_type=mimetype)
     if (remotefile != None and (mimetype is None or not mimetype.startswith('image'))):
         response['Content-Disposition'] = 'attachment; filename=' + remotefile
 
@@ -88,7 +88,7 @@ def is_bulletin_generation_allowed(bulletin_id):
     if (isinstance(get_current_user(), AnonymousUser)):
       return False
 
-    profile = get_current_user().get_profile()
+    profile = get_current_user().caveuserprofile
     return profile.can_generate_docs and profile.bulletins.get_query_set().filter(id=bulletin_id).count() > 0
 
 
@@ -96,7 +96,7 @@ def is_bulletin_docs_allowed(bulletin_id):
     if (isinstance(get_current_user(), AnonymousUser)):
       return False
 
-    profile = get_current_user().get_profile()
+    profile = get_current_user().caveuserprofile
     return profile.can_download_docs and profile.bulletins.get_query_set().filter(id=bulletin_id).count() > 0
 
 
@@ -104,7 +104,7 @@ def is_bulletin_gis_maps_allowed(bulletin_id):
     if (isinstance(get_current_user(), AnonymousUser)):
       return False
 
-    profile = get_current_user().get_profile()
+    profile = get_current_user().caveuserprofile
     return profile.can_download_gis_maps and profile.bulletins.get_query_set().filter(id=bulletin_id).count() > 0
 
 
@@ -112,7 +112,7 @@ def is_bulletin_allowed(bulletin_id):
     if (isinstance(get_current_user(), AnonymousUser)):
       return False
 
-    return get_current_user().get_profile().bulletins.get_query_set().filter(id=bulletin_id).count() > 0
+    return get_current_user().caveuserprofile.bulletins.get_query_set().filter(id=bulletin_id).count() > 0
 
 
 def get_file_size(filename):

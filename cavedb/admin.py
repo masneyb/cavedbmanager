@@ -163,8 +163,8 @@ class BulletinAdmin(CavedbModelAdmin, admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return self.has_change_permission(request, obj)
         
-    def queryset(self, request):
-        return super(BulletinAdmin,self).queryset(request).filter(id__in=get_valid_bulletins())
+    def get_queryset(self, request):
+        return super(BulletinAdmin,self).get_queryset(request).filter(id__in=get_valid_bulletins())
 
     class Media:
         css = {
@@ -286,8 +286,8 @@ class FeatureAdmin(CavedbModelAdmin, admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return self.has_change_permission(request, obj)
         
-    def queryset(self, request):
-        return super(FeatureAdmin,self).queryset(request).filter(bulletin_region__bulletin__in=get_valid_bulletins())
+    def get_queryset(self, request):
+        return super(FeatureAdmin,self).get_queryset(request).filter(bulletin_region__bulletin__in=get_valid_bulletins())
 
     class Media:
         css = {
