@@ -33,6 +33,16 @@ Screenshots of the web application and other generated artifacts are available
 in the [screenshots](screenshots) directory.
 
 
+## Current Software Stack
+
+* Web interface: Python 2.7 and Django 1.7.7
+* Use text-based file formats when possible, otherwise use open file formats
+  for long-term data preservation. No vendor lock in.
+* Type Setting: \LaTeX
+* GIS Maps: Mapserver, GDAL, PostGIS, PostgreSQL
+* Many other open source libraries.
+
+
 ## Installation
 
 * These directions have only been tested on a fresh install of Debian Jessie
@@ -43,7 +53,7 @@ in the [screenshots](screenshots) directory.
     the GIS data in the Sample Bulletin section below before you run
     the `make` command.
 * Install package dependencies:
-  * `sudo apt-get install -y mysql-client mysql-server python-mysqldb python-django python-imaging python-dateutil python-gdal htmldoc texlive texlive-latex-extra python2.7 apache2 libapache2-mod-python python-boto libxml2-utils xsltproc zip xgrep mapserver-bin ttf-freefont make`
+  * `sudo apt-get install -y mysql-client mysql-server python-mysqldb python-django python-imaging python-dateutil python-gdal htmldoc texlive texlive-latex-extra python2.7 apache2 libapache2-mod-python python-boto libxml2-utils xsltproc zip mapserver-bin ttf-freefont make`
   * Install the xgrep package from the Ubuntu repository. It is not available in Debian Jessie.
     * `wget http://mirrors.kernel.org/ubuntu/pool/universe/x/xgrep/xgrep_0.08-0ubuntu1_amd64.deb`
     * `sudo dpkg -i xgrep_0.08-0ubuntu1_amd64.deb`
