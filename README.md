@@ -40,8 +40,8 @@ in the [screenshots](screenshots) directory.
 * Install the [postgis-data-importer](https://github.com/masneyb/postgis-data-importer)
   project to support setting up your GIS layers in a PostgreSQL database.
   * If you are planning to generate the sample bulletin, see the note about
-    the GIS data in the Sample Bulletin section below before you run
-    the `make` command.
+    the GIS data in the How to generate the Sample Bulletin section below before
+    you run the `make` command.
 * Install package dependencies:
   * `sudo apt-get install -y mysql-client mysql-server python-mysqldb python-django python-imaging python-dateutil python-gdal htmldoc texlive texlive-latex-extra python2.7 apache2 libapache2-mod-python python-boto libxml2-utils xsltproc zip mapserver-bin ttf-freefont make`
   * Install the xgrep package from the Ubuntu repository. It is not available in Debian Jessie.
@@ -60,14 +60,14 @@ in the [screenshots](screenshots) directory.
   * `sudo mkdir -p /usr/local/cavedbmanager-data/`
   * `sudo cp -dpRv data/* /usr/local/cavedbmanager-data/`
   * `WHOAMI=$(whoami) && sudo chown -R "${WHOAMI}":"${WHOAMI}" /usr/local/cavedbmanager-data/`
-* Optional: Install sample bulletin data. See Sample Bulletin section below
-  for details.
+* Optional: Install sample bulletin data. See the How to generate the Sample
+  Bulletin section below for details.
 * Start the server: `make run`. The server will only listen to the
   loopback interface. Use `make runRemote` to have it bind to
   all network interfaces. The latter is useful if you are testing
   from inside a virtual machine.
 
-## Sample Bulletin
+## How to generate the Sample Bulletin
 
 The sample bulletin included with this repository can be generated with
 the following procedure.
