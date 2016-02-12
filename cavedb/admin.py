@@ -168,7 +168,7 @@ class BulletinAdmin(CavedbModelAdmin, admin.ModelAdmin):
 
     class Media:
         css = {
-            "all": ("/media/css/cavedb_bulletin.css",)
+            "all": ("/media/admin/css/cavedb_bulletin.css",)
         }
         
         
@@ -291,7 +291,7 @@ class FeatureAdmin(CavedbModelAdmin, admin.ModelAdmin):
 
     class Media:
         css = {
-            "all": ("/media/css/cavedb_feature.css",)
+            "all": ("/media/admin/css/cavedb_feature.css",)
         }
         
 admin.site.register(Feature, FeatureAdmin)
