@@ -43,19 +43,19 @@ in the [screenshots](screenshots) directory.
     the GIS data in the How to generate the Sample Bulletin section below before
     you run the `make` command.
 * Install package dependencies:
-  * `sudo apt-get install -y mysql-client mysql-server python-mysqldb python-django python-imaging python-dateutil python-gdal htmldoc texlive texlive-latex-extra python2.7 apache2 libapache2-mod-python python-boto libxml2-utils xsltproc zip mapserver-bin ttf-freefont make`
+  * `sudo apt-get install -y python-psycopg2 python-django python-imaging python-dateutil python-gdal htmldoc texlive texlive-latex-extra python2.7 apache2 libapache2-mod-python python-boto libxml2-utils xsltproc zip mapserver-bin ttf-freefont make`
   * Install the xgrep package from the Ubuntu repository. It is not available in Debian Jessie.
     * `wget http://mirrors.kernel.org/ubuntu/pool/universe/x/xgrep/xgrep_0.08-0ubuntu1_amd64.deb`
     * `sudo dpkg -i xgrep_0.08-0ubuntu1_amd64.deb`
-* Create an empty MySQL database for the cave data:
-  `echo "create database cavedb;" | mysql -uroot`
+* Create an empty PostgreSQL database for the cave data:
+  `createdb cavedb`
 * Update your database settings in _settings.py_. Be sure to change
   the SECRET_KEY setting to random data if you are running the server
   on a non-loopback interface.
 * Create the tables in the new database: `make installdb`. It will prompt you
   to create a Django admin user that you will use to log into the website.
 * Set a user profile for the django user added by the step above:
-  `echo "insert into cavedb_caveuserprofile values (1, 1, 1, 1, 1);" | mysql -uroot cavedb`
+  `echo "insert into cavedb_caveuserprofile values (1, 1, true, true, true);" | psql cavedb`
 * Copy base files required for building the documents
   * `sudo mkdir -p /usr/local/cavedbmanager-data/`
   * `sudo cp -dpRv data/* /usr/local/cavedbmanager-data/`
@@ -75,7 +75,7 @@ the following procedure.
 * Install the West Virginia base data. This is for the GIS layers,
   counties, topo quads, topo quad / county relationships, and UTM zones
   for the entire state.
-  `cat sample-bulletin/wv-base-data.sql | mysql -uroot cavedb`.
+  `cat sample-bulletin/wv-base-data.sql | psql cavedb`.
 * Add the aerial imagery. `ln -s /home/ubuntu/postgis-data-importer/download/us_wv/aerial/USDA-2014/2014.map /usr/local/cavedbmanager-data/gis_maps/`. Be sure to replace the path to your checked out version of the postgis-data-importer project. The 2014.map matches the name column in the cavedb_gisaerialmap table (without the .map extension).
 * When importing your GIS data, you only need to include the
   DEMs and aerial imagery for the Aurora, Lake Lynn and Lead Mine
@@ -84,8 +84,8 @@ the following procedure.
   quads in West Virginia that are underlain by karst.
 * Copy sample entrance photos and maps:
   `cp -dpRv sample-bulletin/feature_attachments/ /usr/local/cavedbmanager-data/`
-* Add sample bulletin data to MySQL:
-  `cat sample-bulletin/sample-bulletin.sql | mysql -uroot cavedb`
+* Add sample bulletin data to PostgreSQL:
+  `cat sample-bulletin/sample-bulletin.sql | psql cavedb`
 * Start the server and log into the web interface.
   * Click on the Bulletins link on the main page. In the documents column,
     click on the generate link. After a few minutes, refresh the page and

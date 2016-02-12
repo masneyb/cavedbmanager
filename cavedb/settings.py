@@ -17,12 +17,9 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'cavedb',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
+	'ENGINE': 'django.db.backends.postgresql_psycopg2',
+	'NAME': 'cavedb',
+	'HOST': '/var/run/postgresql/',
     }
 }
 
