@@ -96,7 +96,7 @@ the following procedure.
     if you need to troubleshoot any issues.
 
 
-## A few notes about the generated PDF:
+## Some notes about the generated Sample Bulletin PDF
 
 * The title page, preamble page and contributor pages (i, ii, and iii) can
   all be edited in the bulletin section of the web interface. The content
