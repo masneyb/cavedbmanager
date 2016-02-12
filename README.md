@@ -76,7 +76,7 @@ the following procedure.
   counties, topo quads, topo quad / county relationships, and UTM zones
   for the entire state.
   `cat sample-bulletin/wv-base-data.sql | psql cavedb`.
-* Add the aerial imagery. `ln -s /home/ubuntu/postgis-data-importer/download/us_wv/aerial/USDA-2014/2014.map /usr/local/cavedbmanager-data/gis_maps/`. Be sure to replace the path to your checked out version of the postgis-data-importer project. The 2014.map matches the name column in the cavedb_gisaerialmap table (without the .map extension).
+* Add the aerial imagery. `ln -s /home/$(whoami)/postgis-data-importer/download/us_wv/aerial/USDA-2014/2014.map /usr/local/cavedbmanager-data/gis_maps/`. Be sure to replace the path to your checked out version of the postgis-data-importer project. The 2014.map matches the name column in the cavedb_gisaerialmap table (without the .map extension).
 * When importing your GIS data, you only need to include the
   DEMs and aerial imagery for the Aurora, Lake Lynn and Lead Mine
   7.5 minute quads. By default, the import script will download
