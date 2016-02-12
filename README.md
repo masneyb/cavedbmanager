@@ -43,7 +43,7 @@ in the [screenshots](screenshots) directory.
     the GIS data in the How to generate the Sample Bulletin section below before
     you run the `make` command.
 * Install package dependencies:
-  * `sudo apt-get install -y python-psycopg2 python-django python-imaging python-dateutil python-gdal htmldoc texlive texlive-latex-extra python2.7 apache2 libapache2-mod-python python-boto libxml2-utils xsltproc zip mapserver-bin ttf-freefont make`
+  * `sudo apt-get install -y python-psycopg2 python-django python-imaging python-dateutil python-gdal htmldoc texlive texlive-latex-extra python2.7 libxml2-utils xsltproc zip mapserver-bin ttf-freefont make`
   * Install the xgrep package from the Ubuntu repository. It is not available in Debian Jessie.
     * `wget http://mirrors.kernel.org/ubuntu/pool/universe/x/xgrep/xgrep_0.08-0ubuntu1_amd64.deb`
     * `sudo dpkg -i xgrep_0.08-0ubuntu1_amd64.deb`
@@ -66,6 +66,7 @@ in the [screenshots](screenshots) directory.
   loopback interface. Use `make runRemote` to have it bind to
   all network interfaces. The latter is useful if you are testing
   from inside a virtual machine.
+
 
 ## How to generate the Sample Bulletin
 
@@ -93,23 +94,27 @@ the following procedure.
   * Build output is stored in
     /usr/local/cavedbmanager-data/bulletins/bulletin_1/bulletin-build-output.txt.
     if you need to troubleshoot any issues.
-* A few notes about the generated PDF:
-  * The title page, preamble page and contributor pages (i, ii, and iii) can
-    all be edited in the bulletin section of the web interface. The content
-    is styled using LaTeX.
-  * The Table of Contents on page iv shows the list of bulletin regions
-    associated with the bulletin.
-  * The map on page v shows the position of all of the regions as they relate
-    to each other. The rectangles labeled Coopers Rock and Test Region were
-    dynamically drawn based on the extent of all features that are present
-    inside each region. If you add a new feature outside of the rectangle,
-    then the rectangle will be dynamically expanded the next time that
-    the bulletin is regenerated.
-  * The maps on pages 1, 2, 7 and 8 were all dynamically generated based on
-    the features associated with each region.
-  * Additional terms can be added to the index on page 13. Edit the bulletin
-    and add your terms to the Indexed Terms section. Separate each term with
-    a newline.
+
+
+## A few notes about the generated PDF:
+
+* The title page, preamble page and contributor pages (i, ii, and iii) can
+  all be edited in the bulletin section of the web interface. The content
+  is styled using LaTeX.
+* The Table of Contents on page iv shows the list of bulletin regions
+  associated with the bulletin.
+* The map on page v shows the position of all of the regions as they relate
+  to each other. The rectangles labeled Coopers Rock and Test Region were
+  dynamically drawn based on the extent of all features that are present
+  inside each region. If you add a new feature outside of the rectangle,
+  then the rectangle will be dynamically expanded the next time that
+  the bulletin is regenerated.
+* The maps on pages 1, 2, 7 and 8 were all dynamically generated based on
+  the features associated with each region.
+* Additional terms can be added to the index on page 13. Edit the bulletin
+  and add your terms to the Indexed Terms section. Separate each term with
+  a newline.
+
 
 ## Publications
 
