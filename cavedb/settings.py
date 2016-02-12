@@ -23,6 +23,8 @@ DATABASES = {
     }
 }
 
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
+
 TIME_ZONE = 'America/New_York'
 USE_TZ = False
 
