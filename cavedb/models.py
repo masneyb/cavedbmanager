@@ -390,7 +390,7 @@ class TopoQuad(models.Model):
     def show_counties(self):
         counties = []
 
-        for county in self.county.get_query_set():
+        for county in self.county.get_queryset():
             counties.append(county.county_name)
 
         return ', '.join(counties)

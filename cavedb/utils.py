@@ -89,7 +89,7 @@ def is_bulletin_generation_allowed(bulletin_id):
       return False
 
     profile = get_current_user().caveuserprofile
-    return profile.can_generate_docs and profile.bulletins.get_query_set().filter(id=bulletin_id).count() > 0
+    return profile.can_generate_docs and profile.bulletins.get_queryset().filter(id=bulletin_id).count() > 0
 
 
 def is_bulletin_docs_allowed(bulletin_id):
@@ -97,7 +97,7 @@ def is_bulletin_docs_allowed(bulletin_id):
       return False
 
     profile = get_current_user().caveuserprofile
-    return profile.can_download_docs and profile.bulletins.get_query_set().filter(id=bulletin_id).count() > 0
+    return profile.can_download_docs and profile.bulletins.get_queryset().filter(id=bulletin_id).count() > 0
 
 
 def is_bulletin_gis_maps_allowed(bulletin_id):
@@ -105,14 +105,14 @@ def is_bulletin_gis_maps_allowed(bulletin_id):
       return False
 
     profile = get_current_user().caveuserprofile
-    return profile.can_download_gis_maps and profile.bulletins.get_query_set().filter(id=bulletin_id).count() > 0
+    return profile.can_download_gis_maps and profile.bulletins.get_queryset().filter(id=bulletin_id).count() > 0
 
 
 def is_bulletin_allowed(bulletin_id):
     if (isinstance(get_current_user(), AnonymousUser)):
       return False
 
-    return get_current_user().caveuserprofile.bulletins.get_query_set().filter(id=bulletin_id).count() > 0
+    return get_current_user().caveuserprofile.bulletins.get_queryset().filter(id=bulletin_id).count() > 0
 
 
 def get_file_size(filename):
