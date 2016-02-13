@@ -40,7 +40,7 @@ CONTEXT_PATH = '/'
 MEDIA_ROOT = '/usr/local/cavedbmanager-data'
 MEDIA_URL = CONTEXT_PATH + 'cavedb/'
 STATIC_URL = '/media/'
-STATIC_ROOT = '/media/'
+STATIC_ROOT = 'media/'
 
 SECRET_KEY = 'FIXME_CHANGE_THIS_SECRET_KEY'
 TEMPLATE_LOADERS = (
