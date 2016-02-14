@@ -16,7 +16,11 @@ INSERT INTO cavedb_gislayer VALUES (15,'Interstates','Both','wv_interstates',NUL
 INSERT INTO cavedb_gislayer VALUES (16,'100'' Contour Lines','Topo','wv_100ft_contours',NULL,true,60000.00,'LINE','169 169 169','ele','0 0 0',6,21,'punkt',2,'wvgis.wvu.edu','Automatically generated from DEM using gdal_contour.');
 INSERT INTO cavedb_gislayer VALUES (17,'20'' Contour Lines','Topo','wv_20ft_contours',NULL,true,10000.00,'LINE','211 211 211','','',NULL,20,'',NULL,'wvgis.wvu.edu','Automatically generated from DEM using gdal_contour.');
 
+alter sequence cavedb_gislayer_id_seq restart with 20;
+
 insert into cavedb_gisaerialmap values (1, '2014', 'USDA National Agriculture Imaging Program', 'http://www.fsa.usda.gov/programs-and-services/aerial-photography/imagery-programs/naip-imagery/', 'http://wvgis.wvu.edu/data/dataset.php?ID=461');
+
+alter sequence cavedb_gisaerialmap_id_seq restart with 5;
 
 INSERT INTO cavedb_county VALUES (1,'Monongalia','MON','2008-07-17 23:17:15','2008-07-17 23:17:15');
 INSERT INTO cavedb_county VALUES (2,'Preston','PRE','2008-07-17 23:17:15','2008-07-17 23:17:15');
@@ -73,6 +77,8 @@ INSERT INTO cavedb_county VALUES (52,'Wayne','WYN','2013-04-08 20:38:57','2013-0
 INSERT INTO cavedb_county VALUES (53,'Wyoming','WYO','2013-04-08 20:38:58','2013-04-08 20:38:58');
 INSERT INTO cavedb_county VALUES (54,'Roane','RON','2013-04-08 20:39:19','2013-04-08 20:39:19');
 INSERT INTO cavedb_county VALUES (55,'Boone','BNE','2013-04-08 20:39:19','2013-04-08 20:39:19');
+
+alter sequence cavedb_county_id_seq restart with 60;
 
 INSERT INTO cavedb_topoquad VALUES (1,'Aurora','2008-07-17 23:17:15','2008-07-17 23:17:15');
 INSERT INTO cavedb_topoquad VALUES (2,'Colebank','2008-07-17 23:17:15','2008-07-17 23:17:15');
@@ -570,6 +576,8 @@ INSERT INTO cavedb_topoquad VALUES (577,'Woodrow','2013-04-08 23:31:41','2013-04
 INSERT INTO cavedb_topoquad VALUES (578,'Woodstock','2013-04-08 23:31:41','2013-04-08 23:31:41');
 INSERT INTO cavedb_topoquad VALUES (579,'Yellow Spring','2013-04-08 23:31:41','2013-04-08 23:31:41');
 
+alter sequence cavedb_topoquad_id_seq restart with 600;
+
 INSERT INTO cavedb_topoquad_county VALUES (1,1,2);
 INSERT INTO cavedb_topoquad_county VALUES (2,2,2);
 INSERT INTO cavedb_topoquad_county VALUES (3,3,2);
@@ -596,6 +604,9 @@ INSERT INTO cavedb_topoquad_county VALUES (25,494,25);
 INSERT INTO cavedb_topoquad_county VALUES (29,163,25);
 INSERT INTO cavedb_topoquad_county VALUES (30,113,9);
 
+alter sequence cavedb_topoquad_county_id_seq restart with 40;
+
 INSERT INTO cavedb_utmzone VALUES (1,17,true,'2008-08-08 22:12:27','2008-08-08 22:12:27');
 INSERT INTO cavedb_utmzone VALUES (2,18,true,'2013-04-08 19:33:29','2013-04-08 19:33:29');
 
+alter sequence cavedb_utmzone_id_seq restart with 5;
