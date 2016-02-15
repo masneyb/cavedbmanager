@@ -50,18 +50,41 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
-    'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.security.SecurityMiddleware',
     'cavedb.middleware.ThreadLocals',
 )
 
 ROOT_URLCONF = 'cavedb.urls'
 
+# FIXME - this came from a brand new run of `python manage.py startproject`
+#TEMPLATES = [
+#    {
+#        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+#        'DIRS': [],
+#        'APP_DIRS': True,
+#        'OPTIONS': {
+#            'context_processors': [
+#                'django.template.context_processors.debug',
+#                'django.template.context_processors.request',
+#                'django.contrib.auth.context_processors.auth',
+#                'django.contrib.messages.context_processors.messages',
+#            ],
+#        },
+#    },
+#]
+
 TEMPLATE_DIRS = (
     INSTALL_ROOT + "/templates",
 )
+
+WSGI_APPLICATION = 'cavedb.wsgi.application'
 
 INSTALLED_APPS = (
     'django.contrib.admin',
@@ -69,6 +92,7 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
+    'django.contrib.messages',
     'django.contrib.staticfiles',
 
     'cavedb',
