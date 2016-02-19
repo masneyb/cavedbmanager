@@ -418,7 +418,7 @@ class FeaturePhoto(models.Model):
 
     feature = models.ForeignKey('Feature')
     filename = models.FileField('Primary Photo (color if you have it)', upload_to=CavedbFeaturePhotoUploadTo)
-    secondary_filename = models.FileField('Optional Secondary Photo (b/w)', upload_to=CavedbFeaturePhotoUploadTo, blank=True)
+    secondary_filename = models.FileField('Optional Secondary Photo (b/w)', upload_to=CavedbFeaturePhotoUploadTo, null=True, blank=True)
     type = models.CharField(max_length=64, choices=PHOTO_TYPE_CHOICES)
     caption = models.CharField(max_length=255, null=True, blank=True)
     people_shown = models.CharField(max_length=255, null=True, blank=True)
@@ -617,7 +617,7 @@ class Feature(models.Model):
 
     owner_name = models.CharField(max_length=80, blank=True, null=True)
     owner_address = models.CharField(max_length=80, blank=True, null=True)
-    owner_phone = models.CharField(max_length=15, blank=True, null=True)
+    owner_phone = models.CharField(max_length=30, blank=True, null=True)
 
     access_enum = models.CharField("Access", max_length=64, choices=ACCESS_CHOICES, blank=True, null=True, db_index=True)
     access_descr = models.CharField("Access Description", max_length=255, blank=True, null=True)
