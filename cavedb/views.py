@@ -13,6 +13,7 @@ from dateutil.relativedelta import *
 from dateutil.parser import *
 from datetime import *
 from xml.sax.saxutils import escape
+import hashlib
 import re
 
 try:
@@ -609,6 +610,26 @@ def generate_feature(f, feature, indexedTerms):
     f.write('</feature>\n')
 
 
+def get_region_gis_hash(region_id):
+    m = hashlib.md5()
+    for feature in Feature.objects.filter(bulletin_region__id=region_id):
+        for entrance in FeatureEntrance.objects.filter(feature=feature.id):
+            if (not entrance.publish_location):
+                continue
+            utmzone, nad27_utmeast, nad27_utmnorth, wgs84_lat, wgs84_lon = transform_coordinate(entrance)
+            entranceinfo = '%s,%s,%s,%s,%s,%s,%s' % (feature.name.strip(), entrance.entrance_name.strip(), utmzone, nad27_utmeast, nad27_utmnorth, wgs84_lat, wgs84_lon)
+            m.update(entranceinfo)
+    return m.hexdigest()
+
+
+def get_all_regions_gis_hash(bulletin_id):
+    m = hashlib.md5()
+    for region in BulletinRegion.objects.filter(bulletin__id=bulletin_id):
+        gis_region_hash = get_region_gis_hash(region.id)
+        m.update(gis_region_hash)
+    return m.hexdigest()
+
+
 def generate_reference_xml(f, ref):
     hidden_in_bibliography = ref.title.startswith('unpublished trip report') or ref.title.startswith('Tucker County Speleological Survey Files') or ref.title.startswith('personal communication') or ref.title.startswith('e-mail') or ref.title.startswith('letter to') or ref.title.startswith('Trip Report in NSS Files')
 
@@ -666,9 +687,10 @@ def generate_bulletin_xml_file(bulletin, basedir):
     indexedTerms[0].sort(key=lambda term: len(term), reverse=True)
 
 
+    bulletin_gis_hash = get_all_regions_gis_hash(bulletin.id)
 
     f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
-    f.write('<regions name="%s" editors="%s" file_prefix="bulletin_%s">\n' % (bulletin.bulletin_name, bulletin.editors, bulletin.id))
+    f.write('<regions name="%s" editors="%s" file_prefix="bulletin_%s" all_regions_gis_hash="%s">\n' % (bulletin.bulletin_name, bulletin.editors, bulletin.id, bulletin_gis_hash))
 
     f.write('<indexed_terms>\n')
     for term in indexedTerms[0]:
@@ -736,7 +758,9 @@ def generate_bulletin_xml_file(bulletin, basedir):
         if (map_name == None or map_name == ''):
             map_name = region.region_name
 
-        f.write('<region name="%s" map_name="%s" file_prefix="bulletin_%s_region_%s" show_gis_map="%s">\n' % (region.region_name, map_name, bulletin.id, region.id, int(region.show_gis_map)))
+        gis_region_hash = get_region_gis_hash(region.id)
+
+        f.write('<region name="%s" map_name="%s" file_prefix="bulletin_%s_region_%s" show_gis_map="%s" gis_hash="%s">\n' % (region.region_name, map_name, bulletin.id, region.id, int(region.show_gis_map), gis_region_hash))
         if (region.introduction != None and region.introduction != ''):
             f.write('<introduction>%s</introduction>' % (generate_index(convert_quotes(region.introduction), indexedTerms)))
 

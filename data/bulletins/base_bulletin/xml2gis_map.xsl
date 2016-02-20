@@ -16,6 +16,23 @@
   <xsl:param name="file_prefix"/>
   <xsl:param name="extent"/>
   <xsl:param name="opts"/>
+  <xsl:param name="expected_hashcode"/>
+
+  <xsl:variable name="hashcode_filename">
+    <xsl:text>output/gis_maps/</xsl:text>
+    <xsl:value-of select="$file_prefix"/>
+    <xsl:value-of select="$gis_file_suffix"/>
+    <xsl:text>.hashcode</xsl:text>
+  </xsl:variable>
+    
+  <xsl:text>if [ ! -f </xsl:text>
+  <xsl:value-of select="$hashcode_filename"/>
+  <xsl:text> ] || [ $(cat </xsl:text>
+  <xsl:value-of select="$hashcode_filename"/>
+  <xsl:text>) != "</xsl:text>
+  <xsl:value-of select="$expected_hashcode"/>
+  <xsl:text>" ] ; then
+  </xsl:text> 
 
   <xsl:value-of select="$gis_bin"/>
 
@@ -36,6 +53,14 @@
 
   <xsl:value-of select="$extent"/>
   <xsl:text>
+  if [ "$?" = "0" ] ; then
+    echo "</xsl:text>
+  <xsl:value-of select="$expected_hashcode"/>
+  <xsl:text>" > </xsl:text>
+  <xsl:value-of select="$hashcode_filename"/>
+  <xsl:text>
+  fi
+fi
 </xsl:text>
 </xsl:template>
 
@@ -66,6 +91,7 @@
       <xsl:text> </xsl:text>
       <xsl:value-of select="$maxy"/>
     </xsl:with-param>
+    <xsl:with-param name="expected_hashcode"><xsl:value-of select="@all_regions_gis_hash"/></xsl:with-param>
   </xsl:call-template>
 </xsl:template>
 
@@ -87,6 +113,7 @@
       <xsl:text> </xsl:text>
       <xsl:value-of select="$maxy"/>
     </xsl:with-param>
+    <xsl:with-param name="expected_hashcode"><xsl:value-of select="@gis_hash"/></xsl:with-param>
   </xsl:call-template>
 </xsl:template>
 
