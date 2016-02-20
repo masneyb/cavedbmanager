@@ -5,6 +5,7 @@ DB Changes
 * Drop cavedb_featurereference table
 
 Other
+* Move away from XML/XSLT. This has gotten out of hand.
 * Remove bulletin id off of attachment filenames
 * Problem with _ on bulletin
 * Only allow one bulletin to be generated at a time
