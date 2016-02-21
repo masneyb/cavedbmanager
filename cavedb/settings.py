@@ -6,12 +6,12 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    ('Brian Masney',   'masneyb@onstation.org'),
+    ('Your Name',   'user@domain.org'),
 )
 
-ALLOWED_HOSTS = ( 'localhost', 'private.wvass.org' )
+ALLOWED_HOSTS = ( 'localhost' )
 
-ADMIN_SITE_HEADER = "WVASS Cave Database"
+ADMIN_SITE_HEADER = "My Cave Database"
 
 MANAGERS = ADMINS
 
