@@ -617,7 +617,7 @@ def get_region_gis_hash(region_id):
             if (not entrance.publish_location):
                 continue
             utmzone, nad27_utmeast, nad27_utmnorth, wgs84_lat, wgs84_lon = transform_coordinate(entrance)
-            entranceinfo = '%s,%s,%s,%s,%s,%s,%s' % (feature.name, entrance.entrance_name, utmzone, nad27_utmeast, nad27_utmnorth, wgs84_lat, wgs84_lon)
+            entranceinfo = '%s,%s,%s,%s,%s,%s,%s,%s,%s' % (feature.name, feature.feature_type, feature.is_significant, entrance.entrance_name, utmzone, nad27_utmeast, nad27_utmnorth, wgs84_lat, wgs84_lon)
             m.update(entranceinfo)
     return m.hexdigest()
 
