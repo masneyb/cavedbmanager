@@ -19,6 +19,7 @@ INSERT INTO cavedb_gislayer VALUES (17,'20'' Contour Lines','Topo','wv_20ft_cont
 alter sequence cavedb_gislayer_id_seq restart with 20;
 
 insert into cavedb_gisaerialmap values (1, '2014', 'USDA National Agriculture Imaging Program', 'http://www.fsa.usda.gov/programs-and-services/aerial-photography/imagery-programs/naip-imagery/', 'http://wvgis.wvu.edu/data/dataset.php?ID=461');
+INSERT INTO cavedb_gisaerialmap VALUES (2,'2003','West Virginia Statewide Addressing and Mapping Board','http://wvgis.wvu.edu/data/otherdocs/wvsamb/SAMB_License_Agreement_Orthophotos.pdf','http://wvgis.wvu.edu/data/dataset.php?ID=254');
 
 alter sequence cavedb_gisaerialmap_id_seq restart with 5;
 
