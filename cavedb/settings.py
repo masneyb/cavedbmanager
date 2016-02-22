@@ -37,7 +37,7 @@ if os.sep != '/': INSTALL_ROOT = INSTALL_ROOT.replace(os.sep, '/')
 # Specifies where the application is deployed
 CONTEXT_PATH = '/'
 
-MEDIA_ROOT = '/usr/local/cavedbmanager-data'
+MEDIA_ROOT = '/usr/local/cavedbmanager-data/'
 MEDIA_URL = CONTEXT_PATH + 'cavedb/'
 STATIC_URL = '/media/'
 STATIC_ROOT = 'media/'
