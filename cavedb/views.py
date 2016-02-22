@@ -990,4 +990,20 @@ def generate_bulletin(request, bulletin_id):
 
 
     return HttpResponseRedirect('%sadmin/cavedb/bulletin/' % (settings.CONTEXT_PATH))
- 
+
+
+def generate_xml_only_bulletin(request, bulletin_id):
+    if (not is_bulletin_generation_allowed(bulletin_id)):
+        raise Http404
+
+    bulletins = Bulletin.objects.filter(id=bulletin_id)
+    if (bulletins.count() == 0):
+        raise Http404
+
+    bulletin = bulletins[0]
+    basedir = '%s/bulletins/bulletin_%s' % (settings.MEDIA_ROOT, bulletin_id)
+
+    generate_bulletin_xml_file (bulletin, basedir)
+    generate_makefile (bulletin_id, basedir)
+
+    return HttpResponseRedirect('%sadmin/cavedb/bulletin/' % (settings.CONTEXT_PATH))

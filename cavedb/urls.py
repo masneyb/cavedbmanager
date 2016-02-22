@@ -12,6 +12,7 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
 
     url(r'^cavedb/bulletin/(?P<bulletin_id>\d+)/generate$', 'cavedb.views.generate_bulletin'),
+    url(r'^cavedb/bulletin/(?P<bulletin_id>\d+)/generateXmlOnly$', 'cavedb.views.generate_xml_only_bulletin'),
 
     url(r'^cavedb/bulletin/(?P<bulletin_id>\d+)/region/(?P<region_id>\d+)/topo_map$', 'cavedb.views.show_region_topo_gis_map'),
     url(r'^cavedb/bulletin/(?P<bulletin_id>\d+)/region/(?P<region_id>\d+)/aerial_map/(?P<aerial_map_name>[\w\d\._-]+)$', 'cavedb.views.show_region_aerial_gis_map'),
