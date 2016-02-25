@@ -5,6 +5,7 @@ DB Changes
 * Drop cavedb_featurereference table
 
 Other
+* Add units field to length and depth
 * Move away from XML/XSLT. This has gotten out of hand.
 * Remove bulletin id off of attachment filenames
 * Problem with _ on bulletin
