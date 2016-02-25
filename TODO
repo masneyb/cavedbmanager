@@ -1,25 +1,9 @@
-DB Changes
-* Automatically generate the TODO list and store the results in the database in a new field.
+* Only allow JPG, PNG and PDFs on feature photos
+* Move away from XML/XSLT. This has gotten out of hand.
+* Add units field to length and depth
 * Allow referencing an attachment on another feature
 * Allow specifying the specific entrance when uploading entrance photos.
-* Drop cavedb_featurereference table
-
-Other
-* Add units field to length and depth
-* Move away from XML/XSLT. This has gotten out of hand.
 * Remove bulletin id off of attachment filenames
-* Problem with _ on bulletin
-* Only allow one bulletin to be generated at a time
-* Make sure all database fields show up in the CSV/SHP file.
-* Optimize the SQL queries
 * Automatically generate the survey ID field
-* Allow filtering on bulletin, county and topo quad
-* Allow storing sketches and photos. Make this fully searchable
-* Add link to each cave to show the cave on the map. The user will be
-  redirected to kaMap, where they can zoom and pan. Clicking on cave
-  entrance will show popup with entrance photo and cave description.
-  Clicking on a particular part of a lineplot will bring up that set of
-  sketches if they are available. Allow geo-referencing in-cave photos
-  and show them on the map as well.
+* Allow filtering features on bulletin, county and topo quad
 * Add 11 reasons a cave can be significant to WVASS
-
