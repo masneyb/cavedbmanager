@@ -25,11 +25,7 @@
 
 ## Generated GIS maps
 
-FIXME - generate example maps with fake locations:
-
-- Area overview
-- Topo map
-- Aerial map
+See the [sample PDF](../sample-bulletin/sample-bulletin.pdf?raw=1).
 
 
 ## Generated indexes in the PDF
