@@ -295,11 +295,9 @@
     STATUS ON
     TYPE POINT
     PROJECTION
-      "proj=utm"
-      "zone=17"
-      "ellps=clrk66"
-      "datum=NAD27"
-      "units=m"
+      "proj=longlat"
+      "ellps=WGS84"
+      "datum=WGS84"
       "no_defs"
     END
     LABELITEM       "name"

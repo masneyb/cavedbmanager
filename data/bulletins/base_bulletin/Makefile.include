@@ -19,11 +19,13 @@ DVD_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2dvd.xsl
 SHP_DIR=$(OUTPUTDIR)/shp
 SHP_LAYER_NAME=karst_feature_locations
 SHP=$(SHP_DIR)/$(SHP_LAYER_NAME).shp
+PRJ=$(SHP_DIR)/$(SHP_LAYER_NAME).prj
 OVF_FILE=$(OUTPUTDIR)/virtual.ovf
 
 EXTENTS_SHP_LAYER_NAME=region_extents
 EXTENTS_CSV_BASE=region_extents
 EXTENTS_CSV=$(SHP_DIR)/$(EXTENTS_CSV_BASE).csv
+EXTENTS_PRJ=$(SHP_DIR)/$(EXTENTS_CSV_BASE).prj
 
 MAPSERVER_AERIAL_PROJECT_FILE=aerial.map
 MAPSERVER_AERIAL_PROJECT_FULLPATH=$(GIS_OUTPUT_DIR)/$(MAPSERVER_AERIAL_PROJECT_FILE)
@@ -79,6 +81,7 @@ all: init clean validate $(TODO_PDF) $(GPX) $(KML) $(TEXT) $(CSV) $(SHP) $(MXF) 
 
 init:
 	touch $(LOCKFILE)
+	ulimit -a
 
 $(PDF_BW_LATEX_CAVES): $(LATEX_STYLESHEET)
 	if [ ! -d $(PDF_BW_OUTPUTDIR) ]; then    mkdir $(PDF_BW_OUTPUTDIR) ;     fi
@@ -173,9 +176,8 @@ $(SHP): $(CSV)
 	rm -rf $(SHP_DIR)
 
 	# Generate a SHP file that contains the feature coordinates
-	echo "<OGRVRTDataSource> <OGRVRTLayer name=\"$(SHP_LAYER_NAME)\"> <SrcDataSource>$(CSV)</SrcDataSource> <SrcLayer>$(DOCPREFIX)</SrcLayer> <GeometryType>wkbPoint</GeometryType> <GeometryField encoding=\"PointFromColumns\" x=\"nad27_utmeast\" y=\"nad27_utmnorth\" z=\"elevation\"/> </OGRVRTLayer> </OGRVRTDataSource>" > $(OVF_FILE)
+	echo "<OGRVRTDataSource> <OGRVRTLayer name=\"$(SHP_LAYER_NAME)\"> <SrcDataSource>$(CSV)</SrcDataSource> <SrcLayer>$(DOCPREFIX)</SrcLayer> <GeometryType>wkbPoint</GeometryType> <GeometryField encoding=\"PointFromColumns\" x=\"wgs84_lon\" y=\"wgs84_lat\" z=\"elevation\"/> </OGRVRTLayer> </OGRVRTDataSource>" > $(OVF_FILE)
 	ogr2ogr -f "ESRI Shapefile" $(SHP_DIR) $(OVF_FILE)
-
 
 	# Generate a SHP file for the region extents
 	xsltproc $(GIS_XSLT_OPTS) $(GIS_EXTENTS_STYLESHEET) $(CAVE_SRC_XML) > $(EXTENTS_CSV)
@@ -183,6 +185,8 @@ $(SHP): $(CSV)
 	ogr2ogr -f "ESRI Shapefile" $(SHP_DIR) $(OVF_FILE)
 	rm -f $(EXTENTS_CSV)
 
+	echo "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.01745329251994328,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]]" > $(PRJ)
+	cp $(PRJ) $(EXTENTS_PRJ)
 
 	rm -f $(OVF_FILE)
 	zip -jr $(SHP_DIR)/$(SHP_LAYER_NAME).zip $(SHP_DIR)/
