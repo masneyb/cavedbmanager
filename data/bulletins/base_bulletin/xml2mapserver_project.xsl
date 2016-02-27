@@ -23,28 +23,12 @@
   END
 
   SYMBOL
-    NAME "punkt"
+    NAME "point"
     TYPE ELLIPSE
     POINTS
       1 1
     END
     FILLED TRUE
-  END
-
-  SYMBOL
-    NAME "trail"
-    TYPE ellipse
-    POINTS 1 1 END
-    FILLED TRUE
-    #PATTERN 1 2 END
-  END
-
-  SYMBOL
-    NAME "railway"
-    TYPE ellipse
-    POINTS 2 2 END
-    FILLED TRUE
-    #PATTERN 3 3 END
   END
 
   UNITS dd
@@ -155,13 +139,24 @@
 
      <xsl:if test="type != 'RASTER'">
        <xsl:text>    CLASS
-      COLOR </xsl:text>
+      STYLE
+        COLOR </xsl:text>
        <xsl:value-of select="color/@red"/>
        <xsl:text> </xsl:text>
        <xsl:value-of select="color/@green"/>
        <xsl:text> </xsl:text>
        <xsl:value-of select="color/@blue"/>
        <xsl:text>
+</xsl:text>
+
+       <xsl:if test="symbol = '' and symbol_size != ''">
+         <xsl:text>        WIDTH </xsl:text>
+         <xsl:value-of select="symbol_size"/>
+         <xsl:text>
+</xsl:text>
+       </xsl:if>
+
+       <xsl:text>      END
 </xsl:text>
 
        <xsl:if test="legend/@first_occurance='1'">
@@ -263,7 +258,7 @@
     </xsl:choose>
 
     <xsl:text>    CLASS
-      SYMBOL "punkt"
+      SYMBOL "point"
       SIZE 2
       MAXSCALE 60000.00
 </xsl:text>
@@ -300,7 +295,7 @@
     LABELITEM       "name"
     CLASS
       EXPRESSION ('[significan]' eq 'yes')
-      SYMBOL  "punkt"
+      SYMBOL  "point"
       SIZE    7
 </xsl:text>
 
@@ -330,7 +325,7 @@
 
     CLASS
       EXPRESSION ('[type]' eq 'Cave')
-      SYMBOL  "punkt"
+      SYMBOL  "point"
       SIZE    7
 </xsl:text>
 
@@ -360,7 +355,7 @@
 
     CLASS
       EXPRESSION ('[type]' eq 'FRO' or '[type]' eq 'Sandstone')
-      SYMBOL  "punkt"
+      SYMBOL  "point"
       SIZE    5
 </xsl:text>
 

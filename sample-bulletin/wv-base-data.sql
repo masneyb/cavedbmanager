@@ -1,20 +1,20 @@
-INSERT INTO cavedb_gislayer VALUES (1,'National/State Forests/Parks','Topo','wv_national_parks',NULL,true,60000.00,'POLYGON','144 238 144','name','132 31 31',8,5,'',1,'wvgis.wvu.edu','');
-INSERT INTO cavedb_gislayer VALUES (2,'National/State Forests/Parks','Topo','wv_state_parks',NULL,true,60000.00,'POLYGON','144 238 144','name','132 31 31',8,5,'',1,'wvgis.wvu.edu','');
-INSERT INTO cavedb_gislayer VALUES (3,'National/State Forests/Parks','Topo','wv_national_forests',NULL,true,60000.00,'POLYGON','144 238 144','','',0,5,'',1,'wvgis.wvu.edu','');
-INSERT INTO cavedb_gislayer VALUES (4,'National/State Forests/Parks','Topo','wv_state_forests',NULL,true,60000.00,'POLYGON','144 238 144','name','132 31 31',8,5,'',1,'wvgis.wvu.edu','');
-INSERT INTO cavedb_gislayer VALUES (5,'WVDNR Managed Lands','Topo','wvdnr_managed_lands',NULL,true,60000.00,'POLYGON','211 211 211','','',0,1,'',1,'wvgis.wvu.edu','');
-INSERT INTO cavedb_gislayer VALUES (6,'County Boundaries','Both','wv_counties',NULL,true,NULL,'LINE','147 112 219','','',NULL,10,'punkt',3,'wvgis.wvu.edu','');
-INSERT INTO cavedb_gislayer VALUES (7,'Karst (approx)','Topo','wv_karst',NULL,true,NULL,'POLYGON','255 228 196','','',0,6,'',1,'wvgis.wvu.edu','');
-INSERT INTO cavedb_gislayer VALUES (8,'Cities','Topo','wv_census_places2000',NULL,true,NULL,'POLYGON','173 255 47','name10','0 0 0',12,3,'',1,'wvgis.wvu.edu','');
-INSERT INTO cavedb_gislayer VALUES (9,'Water','Topo','wv_water_polygons','',true,NULL,'POLYGON','0 0 255','','0 0 0',6,22,'',1,'wvgis.wvu.edu','');
-INSERT INTO cavedb_gislayer VALUES (10,'Water','Topo','wv_hydro','',true,60000.00,'LINE','0 0 255','major1','0 0 0',6,22,'punkt',2,'wvgis.wvu.edu','');
-INSERT INTO cavedb_gislayer VALUES (11,'Major Power Lines','Topo','wv_census_misc_trans','',true,60000.00,'LINE','169 169 169','','',0,25,'',1,'wvgis.wvu.edu','');
-INSERT INTO cavedb_gislayer VALUES (12,'Rails','Both','wv_census_rails',NULL,true,60000.00,'LINE','0 0 0','','',0,31,'railway',1,'wvgis.wvu.edu','');
-INSERT INTO cavedb_gislayer VALUES (13,'Roads','Both','wv_census_roads','',true,60000.00,'LINE','0 0 0','label','0 0 0',6,32,'punkt',3,'wvgis.wvu.edu','');
-INSERT INTO cavedb_gislayer VALUES (14,'US Highways','Both','wv_us_highways',NULL,true,NULL,'LINE','0 0 0','sign1','0 0 0',6,33,'punkt',5,'wvgis.wvu.edu','');
-INSERT INTO cavedb_gislayer VALUES (15,'Interstates','Both','wv_interstates',NULL,true,NULL,'LINE','0 0 0','sign1','0 0 0',12,34,'punkt',6,'wvgis.wvu.edu','');
-INSERT INTO cavedb_gislayer VALUES (16,'100'' Contour Lines','Topo','wv_100ft_contours',NULL,true,60000.00,'LINE','169 169 169','ele','0 0 0',6,21,'punkt',2,'wvgis.wvu.edu','Automatically generated from DEM using gdal_contour.');
-INSERT INTO cavedb_gislayer VALUES (17,'20'' Contour Lines','Topo','wv_20ft_contours',NULL,true,10000.00,'LINE','211 211 211','','',NULL,20,'',NULL,'wvgis.wvu.edu','Automatically generated from DEM using gdal_contour.');
+INSERT INTO cavedb_gislayer VALUES (1, 'National/State Forests/Parks', 'Topo', 'wv_national_parks', NULL, true, 60000.00, 'POLYGON', '144 238 144', 'name', '132 31 31', 8, 5, '', 1, 'wvgis.wvu.edu', '');
+INSERT INTO cavedb_gislayer VALUES (2, 'National/State Forests/Parks', 'Topo', 'wv_state_parks', NULL, true, 60000.00, 'POLYGON', '144 238 144', 'name', '132 31 31', 8, 5, '', 1, 'wvgis.wvu.edu', '');
+INSERT INTO cavedb_gislayer VALUES (3, 'National/State Forests/Parks', 'Topo', 'wv_national_forests', NULL, true, 60000.00, 'POLYGON', '144 238 144', '', '', 0, 5, '', 1, 'wvgis.wvu.edu', '');
+INSERT INTO cavedb_gislayer VALUES (4, 'National/State Forests/Parks', 'Topo', 'wv_state_forests', NULL, true, 60000.00, 'POLYGON', '144 238 144', 'name', '132 31 31', 8, 5, '', 1, 'wvgis.wvu.edu', '');
+INSERT INTO cavedb_gislayer VALUES (5, 'WVDNR Managed Lands', 'Topo', 'wvdnr_managed_lands', NULL, true, 60000.00, 'POLYGON', '211 211 211', '', '', 0, 1, '', 1, 'wvgis.wvu.edu', '');
+INSERT INTO cavedb_gislayer VALUES (6, 'County Boundaries', 'Both', 'wv_counties', '', true, NULL, 'LINE', '147 112 219', '', '', NULL, 10, '', 1, 'wvgis.wvu.edu', '');
+INSERT INTO cavedb_gislayer VALUES (7, 'Karst (approx)', 'Topo', 'wv_karst', NULL, true, NULL, 'POLYGON', '255 228 196', '', '', 0, 6, '', 1, 'wvgis.wvu.edu', '');
+INSERT INTO cavedb_gislayer VALUES (8, 'Cities', 'Topo', 'wv_census_places2000', NULL, true, NULL, 'POLYGON', '173 255 47', 'name10', '0 0 0', 12, 3, '', 1, 'wvgis.wvu.edu', '');
+INSERT INTO cavedb_gislayer VALUES (9, 'Water', 'Topo', 'wv_water_polygons', '', true, NULL, 'POLYGON', '0 0 255', '', '0 0 0', 6, 22, '', 1, 'wvgis.wvu.edu', '');
+INSERT INTO cavedb_gislayer VALUES (10, 'Water', 'Topo', 'wv_hydro', '', true, 60000.00, 'LINE', '0 0 255', 'major1', '0 0 0', 6, 22, '', 1, 'wvgis.wvu.edu', '');
+INSERT INTO cavedb_gislayer VALUES (11, 'Major Power Lines', 'Topo', 'wv_census_misc_trans', '', true, 60000.00, 'LINE', '169 169 169', '', '', 0, 25, '', 1, 'wvgis.wvu.edu', '');
+INSERT INTO cavedb_gislayer VALUES (12, 'Rails', 'Both', 'wv_census_rails', '', true, 60000.00, 'LINE', '0 0 0', '', '', 0, 31, '', 1, 'wvgis.wvu.edu', '');
+INSERT INTO cavedb_gislayer VALUES (13, 'Roads', 'Both', 'wv_census_roads', '', true, 60000.00, 'LINE', '0 0 0', 'label', '0 0 0', 6, 32, '', 2, 'wvgis.wvu.edu', '');
+INSERT INTO cavedb_gislayer VALUES (14, 'US Highways', 'Both', 'wv_us_highways', '', true, NULL, 'LINE', '0 0 0', 'sign1', '0 0 0', 6, 33, '', 6, 'wvgis.wvu.edu', '');
+INSERT INTO cavedb_gislayer VALUES (15, 'Interstates', 'Both', 'wv_interstates', '', true, NULL, 'LINE', '0 0 0', 'sign1', '0 0 0', 12, 34, '', 8, 'wvgis.wvu.edu', '');
+INSERT INTO cavedb_gislayer VALUES (16, '100'' Contour Lines', 'Topo', 'wv_100ft_contours', '', true, 60000.00, 'LINE', '169 169 169', 'ele', '0 0 0', 6, 21, '', 2, 'wvgis.wvu.edu', 'Automatically generated from DEM using gdal_contour.');
+INSERT INTO cavedb_gislayer VALUES (17, '20'' Contour Lines', 'Topo', 'wv_20ft_contours', NULL, true, 10000.00, 'LINE', '211 211 211', '', '', NULL, 20, '', NULL, 'wvgis.wvu.edu', 'Automatically generated from DEM using gdal_contour.');
 
 alter sequence cavedb_gislayer_id_seq restart with 20;
 
