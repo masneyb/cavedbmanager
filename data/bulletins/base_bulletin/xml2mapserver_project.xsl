@@ -22,9 +22,6 @@
     EXTENSION "jpg"
   END
 
-  # See http://mapserver.gis.umn.edu/docs/howto/cartosymbols for a list
-  # of the symbols that are included in this file.
-  #SYMBOLSET       "symbols.sym"
   SYMBOL
     NAME "punkt"
     TYPE ELLIPSE

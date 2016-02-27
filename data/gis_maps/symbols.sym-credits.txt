@@ -1,4 +1,0 @@
-The file symbols.sym is taken from an arcticle by Peter Freimuth -
-MapMedia GmbH. It is based on a project of Universität Hannover –
-Institut für Landschaftspflege und Naturschutz – led by Roland
-Hachmann, and a report by Karsten Hoffmann.
