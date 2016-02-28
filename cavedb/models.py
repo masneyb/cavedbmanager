@@ -39,6 +39,9 @@ class GisLayer(models.Model):
     MAP_TYPE = (
         ('Aerial', 'Aerial'), ('Topo', 'Topo'), ('Both', 'Both'),
     )
+    LINE_TYPE = (
+        ('Solid', 'Solid'), ('Dashed', 'Dashed'),
+    )
 
     description = models.CharField(max_length=80)
     show_on_maps = models.CharField(max_length=64, choices=MAP_TYPE)
@@ -52,6 +55,7 @@ class GisLayer(models.Model):
     font_color = models.CharField(max_length=80, null=True, blank=True)
     font_size = models.IntegerField(null=True, blank=True)
     sort_order = models.IntegerField()
+    line_type = models.CharField(max_length=64, choices=LINE_TYPE, null=True, blank=True)
     symbol = models.CharField(max_length=80, null=True, blank=True)
     symbol_size = models.IntegerField(null=True, blank=True)
     source = models.CharField(max_length=80)

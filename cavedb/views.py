@@ -939,6 +939,9 @@ def generate_gis_section (basedir, f, bulletin_id):
             f.write('<symbol></symbol>\n')
             f.write('<symbol_size>%s</symbol_size>\n' % (map.symbol_size))
 
+        if (map.line_type != None and map.line_type != ''):
+            f.write('<line_type>%s</line_type>\n' % (map.line_type))
+
         if (map.max_scale != None and map.max_scale != ''):
             f.write('<max_scale>%s</max_scale>\n' % (map.max_scale))
 

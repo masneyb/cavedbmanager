@@ -319,14 +319,14 @@ admin.site.register(User, CaveUserProfileAdmin)
 
 class GisLayerAdmin(CavedbModelAdmin, admin.ModelAdmin):
     save_on_top = True
-    list_display = ('description', 'display', 'show_on_maps', 'table_name', 'max_scale', 'type', 'color', 'label_item', 'font_color', 'font_size', 'symbol', 'symbol_size', 'sort_order')
+    list_display = ('description', 'display', 'show_on_maps', 'table_name', 'max_scale', 'type', 'color', 'label_item', 'font_color', 'font_size', 'line_type', 'symbol', 'symbol_size', 'sort_order')
     list_filter = ['display', 'type', 'show_on_maps']
     search_fields = ['description', 'source', 'table_name', 'filename', 'label_item', 'symbol', 'notes']
 
     fieldsets = [ 
        ('Description', {'fields': ['description', 'show_on_maps', 'source', 'table_name', 'filename', 'display', 'max_scale', 'type', 'color', 'notes', 'sort_order']}),
        ('Label', {'fields': ['label_item', 'font_color', 'font_size']}),
-       ('Symbol', {'fields': ['symbol', 'symbol_size']}),
+       ('Symbol', {'fields': ['symbol', 'symbol_size', 'line_type']}),
     ]
  
 admin.site.register(GisLayer, GisLayerAdmin)

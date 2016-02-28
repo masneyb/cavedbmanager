@@ -156,6 +156,12 @@
 </xsl:text>
        </xsl:if>
 
+       <xsl:if test="line_type='Dashed'">
+       <xsl:text>        LINECAP butt
+        PATTERN 6 3 3 6 END
+</xsl:text>
+       </xsl:if>
+
        <xsl:text>      END
 </xsl:text>
 
