@@ -360,7 +360,7 @@
     END
 
     CLASS
-      EXPRESSION ('[type]' eq 'FRO' or '[type]' eq 'Sandstone')
+      EXPRESSION ('[type]' eq 'FRO' or '[type]' eq 'Sandstone' or '[type]' eq 'Spring' or '[type]' eq 'Insurgence') 
       SYMBOL  "point"
       SIZE    5
 </xsl:text>
