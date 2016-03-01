@@ -245,12 +245,11 @@ class BulletinRegion(models.Model):
     mod_date = models.DateTimeField("Modification Date", auto_now=True, editable=False, null=True)
 
     def __unicode__(self):
-        #FIXME - generates lots of queries return u'%s - %s' % (self.bulletin.short_name, self.region_name)
-        return self.region_name
+        return u'%s - %s' % (self.bulletin.short_name, self.region_name)
 
     class Meta:
         verbose_name = 'region'
-        ordering = ('region_name',)
+        ordering = ('bulletin', 'region_name',)
 
 
 # FIXME - hack
