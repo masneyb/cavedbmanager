@@ -88,7 +88,7 @@ class GisAerialMap(models.Model):
 ###############################################################################
 
 class UtmZone(models.Model):
-    utm_zone = models.IntegerField('UTM Zone', max_length=2)
+    utm_zone = models.IntegerField('UTM Zone')
     utm_north = models.BooleanField('North', default=True)
 
     create_date = models.DateTimeField("Creation Date", auto_now_add=True, editable=False, null=True)

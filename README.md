@@ -55,21 +55,18 @@ in the [screenshots](screenshots) directory.
 
 ## Installation
 
-* These directions have only been tested on a fresh install of Debian Jessie
-  running Django 1.7.7.
+* These directions have only been tested on a fresh install of Ubuntu 16.04
+  running Django 1.8.7.
 * Install the [postgis-data-importer](https://github.com/masneyb/postgis-data-importer)
   project to support setting up your GIS layers in a PostgreSQL database.
   * If you are planning to generate the sample bulletin, see the note about
     the GIS data in the How to generate the Sample Bulletin section below before
     you run the `make` command.
 * Install package dependencies:
-  * `sudo apt-get install -y python-psycopg2 python-django python-imaging python-dateutil python-gdal htmldoc texlive texlive-latex-extra python2.7 libxml2-utils xsltproc zip mapserver-bin ttf-freefont make`
-  * Install the xgrep package from the Ubuntu repository. It is not available in Debian Jessie.
-    * `wget http://mirrors.kernel.org/ubuntu/pool/universe/x/xgrep/xgrep_0.08-0ubuntu1_amd64.deb`
-    * `sudo dpkg -i xgrep_0.08-0ubuntu1_amd64.deb`
+  * `sudo apt-get install -y python-psycopg2 python-django python-imaging python-dateutil python-gdal htmldoc texlive texlive-latex-extra python2.7 libxml2-utils xsltproc zip mapserver-bin ttf-freefont make xgrep`
 * Create an empty PostgreSQL database for the cave data:
   `createdb cavedb`
-* Update your database settings in _settings.py_. Be sure to change
+* Update your database settings in _cavedb/settings.py_. Be sure to change
   the SECRET_KEY setting to random data if you are running the server
   on a non-loopback interface.
 * Create the tables in the new database: `make installdb`. It will prompt you
@@ -78,8 +75,8 @@ in the [screenshots](screenshots) directory.
   `echo "insert into cavedb_caveuserprofile values (1, 1, true, true, true);" | psql cavedb`
 * Copy base files required for building the documents
   * `sudo mkdir -p /usr/local/cavedbmanager-data/`
-  * `sudo cp -dpRv data/* /usr/local/cavedbmanager-data/`
-  * `WHOAMI=$(whoami) && sudo chown -R "${WHOAMI}":"${WHOAMI}" /usr/local/cavedbmanager-data/`
+  * `WHOAMI=$(whoami) && sudo chown "${WHOAMI}":"${WHOAMI}" /usr/local/cavedbmanager-data/`
+  * `cp -dpRv data/* /usr/local/cavedbmanager-data/`
 * Optional: Install sample bulletin data. See the How to generate the Sample
   Bulletin section below for details.
 * Start the server: `make run`. The server will only listen to the

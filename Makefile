@@ -8,15 +8,17 @@ help:
 	@echo
 
 # Only bind to the localhost interface
-run: installdb
+run:
 	./manage.py runserver 8000
 
 # Bind to all network interfaces
-runRemote: installdb
+runRemote:
 	./manage.py runserver 0.0.0.0:8000
 
 installdb:
-	./manage.py syncdb
+	./manage.py migrate auth
+	./manage.py migrate
+	./manage.py createsuperuser
 
 destroymydb:
 	./manage.py sqlreset cavedb | ./manage.py dbshell
