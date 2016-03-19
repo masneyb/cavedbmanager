@@ -1,5 +1,8 @@
+* Dimension too large error: feature_attachments/9422/photos/McFerrin.jpg, feature_attachments/9760/photos/Rimstone_Falls.jpg
+* Large number of entrances on a single feature will cause a PDF formatting error
 * Only allow JPG, PNG and PDFs on feature photos
 * Move away from XML/XSLT. This has gotten out of hand.
+* Add paper size to bulletin (letter, legal, a4, etc)
 * Add units field to length and depth
 * Allow referencing an attachment on another feature
 * Allow specifying the specific entrance when uploading entrance photos.
