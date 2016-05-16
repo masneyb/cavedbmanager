@@ -1,5 +1,5 @@
 from cavedb.utils import *
-from os import makedirs, unlink, symlink, close, fork, setsid, chdir, system, _exit
+from os import makedirs, unlink, symlink, close, fork, setsid, chdir, system, _exit, chmod
 from django.http import HttpResponseRedirect
 from os.path import basename, isfile, isdir
 from curses.ascii import isalpha
@@ -854,6 +854,22 @@ def close_all_fds():
             pass
 
 
+def generate_buildscript(basedir):
+    filename = '%s/build' % (basedir)
+    f = open(filename, 'w')
+
+    # This lockfile is checked by the web interface to see if a build is
+    # in progress.
+
+    f.write('#!/bin/bash\n')
+    f.write('touch build-in-progress.lock\n');
+    f.write('make\n');
+    f.write('rm -f build-in-progress.lock\n');
+
+    f.close()
+    chmod(filename, 0755);
+
+
 def run_make_command(basedir):
     # Rebuild the bulletin
     pid1 = fork()
@@ -864,7 +880,7 @@ def run_make_command(basedir):
         pid2 = fork()
         if (pid2 == 0):
             chdir(basedir)
-            status = system('make > bulletin-build-output.txt 2>&1')
+            status = system('./build > bulletin-build-output.txt 2>&1')
 
             _exit (status)
         else:
@@ -985,15 +1001,8 @@ def generate_bulletin(request, bulletin_id):
 
     generate_bulletin_xml_file (bulletin, basedir)
     generate_makefile (bulletin_id, basedir)
+    generate_buildscript(basedir)
     run_make_command (basedir)
-
-
-    # This file will be removed by the build process. This is checked by the web
-    # interface to see if a build is in progress.
-    lockfile = '%s/bulletins/bulletin_%s/build-in-progress.lock' % (settings.MEDIA_ROOT, bulletin_id)
-    f = open(lockfile, 'w')
-    f.close()
-
 
     return HttpResponseRedirect('%sadmin/cavedb/bulletin/' % (settings.CONTEXT_PATH))
 
