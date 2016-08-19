@@ -526,8 +526,16 @@
       <xsl:text>$\sim$</xsl:text>
     </xsl:if>
 
-    <xsl:value-of select="format-number(length, '###,###')"/>
-    <xsl:text>$^\prime$</xsl:text>
+    <xsl:choose>
+      <xsl:when test="length &lt; 5280">
+        <xsl:value-of select="format-number(length, '###,###')"/>
+        <xsl:text> ft</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="format-number(length div 5280, '###,###.#')"/>
+        <xsl:text> mi</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
 
     <xsl:if test="depth != '' and depth > 0">
       <xsl:text> \hfill Depth: </xsl:text>
@@ -537,7 +545,7 @@
       </xsl:if>
 
       <xsl:value-of select="format-number(depth, '###,###')"/>
-      <xsl:text>$^\prime$</xsl:text>
+      <xsl:text> ft</xsl:text>
     </xsl:if>
 
   <xsl:text> \\*
