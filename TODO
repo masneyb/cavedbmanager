@@ -1,7 +1,6 @@
 * Don't allow negative rotation
 * Only allow JPG, PNG and PDFs on feature photos
-* Add units field to length and depth
-* Add feet instead of ' sample to PDF output
+* Add units field to length and depth on web interface
 * lat-long conversion from dd mm ss does not work
 * Dimension too large error: feature_attachments/9422/photos/McFerrin.jpg, feature_attachments/9760/photos/Rimstone_Falls.jpg
 * Large number of entrances on a single feature will cause a PDF formatting error
