@@ -95,6 +95,9 @@
   <xsl:text>,draft</xsl:text>
 </xsl:if>
 <xsl:text>]{book}
+\usepackage{etex}
+\reserveinserts{200}
+\usepackage[utf8]{inputenc}
 \usepackage{amsmath,amssymb,amsfonts} % Typical maths resource packages
 \usepackage{graphicx}                 % Packages to allow inclusion of graphics
 \usepackage{multicol}                 % Multiple column support
@@ -106,6 +109,7 @@
 \usepackage{hyphenat}
 \usepackage{ifthen}
 \usepackage{makeidx}
+\usepackage[maxfloats=145]{morefloats}
 
 \tikzstyle{mybox} = [draw=black, fill=gray!20, rectangle, rounded corners, inner sep=5pt, inner ysep=7pt]
 
@@ -889,7 +893,7 @@
 
 
 <xsl:template match="feature/photo">
-  <xsl:if test="@num_in_pdf mod 8 = 0">
+  <xsl:if test="@num_in_pdf mod 48 = 0">
     <xsl:text>\clearpage
 </xsl:text>
   </xsl:if>
