@@ -1022,7 +1022,7 @@
 <xsl:template match="/regions" mode="photos_index">
   <xsl:text>\chapter{List of Photos}
 \begin{center}
-\begin{longtable}{|c|c|c|c|}
+\begin{longtable}{|c| p{5cm} | p{5cm} | p{5cm} |}
     %This is the header for the first page of the table...
     \hline
     \rowcolor[rgb]{0.9,0.9,0.9} \centering Page &amp; Cave &amp; People Shown In Photo &amp; Photographer \\
