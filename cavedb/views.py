@@ -922,7 +922,11 @@ def generate_gis_section (basedir, f, bulletin_id):
     for map in GisLayer.objects.all():
         f.write('<gis_layer>\n')
         f.write('<name>%s</name>\n' % (map.table_name))
-        f.write('<show_on_maps>%s</show_on_maps>\n' % (map.show_on_maps))
+
+        f.write('<map_name>Topo</map_name>\n')
+        for aerial in map.aerial_maps.all():
+            f.write('<map_name>%s</map_name>\n' % (aerial.name))
+
         f.write('<connection_type>%s</connection_type>\n' % (settings.GIS_CONNECTION_TYPE))
         f.write('<connection>%s</connection>\n' % (settings.GIS_CONNECTION))
 

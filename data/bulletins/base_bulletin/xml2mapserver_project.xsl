@@ -2,7 +2,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:output method="text" indent="no" encoding="US-ASCII"/>
 
-<xsl:param name="SHOW_ON_MAPS"/>
+<xsl:param name="MAP_NAME"/>
 <xsl:param name="INCLUDE"/>
 <xsl:param name="OVERRIDE_LABEL_COLOR"/>
 
@@ -90,7 +90,7 @@
 </xsl:text>
   </xsl:if>
 
-  <xsl:for-each select="gis_layers/gis_layer[show_on_maps='Both' or show_on_maps=$SHOW_ON_MAPS]">
+  <xsl:for-each select="gis_layers/gis_layer[map_name=$MAP_NAME]">
      <xsl:text>  LAYER
     NAME </xsl:text>
      <xsl:value-of select="name"/>

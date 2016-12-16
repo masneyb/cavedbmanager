@@ -2,16 +2,18 @@
 
 import os
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+
 ADMINS = (
-    ('Your Name',   'user@domain.org'),
+    ('Brian Masney',   'masneyb@onstation.org'),
 )
 
-ALLOWED_HOSTS = ( 'localhost' )
+ALLOWED_HOSTS = ( 'localhost', 'private.wvass.org', '192.168.1.6', 'wvass-cavedb' )
 
-ADMIN_SITE_HEADER = "My Cave Database"
+ADMIN_SITE_HEADER = "WVASS Cave Database"
 
 MANAGERS = ADMINS
 
@@ -42,7 +44,7 @@ MEDIA_URL = CONTEXT_PATH + 'cavedb/'
 STATIC_URL = '/media/'
 STATIC_ROOT = 'media/'
 
-SECRET_KEY = 'FIXME_CHANGE_THIS_SECRET_KEY'
+SECRET_KEY = 'g$d#2z5^jtd#7lyeunb(zj3znozh++hv5x3!om)$z_p!d5q!t#'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
@@ -63,22 +65,21 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'cavedb.urls'
 
-# FIXME - this came from a brand new run of `python manage.py startproject`
-#TEMPLATES = [
-#    {
-#        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-#        'DIRS': [],
-#        'APP_DIRS': True,
-#        'OPTIONS': {
-#            'context_processors': [
-#                'django.template.context_processors.debug',
-#                'django.template.context_processors.request',
-#                'django.contrib.auth.context_processors.auth',
-#                'django.contrib.messages.context_processors.messages',
-#            ],
-#        },
-#    },
-#]
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
 
 TEMPLATE_DIRS = (
     INSTALL_ROOT + "/templates",

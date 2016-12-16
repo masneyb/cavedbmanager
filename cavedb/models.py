@@ -32,19 +32,29 @@ class LatLonField(models.DecimalField):
 ### GIS                                                                     ###
 ###############################################################################
 
+class GisAerialMap(models.Model):
+    name = models.CharField(max_length=20)
+    description = models.CharField(max_length=255, null=True, blank=True)
+    website_url = models.CharField(max_length=255, null=True, blank=True)
+    license_url = models.CharField(max_length=255, null=True, blank=True)
+
+    def __unicode__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'GIS Aerial Map'
+        ordering = ('name',)
+
 class GisLayer(models.Model):
     GIS_TYPE = (
         ('LINE', 'Line'), ('POLYGON', 'Polygon'), ('POINT', 'Point'), ('RASTER', 'Raster'),
-    )
-    MAP_TYPE = (
-        ('Aerial', 'Aerial'), ('Topo', 'Topo'), ('Both', 'Both'),
     )
     LINE_TYPE = (
         ('Solid', 'Solid'), ('Dashed', 'Dashed'),
     )
 
     description = models.CharField(max_length=80)
-    show_on_maps = models.CharField(max_length=64, choices=MAP_TYPE)
+    aerial_maps = models.ManyToManyField(GisAerialMap)
     table_name = models.CharField(max_length=80, null=True, blank=True)
     filename = models.CharField(max_length=255, null=True, blank=True)
     display = models.BooleanField(default=True)
@@ -69,18 +79,6 @@ class GisLayer(models.Model):
         ordering = ('sort_order',)
 
 
-class GisAerialMap(models.Model):
-    name = models.CharField(max_length=20)
-    description = models.CharField(max_length=255, null=True, blank=True)
-    website_url = models.CharField(max_length=255, null=True, blank=True)
-    license_url = models.CharField(max_length=255, null=True, blank=True)
-
-    def __unicode__(self):
-        return self.name
-
-    class Meta:
-        verbose_name = 'GIS Aerial Map'
-        ordering = ('name',)
 
 
 ###############################################################################
