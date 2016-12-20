@@ -1,6 +1,5 @@
 from cavedb.utils import *
 from os import makedirs, unlink, symlink, close, fork, setsid, chdir, system, _exit, chmod
-from django.http import HttpResponseRedirect
 from os.path import basename, isfile, isdir
 from curses.ascii import isalpha
 from django.conf import settings
@@ -156,7 +155,6 @@ def show_log(request, bulletin_id):
     remotefile = get_bulletin_remote_file(bulletin_id, 'txt')
     return send_file(request, get_build_log_filename(bulletin_id), remotefile)
 
-
 def show_region_gis_map(request, bulletin_id, region_id, map_name):
     if (not is_bulletin_gis_maps_allowed(bulletin_id)):
         raise Http404
@@ -178,22 +176,18 @@ def do_show_bulletin_attachment(request, bulletin_id, localfile, filename):
 
     return send_file(request, localfile, filename)
 
-
 def show_bulletin_cover(request, bulletin_id, filename):
     localfile = '%s/bulletin_attachments/%s/cover/%s' % (settings.MEDIA_ROOT, bulletin_id, filename)
     return do_show_bulletin_attachment(request, bulletin_id, localfile, filename)
-
 
 def show_bulletin_attachment(request, bulletin_id, filename):
     localfile = '%s/bulletin_attachments/%s/attachments/%s' % (settings.MEDIA_ROOT, bulletin_id, filename)
     print 'Local is %s' % (localfile)
     return do_show_bulletin_attachment(request, bulletin_id, localfile, filename)
 
-
 def show_bulletin_gis_lineplot(request, bulletin_id, filename):
     localfile = '%s/bulletin_attachments/%s/gis_lineplot/%s' % (settings.MEDIA_ROOT, bulletin_id, filename)
     return do_show_bulletin_attachment(request, bulletin_id, localfile, filename)
-
 
 def get_feature_bulletin_id(feature_id):
     features = Feature.objects.filter(id=feature_id)
@@ -202,11 +196,9 @@ def get_feature_bulletin_id(feature_id):
 
     return features[0].bulletin_region.bulletin.id
 
-
 def show_feature_photo(request, feature_id, filename):
     localfile = '%s/feature_attachments/%s/photos/%s' % (settings.MEDIA_ROOT, feature_id, filename)
     return do_show_bulletin_attachment(request, get_feature_bulletin_id(feature_id), localfile, filename)
-
 
 def show_feature_attachment(request, feature_id, filename):
     localfile = '%s/feature_attachments/%s/attachments/%s' % (settings.MEDIA_ROOT, feature_id, filename)
@@ -231,7 +223,6 @@ def get_wgs84(in_srs, x, y):
     (newx, newy, newz) = ct.TransformPoint(x, y)
     return (newx, newy)
 
-
 def get_nad27(in_srs, utmzone, x, y):
     out_srs = osgeo.osr.SpatialReference()
     out_srs.SetUTM(utmzone.utm_zone, utmzone.utm_north)
@@ -241,7 +232,6 @@ def get_nad27(in_srs, utmzone, x, y):
 
     (newx, newy, newz) = ct.TransformPoint(x, y)
     return (newx, newy)
-
 
 def transform_coordinate(entrance):
    utmzone = entrance.utmzone
@@ -268,7 +258,7 @@ def transform_coordinate(entrance):
 ###############################################################################
 
 def get_normalized_date(str):
-    # Parse lots of different date formats including:
+    # Parse different date formats including:
     # Sep 21, 1997, Fall/Winter 1997, Fall 1997, etc.
 
     if (str == None or str == ''):
@@ -283,7 +273,7 @@ def get_normalized_date(str):
     str = str.replace("Winter", "January");
 
     try:
-        defaults=datetime.now()+relativedelta(month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
+        defaults = datetime.now() + relativedelta(month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
         return parse(str, default=defaults)
     except:
         return "0000-00-00"
