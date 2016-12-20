@@ -17,7 +17,7 @@ runRemote:
 
 installdb:
 	./manage.py migrate auth
-	./manage.py migrate
+	./manage.py migrate cavedb
 	./manage.py createsuperuser
 
 destroymydb:
