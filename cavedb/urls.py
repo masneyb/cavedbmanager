@@ -14,8 +14,8 @@ urlpatterns = patterns('',
     url(r'^$', forward_to_admin),
     url(r'^admin/', include(admin.site.urls)),
 
-    url(r'^cavedb/bulletin/(?P<bulletin_id>\d+)/generate$', 'cavedb.views.generate_bulletin'),
-    url(r'^cavedb/bulletin/(?P<bulletin_id>\d+)/generateXmlOnly$', 'cavedb.views.generate_xml_only_bulletin'),
+    url(r'^cavedb/bulletin/(?P<bulletin_id>\d+)/generate$', 'cavedb.bulletin_xml_generation.generate_bulletin'),
+    url(r'^cavedb/bulletin/(?P<bulletin_id>\d+)/generateXmlOnly$', 'cavedb.bulletin_xml_generation.generate_xml_only_bulletin'),
 
     url(r'^cavedb/bulletin/(?P<bulletin_id>\d+)/region/(?P<region_id>\d+)/map/(?P<map_name>[\w\d\._-]+)$', 'cavedb.views.show_region_gis_map'),
 
