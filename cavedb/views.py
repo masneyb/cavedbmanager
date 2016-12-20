@@ -22,9 +22,6 @@ except ImportError:
     print >> stderr, 'Python GDAL library required, try `apt-get install python-gdal`'
     sys.exit(1)
 
-def forward_to_admin(request):
-    return HttpResponseRedirect('/admin/')
-
 ###############################################################################
 ### Views for maps and documents                                            ###
 ###############################################################################

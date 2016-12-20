@@ -1,7 +1,10 @@
 from django.conf.urls import patterns, url, include
 from django.contrib import admin
-from cavedb.views import forward_to_admin
 from . import settings
+from django.http import HttpResponseRedirect
+
+def forward_to_admin(request):
+    return HttpResponseRedirect('/admin/')
 
 admin.site.site_header = settings.ADMIN_SITE_HEADER
 
