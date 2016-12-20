@@ -27,10 +27,8 @@ EXTENTS_CSV_BASE=region_extents
 EXTENTS_CSV=$(SHP_DIR)/$(EXTENTS_CSV_BASE).csv
 EXTENTS_PRJ=$(SHP_DIR)/$(EXTENTS_CSV_BASE).prj
 
-MAPSERVER_AERIAL_PROJECT_FILE=aerial.map
-MAPSERVER_AERIAL_PROJECT_FULLPATH=$(GIS_OUTPUT_DIR)/$(MAPSERVER_AERIAL_PROJECT_FILE)
-MAPSERVER_TOPO_PROJECT_FILE=cave.map
-MAPSERVER_TOPO_PROJECT_FULLPATH=$(GIS_OUTPUT_DIR)/$(MAPSERVER_TOPO_PROJECT_FILE)
+MAPSERVER_PROJECT_FILE=cave.map
+MAPSERVER_PROJECT_FULLPATH=$(GIS_OUTPUT_DIR)/$(MAPSERVER_PROJECT_FILE)
 QGIS_PROJECT_FILE=cave.qgs
 QGIS_PROJECT_FULLPATH=$(GIS_OUTPUT_DIR)/$(QGIS_PROJECT_FILE)
 
@@ -199,16 +197,10 @@ gis_maps: $(SHP) $(GIS_MAPS_STYLESHEET) $(QGIS_PROJECT_FULLPATH)
 	mkdir -p $(GIS_OUTPUT_DIR)
 	if [ ! -f $(GIS_OUTPUT_DIR)/fonts.list ] ; then ln -s $(DOC_BASE_DIR)/../../gis_maps/fonts.list $(GIS_OUTPUT_DIR) ; fi
 
-	# Aerial maps
-	for name in `xgrep -x /regions/aerial_maps/aerial_map/@name $(CAVE_SRC_XML) | grep "^ name" | cut -d\" -f2` ; do \
-		xsltproc --stringparam INCLUDE $(DOC_BASE_DIR)/../../gis_maps/$$name.map --stringparam OVERRIDE_LABEL_COLOR "255 255 255" --stringparam MAP_NAME $$name $(MAPSERVER_STYLESHEET) $(CAVE_SRC_XML) > $(MAPSERVER_AERIAL_PROJECT_FULLPATH) ; \
-		xsltproc $(GIS_XSLT_OPTS) --stringparam gis_project $(MAPSERVER_AERIAL_PROJECT_FULLPATH) --stringparam gis_file_suffix "_gis_"$$name"_aerial_map.jpg" $(GIS_MAPS_STYLESHEET) $(CAVE_SRC_XML) | sh -v ; \
+	for name in `xgrep -x /regions/maps/map/@name $(CAVE_SRC_XML) | grep "^ name" | cut -d\" -f2` ; do \
+		xsltproc --stringparam INCLUDE $(DOC_BASE_DIR)/../../gis_maps/$$name.map --stringparam MAP_NAME $$name $(MAPSERVER_STYLESHEET) $(CAVE_SRC_XML) > $(MAPSERVER_PROJECT_FULLPATH) ; \
+		xsltproc $(GIS_XSLT_OPTS) --stringparam gis_project $(MAPSERVER_PROJECT_FULLPATH) --stringparam gis_file_suffix "_gis_"$$name"_map.jpg" $(GIS_MAPS_STYLESHEET) $(CAVE_SRC_XML) | sh -v ; \
 	done
-
-	# Topo maps
-	xsltproc --stringparam MAP_NAME Topo $(MAPSERVER_STYLESHEET) $(CAVE_SRC_XML) > $(MAPSERVER_TOPO_PROJECT_FULLPATH)
-	xsltproc $(GIS_XSLT_OPTS) --stringparam gis_project $(MAPSERVER_TOPO_PROJECT_FULLPATH) --stringparam gis_file_suffix _gis_map.jpg $(GIS_MAPS_STYLESHEET) $(CAVE_SRC_XML) | sh -v
-
 
 validate: $(CAVE_SRC_XML)
 	xmllint -noout $(CAVE_SRC_XML)

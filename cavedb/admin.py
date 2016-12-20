@@ -130,7 +130,7 @@ class BulletinAttachmentInline(CavedbModelAdmin, admin.TabularInline):
 
 class BulletinAdmin(CavedbModelAdmin, admin.ModelAdmin):
     save_on_top = True
-    list_display = ('bulletin_name', 'editors', 'generate_doc_links', 'show_topo_maps', 'show_aerial_maps')
+    list_display = ('bulletin_name', 'editors', 'generate_doc_links', 'show_maps')
     list_filter = ['create_date', 'mod_date']
     search_fields = ['bulletin_name', 'short_name', 'editors', 'bw_front_cover_image', 'color_front_cover_image',
                      'back_cover_image', 'title_page', 'preamble_page', 'contributor_page', 'toc_footer', 'caves_header',
@@ -147,7 +147,10 @@ class BulletinAdmin(CavedbModelAdmin, admin.ModelAdmin):
 
     fieldsets = [
        ('Bulletin', {'fields': ['bulletin_name','short_name','editors',]}),
-       ('Content', {'fields': ['bw_front_cover_image', 'color_front_cover_image', 'back_cover_image', 'bw_aerial_map', 'color_aerial_map', 'title_page', 'preamble_page', 'contributor_page', 'toc_footer', 'caves_header', 'photo_index_header', 'indexed_terms', 'dvd_readme', ]}),
+       ('Content', {'fields': ['bw_front_cover_image', 'color_front_cover_image', 'back_cover_image', 'bw_map1', 'bw_map2',
+                               'bw_map3', 'color_map1', 'color_map2', 'color_map3', 'title_page', 'preamble_page',
+                               'contributor_page', 'toc_footer', 'caves_header', 'photo_index_header', 'indexed_terms',
+                               'dvd_readme', ]}),
     ]
 
     inlines = [BulletinRegionInline, BulletinGisLineplotInline,
@@ -320,11 +323,11 @@ admin.site.register(User, CaveUserProfileAdmin)
 class GisLayerAdmin(CavedbModelAdmin, admin.ModelAdmin):
     save_on_top = True
     list_display = ('description', 'display', 'table_name', 'max_scale', 'type', 'color', 'label_item', 'font_color', 'font_size', 'line_type', 'symbol', 'symbol_size', 'sort_order')
-    list_filter = ['display', 'type', 'aerial_maps']
+    list_filter = ['display', 'type', 'maps']
     search_fields = ['description', 'source', 'table_name', 'filename', 'label_item', 'symbol', 'notes']
 
     fieldsets = [ 
-       ('Description', {'fields': ['description', 'aerial_maps', 'source', 'table_name', 'filename', 'display', 'max_scale', 'type', 'color', 'notes', 'sort_order']}),
+       ('Description', {'fields': ['description', 'maps', 'source', 'table_name', 'filename', 'display', 'max_scale', 'type', 'color', 'notes', 'sort_order']}),
        ('Label', {'fields': ['label_item', 'font_color', 'font_size']}),
        ('Symbol', {'fields': ['symbol', 'symbol_size', 'line_type']}),
     ]
@@ -332,14 +335,14 @@ class GisLayerAdmin(CavedbModelAdmin, admin.ModelAdmin):
 admin.site.register(GisLayer, GisLayerAdmin)
 
 
-class GisAerialMapAdmin(CavedbModelAdmin, admin.ModelAdmin):
+class GisMapAdmin(CavedbModelAdmin, admin.ModelAdmin):
     save_on_top = True
-    list_display = ('name', 'description', 'website_url', 'license_url')
+    list_display = ('name', 'description', 'map_label', 'website_url', 'license_url')
 
     fieldsets = [ 
-       ('Description', {'fields': ['name', 'description', 'website_url', 'license_url']}),
+       ('Description', {'fields': ['name', 'description', 'map_label', 'website_url', 'license_url']}),
     ]
  
-admin.site.register(GisAerialMap, GisAerialMapAdmin)
+admin.site.register(GisMap, GisMapAdmin)
 
 

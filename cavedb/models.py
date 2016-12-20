@@ -32,17 +32,18 @@ class LatLonField(models.DecimalField):
 ### GIS                                                                     ###
 ###############################################################################
 
-class GisAerialMap(models.Model):
+class GisMap(models.Model):
     name = models.CharField(max_length=20)
     description = models.CharField(max_length=255, null=True, blank=True)
     website_url = models.CharField(max_length=255, null=True, blank=True)
     license_url = models.CharField(max_length=255, null=True, blank=True)
+    map_label = models.CharField(max_length=255, null=True, blank=True)
 
     def __unicode__(self):
         return self.name
 
     class Meta:
-        verbose_name = 'GIS Aerial Map'
+        verbose_name = 'GIS Map'
         ordering = ('name',)
 
 class GisLayer(models.Model):
@@ -54,7 +55,7 @@ class GisLayer(models.Model):
     )
 
     description = models.CharField(max_length=80)
-    aerial_maps = models.ManyToManyField(GisAerialMap)
+    maps = models.ManyToManyField(GisMap)
     table_name = models.CharField(max_length=80, null=True, blank=True)
     filename = models.CharField(max_length=255, null=True, blank=True)
     display = models.BooleanField(default=True)
@@ -117,8 +118,12 @@ class Bulletin(models.Model):
     bw_front_cover_image = models.ImageField(upload_to=CavedbBulletinUploadTo, blank=True, null=True)
     color_front_cover_image = models.ImageField(upload_to=CavedbBulletinUploadTo, blank=True, null=True)
     back_cover_image = models.ImageField(upload_to=CavedbBulletinUploadTo, blank=True, null=True)
-    bw_aerial_map = models.ForeignKey(GisAerialMap, blank=True, null=True, related_name='bw_aerial_map_id', verbose_name='Aerial Map for the B&W Bulletin')
-    color_aerial_map = models.ForeignKey(GisAerialMap, blank=True, null=True, related_name='color_aerial_map_id', verbose_name='Aerial Map for the Color Bulletin')
+    bw_map1 = models.ForeignKey(GisMap, blank=True, null=True, related_name='bw_map1', verbose_name='Map #1 for the B&W bulletin')
+    bw_map2 = models.ForeignKey(GisMap, blank=True, null=True, related_name='bw_map2', verbose_name='Map #2 for the B&W bulletin')
+    bw_map3 = models.ForeignKey(GisMap, blank=True, null=True, related_name='bw_map3', verbose_name='Map #3 for the B&W bulletin')
+    color_map1 = models.ForeignKey(GisMap, blank=True, null=True, related_name='color_map1', verbose_name='Map #1 for the color bulletin')
+    color_map2 = models.ForeignKey(GisMap, blank=True, null=True, related_name='color_map2', verbose_name='Map #2 for the color bulletin')
+    color_map3 = models.ForeignKey(GisMap, blank=True, null=True, related_name='color_map3', verbose_name='Map #3 for the color bulletin')
     title_page = models.TextField(blank=True, null=True)
     preamble_page = models.TextField(blank=True, null=True)
     contributor_page = models.TextField(blank=True, null=True)
@@ -184,31 +189,20 @@ class Bulletin(models.Model):
     generate_doc_links.allow_tags = True
 
 
-    def show_topo_maps(self):
+    def show_maps(self):
         if (not is_bulletin_gis_maps_allowed(self.id)):
             return ''
 
         regionStr = ''
         for region in BulletinRegion.objects.filter(bulletin__id=self.id):
-            regionStr += '<a href="%sbulletin/%s/region/%s/topo_map">%s</a><br/>\n' % (settings.MEDIA_URL, self.id, region.id, region.region_name)
+            for map in GisMap.objects.all():
+                regionStr += '<a href="%sbulletin/%s/region/%s/map/%s">%s %s</a><br/>\n' % (settings.MEDIA_URL, self.id, region.id, map.name, map.name, region.region_name)
+            regionStr += '<br/>\n';
+
         return regionStr
 
-    show_topo_maps.short_description = "Topo Maps"
-    show_topo_maps.allow_tags = True
-
-
-    def show_aerial_maps(self):
-        if (not is_bulletin_gis_maps_allowed(self.id)):
-            return ''
-
-        regionStr = ''
-        for region in BulletinRegion.objects.filter(bulletin__id=self.id):
-            for aerial in GisAerialMap.objects.all():
-                regionStr += '<a href="%sbulletin/%s/region/%s/aerial_map/%s">%s %s</a><br/>\n' % (settings.MEDIA_URL, self.id, region.id, aerial.name, aerial.name, region.region_name)
-        return regionStr
-
-    show_aerial_maps.short_description = "Aerial Maps"
-    show_aerial_maps.allow_tags = True
+    show_maps.short_description = "GIS Maps"
+    show_maps.allow_tags = True
 
 
     class Meta:

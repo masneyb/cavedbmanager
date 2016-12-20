@@ -389,59 +389,60 @@
 </xsl:text>
 
     <xsl:if test="@show_gis_map='1' and features/feature/location[@utm27_utmeast != ''] and features/feature/location[@utm27_utmnorth != '']">
-      <xsl:text>\begin{figure}[htp!]
+      <xsl:variable name="file_prefix" select="@file_prefix"/>
+      <xsl:variable name="pos" select="position()"/>
+
+      <xsl:for-each select="/regions/map[@type=$bulletin_type]">
+        <xsl:if test="position() > 1">
+          <xsl:text>\vspace*{8ex}
+
+</xsl:text>
+        </xsl:if>
+
+        <xsl:variable name="map_name" select="."/>
+
+        <xsl:text>\begin{figure}[htp!]
   \centering
   \includegraphics[height=0.9\textheight,width=\textwidth,keepaspectratio=true]{</xsl:text>
-      <xsl:value-of select="$gis_output_dir"/>
-      <xsl:value-of select="@file_prefix"/>
-      <xsl:text>_gis_map.jpg}
+        <xsl:value-of select="$gis_output_dir"/>
+        <xsl:value-of select="$file_prefix"/>
+        <xsl:text>_gis_</xsl:text>
+        <xsl:value-of select="$map_name"/>
+        <xsl:text>_map.jpg</xsl:text>
+        <xsl:text>}
 </xsl:text>
 
-      <xsl:apply-templates select="." mode="index">
-        <xsl:with-param name="suffix">|(</xsl:with-param>
-      </xsl:apply-templates>
+        <xsl:apply-templates select="/regions/region[$pos]" mode="index">
+          <xsl:with-param name="suffix">|)</xsl:with-param>
+        </xsl:apply-templates>
 
-      <xsl:text>\end{figure}
+        <xsl:text>\end{figure}
 
-\begin{figure}[htp!]
+</xsl:text>
+
+        <xsl:if test="position() = 1">
+          <xsl:text>\begin{figure}[htp!]
   \centering
   \includegraphics[width=\textwidth,keepaspectratio=true]{../../gis_maps/legend.png}
 \end{figure}
 
-\begin{center} { \footnotesize \textit{There may be some FROs shown on the maps that are not labeled.}} \end{center}
+</xsl:text>
+        </xsl:if>
+
+        <xsl:if test="/regions/maps/map[@name=$map_name]/@map_label != ''">
+          <xsl:text>\begin{center} { \footnotesize \textit{</xsl:text>
+          <xsl:value-of select="/regions/maps/map[@name=$map_name]/@map_label"/>
+          <xsl:text>}} \end{center}
+
+</xsl:text>
+        </xsl:if>
+
+        <xsl:text>
+
 \clearpage
 
 </xsl:text>
-
-      <xsl:variable name="aerial_map_name" select="/regions/aerial_map[@type=$bulletin_type]"/>
-
-      <xsl:if test="$aerial_map_name != ''">
-        <xsl:text>\vspace*{8ex}
-
-\begin{figure}[htp!]
-  \centering
-  \includegraphics[height=0.9\textheight,width=\textwidth,keepaspectratio=true]{</xsl:text>
-      <xsl:value-of select="$gis_output_dir"/>
-      <xsl:value-of select="@file_prefix"/>
-      <xsl:text>_gis_</xsl:text>
-      <xsl:value-of select="$aerial_map_name"/>
-      <xsl:text>_aerial_map.jpg</xsl:text>
-      <xsl:text>}
-</xsl:text>
-
-      <xsl:apply-templates select="." mode="index">
-        <xsl:with-param name="suffix">|)</xsl:with-param>
-      </xsl:apply-templates>
-
-      <xsl:text>\end{figure}
-
-\begin{center} { \footnotesize \textit{Aerial imagery courtesy of the </xsl:text>
-      <xsl:value-of select="/regions/aerial_maps/aerial_map[@name=$aerial_map_name]/@description"/>
-      <xsl:text>.}} \end{center}
-\clearpage
-
-</xsl:text>
-      </xsl:if>
+      </xsl:for-each>
     </xsl:if>
 
     <xsl:text>\twocolumn

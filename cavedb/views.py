@@ -160,19 +160,11 @@ def show_log(request, bulletin_id):
     return send_file(request, get_build_log_filename(bulletin_id), remotefile)
 
 
-def show_region_topo_gis_map(request, bulletin_id, region_id):
+def show_region_gis_map(request, bulletin_id, region_id, map_name):
     if (not is_bulletin_gis_maps_allowed(bulletin_id)):
         raise Http404
 
-    localfile = '%s/bulletins/bulletin_%s/output/gis_maps/bulletin_%s_region_%s_gis_map.jpg' % (settings.MEDIA_ROOT, bulletin_id, bulletin_id, region_id)
-    return send_file(request, localfile, None)
-
-
-def show_region_aerial_gis_map(request, bulletin_id, region_id, aerial_map_name):
-    if (not is_bulletin_gis_maps_allowed(bulletin_id)):
-        raise Http404
-
-    localfile = '%s/bulletins/bulletin_%s/output/gis_maps/bulletin_%s_region_%s_gis_%s_aerial_map.jpg' % (settings.MEDIA_ROOT, bulletin_id, bulletin_id, region_id, aerial_map_name)
+    localfile = '%s/bulletins/bulletin_%s/output/gis_maps/bulletin_%s_region_%s_gis_%s_map.jpg' % (settings.MEDIA_ROOT, bulletin_id, bulletin_id, region_id, map_name)
     return send_file(request, localfile, None)
 
 
@@ -697,17 +689,25 @@ def generate_bulletin_xml_file(bulletin, basedir):
         f.write('<term search="%s" index="%s"/>\n' % (term, indexedTerms[1][term]))
     f.write('</indexed_terms>\n')
 
-    f.write('<aerial_maps>\n')
-    for aerial in GisAerialMap.objects.all():
-        f.write('<aerial_map name="%s" description="%s" website_url="%s" license_url="%s"/>\n' % (convert_quotes(aerial.name), convert_quotes(aerial.description), convert_quotes(aerial.website_url), convert_quotes(aerial.license_url)))
-    f.write('</aerial_maps>\n')
+    f.write('<maps>\n')
+    for map in GisMap.objects.all():
+        f.write('<map name="%s" description="%s" website_url="%s" license_url="%s" map_label="%s"/>\n' % (convert_quotes(map.name), convert_quotes(map.description), convert_quotes(map.website_url), convert_quotes(map.license_url), convert_quotes(map.map_label)))
+    f.write('</maps>\n')
 
     generate_gis_section (basedir, f, bulletin.id)
 
-    if (bulletin.bw_aerial_map != None and bulletin.bw_aerial_map != ''):
-        f.write('<aerial_map type="black_and_white">%s</aerial_map>\n' % (bulletin.bw_aerial_map))
-    if (bulletin.color_aerial_map != None and bulletin.color_aerial_map != ''):
-        f.write('<aerial_map type="color">%s</aerial_map>\n' % (bulletin.color_aerial_map))
+    if (bulletin.bw_map1 != None and bulletin.bw_map1 != ''):
+        f.write('<map type="black_and_white">%s</map>\n' % (bulletin.bw_map1))
+    if (bulletin.bw_map2 != None and bulletin.bw_map2 != ''):
+        f.write('<map type="black_and_white">%s</map>\n' % (bulletin.bw_map2))
+    if (bulletin.bw_map3 != None and bulletin.bw_map3 != ''):
+        f.write('<map type="black_and_white">%s</map>\n' % (bulletin.bw_map3))
+    if (bulletin.color_map1 != None and bulletin.color_map1 != ''):
+        f.write('<map type="color">%s</map>\n' % (bulletin.color_map1))
+    if (bulletin.color_map2 != None and bulletin.color_map2 != ''):
+        f.write('<map type="color">%s</map>\n' % (bulletin.color_map2))
+    if (bulletin.color_map3 != None and bulletin.color_map3 != ''):
+        f.write('<map type="color">%s</map>\n' % (bulletin.color_map3))
 
     f.write('<title_page>%s</title_page>\n' % (generate_index(convert_quotes(bulletin.title_page), indexedTerms)))
 
@@ -919,56 +919,55 @@ def generate_gis_section (basedir, f, bulletin_id):
 
     f.write('<gis_layers>\n')
 
-    for map in GisLayer.objects.all():
+    for layer in GisLayer.objects.all():
         f.write('<gis_layer>\n')
-        f.write('<name>%s</name>\n' % (map.table_name))
+        f.write('<name>%s</name>\n' % (layer.table_name))
 
-        f.write('<map_name>Topo</map_name>\n')
-        for aerial in map.aerial_maps.all():
-            f.write('<map_name>%s</map_name>\n' % (aerial.name))
+        for map in layer.maps.all():
+            f.write('<map_name>%s</map_name>\n' % (map.name))
 
         f.write('<connection_type>%s</connection_type>\n' % (settings.GIS_CONNECTION_TYPE))
         f.write('<connection>%s</connection>\n' % (settings.GIS_CONNECTION))
 
-        if (map.filename != None and map.filename != ''):
-            f.write('<data>%s</data>\n' % (map.filename))
+        if (layer.filename != None and layer.filename != ''):
+            f.write('<data>%s</data>\n' % (layer.filename))
         else:
-            f.write('<data>geom from %s</data>\n' % (map.table_name))
+            f.write('<data>geom from %s</data>\n' % (layer.table_name))
 
-        f.write('<display>%s</display>\n' % (int(map.display)))
-        f.write('<type>%s</type>\n' % (map.type))
+        f.write('<display>%s</display>\n' % (int(layer.display)))
+        f.write('<type>%s</type>\n' % (layer.type))
 
-        if (map.label_item != None and map.label_item != ''):
-            f.write('<label_item>%s</label_item>\n' % (map.label_item))
+        if (layer.label_item != None and layer.label_item != ''):
+            f.write('<label_item>%s</label_item>\n' % (layer.label_item))
 
-        if (map.description != None and map.description != ''):
-            if (map.description not in legend_titles):
-                legend_titles[map.description] = 1
-                f.write('<legend first_occurance="1">%s</legend>\n' % (map.description))
+        if (layer.description != None and layer.description != ''):
+            if (layer.description not in legend_titles):
+                legend_titles[layer.description] = 1
+                f.write('<legend first_occurance="1">%s</legend>\n' % (layer.description))
             else:
-                f.write('<legend first_occurance="0">%s</legend>\n' % (map.description))
+                f.write('<legend first_occurance="0">%s</legend>\n' % (layer.description))
 
-        colors = map.color.split(' ')
+        colors = layer.color.split(' ')
         if (len(colors) > 2):
             f.write('<color red="%s" green="%s" blue="%s"/>\n' % (colors[0], colors[1], colors[2]))
 
-        if (map.symbol != None and map.symbol != ''):
-            f.write('<symbol>%s</symbol>\n' % (map.symbol))
-            f.write('<symbol_size>%s</symbol_size>\n' % (map.symbol_size))
-        elif (map.symbol_size != None):
+        if (layer.symbol != None and layer.symbol != ''):
+            f.write('<symbol>%s</symbol>\n' % (layer.symbol))
+            f.write('<symbol_size>%s</symbol_size>\n' % (layer.symbol_size))
+        elif (layer.symbol_size != None):
             f.write('<symbol></symbol>\n')
-            f.write('<symbol_size>%s</symbol_size>\n' % (map.symbol_size))
+            f.write('<symbol_size>%s</symbol_size>\n' % (layer.symbol_size))
 
-        if (map.line_type != None and map.line_type != ''):
-            f.write('<line_type>%s</line_type>\n' % (map.line_type))
+        if (layer.line_type != None and layer.line_type != ''):
+            f.write('<line_type>%s</line_type>\n' % (layer.line_type))
 
-        if (map.max_scale != None and map.max_scale != ''):
-            f.write('<max_scale>%s</max_scale>\n' % (map.max_scale))
+        if (layer.max_scale != None and layer.max_scale != ''):
+            f.write('<max_scale>%s</max_scale>\n' % (layer.max_scale))
 
-        if (map.label_item != None and map.label_item != ''):
-            colors = map.font_color.split(' ')
+        if (layer.label_item != None and layer.label_item != ''):
+            colors = layer.font_color.split(' ')
             f.write('<font_color red="%s" green="%s" blue="%s"/>\n' % (colors[0], colors[1], colors[2]))
-            f.write('<font_size>%s</font_size>\n' % (map.font_size))
+            f.write('<font_size>%s</font_size>\n' % (layer.font_size))
 
         f.write('</gis_layer>\n')
 

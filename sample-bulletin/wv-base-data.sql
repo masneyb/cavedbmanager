@@ -1,58 +1,78 @@
-INSERT INTO cavedb_gislayer VALUES (1, 'National/State Forests/Parks', 'wv_national_parks', NULL, true, 60000.00, 'POLYGON', '144 238 144', 'name', '132 31 31', 8, 5, '', 1, 'wvgis.wvu.edu', '', NULL);
-INSERT INTO cavedb_gislayer VALUES (2, 'National/State Forests/Parks', 'wv_state_parks', NULL, true, 60000.00, 'POLYGON', '144 238 144', 'name', '132 31 31', 8, 5, '', 1, 'wvgis.wvu.edu', '', NULL);
-INSERT INTO cavedb_gislayer VALUES (3, 'National/State Forests/Parks', 'wv_national_forests', NULL, true, 60000.00, 'POLYGON', '144 238 144', '', '', 0, 5, '', 1, 'wvgis.wvu.edu', '', NULL);
-INSERT INTO cavedb_gislayer VALUES (4, 'National/State Forests/Parks', 'wv_state_forests', NULL, true, 60000.00, 'POLYGON', '144 238 144', 'name', '132 31 31', 8, 5, '', 1, 'wvgis.wvu.edu', '', NULL);
-INSERT INTO cavedb_gislayer VALUES (5, 'WVDNR Managed Lands', 'wvdnr_managed_lands', NULL, true, 60000.00, 'POLYGON', '211 211 211', '', '', 0, 1, '', 1, 'wvgis.wvu.edu', '', NULL);
-INSERT INTO cavedb_gislayer VALUES (6, 'County Boundaries', 'wv_counties', '', true, NULL, 'LINE', '147 112 219', '', '', NULL, 10, '', 1, 'wvgis.wvu.edu', '', 'Solid');
-INSERT INTO cavedb_gislayer VALUES (7, 'Karst (approx)', 'wv_karst', NULL, true, NULL, 'POLYGON', '255 228 196', '', '', 0, 6, '', 1, 'wvgis.wvu.edu', '', NULL);
-INSERT INTO cavedb_gislayer VALUES (8, 'Cities', 'wv_census_places2000', NULL, true, NULL, 'POLYGON', '173 255 47', 'name10', '0 0 0', 12, 3, '', 1, 'wvgis.wvu.edu', '', NULL);
-INSERT INTO cavedb_gislayer VALUES (9, 'Water', 'wv_water_polygons', '', true, NULL, 'POLYGON', '0 0 255', '', '0 0 0', 6, 22, '', 1, 'wvgis.wvu.edu', '', NULL);
-INSERT INTO cavedb_gislayer VALUES (10, 'Water', 'wv_hydro', '', true, 60000.00, 'LINE', '0 0 255', 'major1', '0 0 0', 6, 22, '', 1, 'wvgis.wvu.edu', '', 'Solid');
-INSERT INTO cavedb_gislayer VALUES (11, 'Major Power Lines', 'wv_census_misc_trans', '', true, 60000.00, 'LINE', '169 169 169', '', '', 0, 25, '', 1, 'wvgis.wvu.edu', '', 'Solid');
-INSERT INTO cavedb_gislayer VALUES (12, 'Rails', 'wv_census_rails', '', true, 60000.00, 'LINE', '0 0 0', '', '', 0, 31, '', 1, 'wvgis.wvu.edu', '', 'Solid');
-INSERT INTO cavedb_gislayer VALUES (13, 'Roads', 'wv_census_roads', '', true, 60000.00, 'LINE', '0 0 0', 'label', '0 0 0', 6, 32, '', 2, 'wvgis.wvu.edu', '', 'Solid');
-INSERT INTO cavedb_gislayer VALUES (14, 'US Highways', 'wv_us_highways', '', true, NULL, 'LINE', '0 0 0', 'sign1', '0 0 0', 6, 33, '', 6, 'wvgis.wvu.edu', '', 'Solid');
-INSERT INTO cavedb_gislayer VALUES (15, 'Interstates', 'wv_interstates', '', true, NULL, 'LINE', '0 0 0', 'sign1', '0 0 0', 12, 34, '', 8, 'wvgis.wvu.edu', '', 'Solid');
-INSERT INTO cavedb_gislayer VALUES (16, '100'' Contour Lines', 'wv_100ft_contours', '', true, 60000.00, 'LINE', '169 169 169', 'ele', '0 0 0', 6, 21, '', 2, 'wvgis.wvu.edu', 'Automatically generated from DEM using gdal_contour.', 'Solid');
-INSERT INTO cavedb_gislayer VALUES (17, '20'' Contour Lines', 'wv_20ft_contours', NULL, true, 10000.00, 'LINE', '211 211 211', '', '', NULL, 20, '', NULL, 'wvgis.wvu.edu', 'Automatically generated from DEM using gdal_contour.', 'Solid');
-INSERT INTO cavedb_gislayer VALUES (18, 'Trails', 'coopers_rock_trails', '', true, 60000.00, 'LINE', '0 0 0', '', '', 0, 40, '', 1, 'Brian Masney / wvgis.wvu.edu', '', 'Dashed');
-INSERT INTO cavedb_gislayer VALUES (20, 'Trails', 'cheat_canyon_logging_roads', '', true, 60000.00, 'LINE', '0 0 0', '', '', NULL, 40, '', 1, 'Brian Masney', '', 'Dashed');
-INSERT INTO cavedb_gislayer VALUES (22, 'Trails', 'snake_hill_trails', '', true, 60000.00, 'LINE', '0 0 0', '', '', NULL, 40, '', 1, 'Brian Masney', '', 'Dashed');
+INSERT INTO cavedb_gismap VALUES (1,'topo','Contours generated using gdalcontour against the 3 meter digital elevation model.','http://wvgis.wvu.edu/data/dataset.php?ID=261','','There may be some FROs shown on the maps that are not labeled.');
+INSERT INTO cavedb_gismap VALUES (2,'2003','West Virginia Statewide Addressing and Mapping Board','http://wvgis.wvu.edu/data/otherdocs/wvsamb/SAMB_License_Agreement_Orthophotos.pdf','http://wvgis.wvu.edu/data/dataset.php?ID=254', 'Aerial imagery courtesy of the West Virginia Statewide Addressing and Mapping Board.');
+insert into cavedb_gismap values (3, '2014', 'USDA National Agriculture Imaging Program', 'http://www.fsa.usda.gov/programs-and-services/aerial-photography/imagery-programs/naip-imagery/', 'http://wvgis.wvu.edu/data/dataset.php?ID=461', 'Aerial imagery courtesy of the USDA National Agriculture Imaging Program.');
+insert into cavedb_gismap values (4, 'hillshade', 'Hillshade data generated using gdaldem hillshade against the 3 meter digital elevation model.', 'http://wvgis.wvu.edu/data/dataset.php?ID=261', '', '');
+
+alter sequence cavedb_gismap_id_seq restart with 5;
+
+INSERT INTO cavedb_gislayer VALUES (1, 'National/State Forests/Parks', 'wv_national_parks', NULL, true, 60000.00, 'POLYGON', '144 238 144', 'name', '132 31 31', 8, 5, 'Solid', '', 1, 'wvgis.wvu.edu', '');
+INSERT INTO cavedb_gislayer VALUES (2, 'National/State Forests/Parks', 'wv_state_parks', NULL, true, 60000.00, 'POLYGON', '144 238 144', 'name', '132 31 31', 8, 5, 'Solid', '', 1, 'wvgis.wvu.edu', '');
+INSERT INTO cavedb_gislayer VALUES (3, 'National/State Forests/Parks', 'wv_national_forests', NULL, true, 60000.00, 'POLYGON', '144 238 144', '', '', 0, 5, 'Solid', '', 1, 'wvgis.wvu.edu', '');
+INSERT INTO cavedb_gislayer VALUES (4, 'National/State Forests/Parks', 'wv_state_forests', NULL, true, 60000.00, 'POLYGON', '144 238 144', 'name', '132 31 31', 8, 5, 'Solid', '', 1, 'wvgis.wvu.edu', '');
+INSERT INTO cavedb_gislayer VALUES (5, 'WVDNR Managed Lands', 'wvdnr_managed_lands', NULL, true, 60000.00, 'POLYGON', '211 211 211', '', '', 0, 1, 'Solid', '', 1, 'wvgis.wvu.edu', '');
+INSERT INTO cavedb_gislayer VALUES (6, 'County Boundaries', 'wv_counties', '', true, NULL, 'LINE', '147 112 219', '', '', NULL, 10, 'Solid', '', 1, 'wvgis.wvu.edu', '');
+INSERT INTO cavedb_gislayer VALUES (7, 'Karst (approx)', 'wv_karst', NULL, true, NULL, 'POLYGON', '255 228 196', '', '', 0, 6, 'Solid', '', 1, 'wvgis.wvu.edu', '');
+INSERT INTO cavedb_gislayer VALUES (8, 'Cities', 'wv_census_places2000', NULL, true, NULL, 'POLYGON', '173 255 47', 'name10', '0 0 0', 12, 3, 'Solid', '', 1, 'wvgis.wvu.edu', '');
+INSERT INTO cavedb_gislayer VALUES (9, 'Water', 'wv_water_polygons', '', true, NULL, 'POLYGON', '0 0 255', '', '0 0 0', 6, 22, 'Solid', '', 1, 'wvgis.wvu.edu', '');
+INSERT INTO cavedb_gislayer VALUES (10, 'Water', 'wv_hydro', '', true, 60000.00, 'LINE', '0 0 255', 'major1', '0 0 0', 6, 22, 'Solid', '', 1, 'wvgis.wvu.edu', '');
+INSERT INTO cavedb_gislayer VALUES (11, 'Major Power Lines', 'wv_census_misc_trans', '', true, 60000.00, 'LINE', '169 169 169', '', '', 0, 25, 'Solid', '', 1, 'wvgis.wvu.edu', '');
+INSERT INTO cavedb_gislayer VALUES (12, 'Rails', 'wv_census_rails', '', true, 60000.00, 'LINE', '0 0 0', '', '', 0, 31, 'Solid', '', 1, 'wvgis.wvu.edu', '');
+INSERT INTO cavedb_gislayer VALUES (13, 'Roads', 'wv_census_roads', '', true, 60000.00, 'LINE', '0 0 0', 'label', '0 0 0', 6, 32, 'Solid', '', 2, 'wvgis.wvu.edu', '');
+INSERT INTO cavedb_gislayer VALUES (14, 'US Highways', 'wv_us_highways', '', true, NULL, 'LINE', '0 0 0', 'sign1', '0 0 0', 6, 33, 'Solid', '', 6, 'wvgis.wvu.edu', '');
+INSERT INTO cavedb_gislayer VALUES (15, 'Interstates', 'wv_interstates', '', true, NULL, 'LINE', '0 0 0', 'sign1', '0 0 0', 12, 34, 'Solid', '', 8, 'wvgis.wvu.edu', '');
+INSERT INTO cavedb_gislayer VALUES (16, '100'' Contour Lines', 'wv_100ft_contours', '', true, 60000.00, 'LINE', '169 169 169', 'ele', '0 0 0', 6, 21, 'Solid', '', 2, 'wvgis.wvu.edu', 'Automatically generated from DEM using gdal_contour.');
+INSERT INTO cavedb_gislayer VALUES (17, '20'' Contour Lines', 'wv_20ft_contours', NULL, true, 10000.00, 'LINE', '211 211 211', '', '', NULL, 20, 'Solid', '', NULL, 'wvgis.wvu.edu', 'Automatically generated from DEM using gdal_contour.');
 
 alter sequence cavedb_gislayer_id_seq restart with 23;
 
-INSERT INTO cavedb_gislayer_aerial_maps VALUES (1, 6, 104);
-INSERT INTO cavedb_gislayer_aerial_maps VALUES (2, 6, 2);
-INSERT INTO cavedb_gislayer_aerial_maps VALUES (3, 6, 103);
-INSERT INTO cavedb_gislayer_aerial_maps VALUES (4, 12, 104);
-INSERT INTO cavedb_gislayer_aerial_maps VALUES (5, 12, 2);
-INSERT INTO cavedb_gislayer_aerial_maps VALUES (6, 12, 103);
-INSERT INTO cavedb_gislayer_aerial_maps VALUES (7, 13, 104);
-INSERT INTO cavedb_gislayer_aerial_maps VALUES (8, 13, 2);
-INSERT INTO cavedb_gislayer_aerial_maps VALUES (9, 13, 103);
-INSERT INTO cavedb_gislayer_aerial_maps VALUES (10, 14, 104);
-INSERT INTO cavedb_gislayer_aerial_maps VALUES (11, 14, 2);
-INSERT INTO cavedb_gislayer_aerial_maps VALUES (12, 14, 103);
-INSERT INTO cavedb_gislayer_aerial_maps VALUES (13, 15, 104);
-INSERT INTO cavedb_gislayer_aerial_maps VALUES (14, 15, 2);
-INSERT INTO cavedb_gislayer_aerial_maps VALUES (15, 15, 103);
-INSERT INTO cavedb_gislayer_aerial_maps VALUES (16, 20, 104);
-INSERT INTO cavedb_gislayer_aerial_maps VALUES (17, 20, 2);
-INSERT INTO cavedb_gislayer_aerial_maps VALUES (18, 20, 103);
-INSERT INTO cavedb_gislayer_aerial_maps VALUES (19, 18, 104);
-INSERT INTO cavedb_gislayer_aerial_maps VALUES (20, 18, 2);
-INSERT INTO cavedb_gislayer_aerial_maps VALUES (21, 18, 103);
-INSERT INTO cavedb_gislayer_aerial_maps VALUES (22, 10, 104);
-INSERT INTO cavedb_gislayer_aerial_maps VALUES (23, 9, 104);
-INSERT INTO cavedb_gislayer_aerial_maps VALUES (24, 11, 104);
-INSERT INTO cavedb_gislayer_aerial_maps VALUES (25, 22, 104);
+INSERT INTO cavedb_gislayer_maps VALUES (1, 1, 1);
+INSERT INTO cavedb_gislayer_maps VALUES (2, 2, 1);
+INSERT INTO cavedb_gislayer_maps VALUES (3, 3, 1);
+INSERT INTO cavedb_gislayer_maps VALUES (4, 4, 1);
+INSERT INTO cavedb_gislayer_maps VALUES (5, 5, 1);
 
-alter sequence cavedb_gislayer_aerial_maps_id_seq restart with 26;
+INSERT INTO cavedb_gislayer_maps VALUES (6, 6, 1);
+INSERT INTO cavedb_gislayer_maps VALUES (7, 6, 2);
+INSERT INTO cavedb_gislayer_maps VALUES (8, 6, 3);
+INSERT INTO cavedb_gislayer_maps VALUES (9, 6, 4);
 
-insert into cavedb_gisaerialmap values (1, '2014', 'USDA National Agriculture Imaging Program', 'http://www.fsa.usda.gov/programs-and-services/aerial-photography/imagery-programs/naip-imagery/', 'http://wvgis.wvu.edu/data/dataset.php?ID=461');
-INSERT INTO cavedb_gisaerialmap VALUES (2,'2003','West Virginia Statewide Addressing and Mapping Board','http://wvgis.wvu.edu/data/otherdocs/wvsamb/SAMB_License_Agreement_Orthophotos.pdf','http://wvgis.wvu.edu/data/dataset.php?ID=254');
+INSERT INTO cavedb_gislayer_maps VALUES (10, 7, 1);
 
-alter sequence cavedb_gisaerialmap_id_seq restart with 5;
+INSERT INTO cavedb_gislayer_maps VALUES (11, 8, 1);
+
+INSERT INTO cavedb_gislayer_maps VALUES (12, 9, 1);
+INSERT INTO cavedb_gislayer_maps VALUES (13, 9, 4);
+
+INSERT INTO cavedb_gislayer_maps VALUES (14, 10, 1);
+INSERT INTO cavedb_gislayer_maps VALUES (15, 10, 4);
+
+INSERT INTO cavedb_gislayer_maps VALUES (16, 11, 1);
+INSERT INTO cavedb_gislayer_maps VALUES (17, 11, 4);
+
+INSERT INTO cavedb_gislayer_maps VALUES (18, 12, 1);
+INSERT INTO cavedb_gislayer_maps VALUES (19, 12, 2);
+INSERT INTO cavedb_gislayer_maps VALUES (20, 12, 3);
+INSERT INTO cavedb_gislayer_maps VALUES (21, 12, 4);
+
+INSERT INTO cavedb_gislayer_maps VALUES (22, 13, 1);
+INSERT INTO cavedb_gislayer_maps VALUES (23, 13, 2);
+INSERT INTO cavedb_gislayer_maps VALUES (24, 13, 3);
+INSERT INTO cavedb_gislayer_maps VALUES (25, 13, 4);
+
+INSERT INTO cavedb_gislayer_maps VALUES (26, 14, 1);
+INSERT INTO cavedb_gislayer_maps VALUES (27, 14, 2);
+INSERT INTO cavedb_gislayer_maps VALUES (28, 14, 3);
+INSERT INTO cavedb_gislayer_maps VALUES (29, 14, 4);
+
+INSERT INTO cavedb_gislayer_maps VALUES (30, 15, 1);
+INSERT INTO cavedb_gislayer_maps VALUES (31, 15, 2);
+INSERT INTO cavedb_gislayer_maps VALUES (32, 15, 3);
+INSERT INTO cavedb_gislayer_maps VALUES (33, 15, 4);
+
+INSERT INTO cavedb_gislayer_maps VALUES (34, 16, 1);
+INSERT INTO cavedb_gislayer_maps VALUES (35, 17, 1);
+
+alter sequence cavedb_gislayer_maps_id_seq restart with 50;
 
 INSERT INTO cavedb_county VALUES (1,'Monongalia','MON','2008-07-17 23:17:15','2008-07-17 23:17:15');
 INSERT INTO cavedb_county VALUES (2,'Preston','PRE','2008-07-17 23:17:15','2008-07-17 23:17:15');
