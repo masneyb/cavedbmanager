@@ -67,35 +67,6 @@ __EOF__
       <xsl:with-param name="dest_dir"><xsl:value-of select="$surface_photos_dir"/></xsl:with-param>
     </xsl:apply-templates>
 
-
-    <!--
-    <xsl:text>mkdir -p "</xsl:text>
-    <xsl:value-of select="$refs_dir"/>
-    <xsl:text>"
-</xsl:text>
-
-    <xsl:for-each select="region/features/feature/attachment[@user_visible_file_suffix != '']">
-      <xsl:text>ln </xsl:text>
-      <xsl:text>"/usr/local/cavedbmanager/../cavedbmanager-data/</xsl:text>
-      <xsl:value-of select="@filename"/>
-      <xsl:text>" "</xsl:text>
-      <xsl:value-of select="$refs_dir"/>
-      <xsl:value-of select="../name"/>
-      <xsl:text> - </xsl:text>
-      <xsl:value-of select="@user_visible_file_suffix"/>
-
-      <xsl:if test="@author != ''">
-        <xsl:text> - </xsl:text>
-        <xsl:value-of select="@author"/>
-      </xsl:if>
-
-      <xsl:value-of select="substring(@filename, string-length(@filename) - 3)"/>
-      <xsl:text>"
-</xsl:text>
-    </xsl:for-each>
-    -->
-
-
     <xsl:text>zip -r </xsl:text>
     <xsl:value-of select="$base_dir"/>
     <xsl:text>/dvd.zip </xsl:text>
@@ -131,9 +102,9 @@ __EOF__
 
         <xsl:if test="$total > 1">
           <xsl:text> - </xsl:text>
-          <xsl:value-of select="position()"/>
+          <xsl:value-of select="format-number(position(), '00')"/>
           <xsl:text> of </xsl:text>
-          <xsl:value-of select="$total"/>
+          <xsl:value-of select="format-number($total, '00')"/>
         </xsl:if>
 
         <xsl:if test="@author != ''">
@@ -141,7 +112,7 @@ __EOF__
           <xsl:value-of select="@author"/>
         </xsl:if>
 
-        <xsl:value-of select="substring(@primary_filename, string-length(@primary_filename) - 3)"/>
+        <xsl:value-of select="translate(substring(@primary_filename, string-length(@primary_filename) - 3),'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"/>
         <xsl:text>"
 </xsl:text>
       </xsl:for-each>
