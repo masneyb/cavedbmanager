@@ -10,5 +10,4 @@
 * Allow specifying the specific entrance when uploading entrance photos.
 * Remove bulletin id off of attachment filenames
 * Automatically generate the survey ID field
-* Allow filtering features on bulletin, county and topo quad
 * Add 11 reasons a cave can be significant to WVASS

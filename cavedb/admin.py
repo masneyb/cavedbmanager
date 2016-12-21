@@ -241,7 +241,8 @@ class FeatureAdmin(CavedbModelAdmin, admin.ModelAdmin):
                     # FIXME - disabled for performance reasons 'show_feature_attrs')
 
     list_filter = ['feature_type', 'is_significant', 'todo_enum',
-                   'access_enum', 'survey_county', 'bulletin_region',
+                   'access_enum', 'survey_county',
+                   'bulletin_region__bulletin', 'bulletin_region',
                    'cave_sign_installed', 'length_based_on',
                    'create_date', 'mod_date']
 
