@@ -818,3 +818,13 @@ def generate_xml_only_bulletin(request, bulletin_id):
     generate_makefile (bulletin_id, basedir)
 
     return HttpResponseRedirect('%sadmin/cavedb/bulletin/' % (settings.CONTEXT_PATH))
+
+def generate_all_xml_only_bulletin(request):
+    for bulletin in Bulletin.objects.all():
+        if (not is_bulletin_generation_allowed(bulletin.id)):
+             continue
+
+        generate_xml_only_bulletin(request, bulletin.id);
+
+    return HttpResponseRedirect('%sadmin/cavedb/bulletin/' % (settings.CONTEXT_PATH))
+
