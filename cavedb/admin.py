@@ -104,7 +104,6 @@ class CavedbModelAdmin(BaseModelAdmin):
         return super(CavedbModelAdmin, self).formfield_for_dbfield(db_field, **kwargs)
 
 
-
 class UtmZoneAdmin(CavedbModelAdmin, admin.ModelAdmin):
     save_on_top = True
     list_display = ('utm_zone', 'utm_north', 'create_date', 'mod_date')
