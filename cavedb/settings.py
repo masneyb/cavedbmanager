@@ -11,7 +11,7 @@ ADMINS = (
     ('Your Name', 'user@domain.org'),
 )
 
-ALLOWED_HOSTS = ( 'localhost', )
+ALLOWED_HOSTS = ('localhost',)
 
 ADMIN_SITE_HEADER = "My Cave Database"
 
@@ -19,9 +19,9 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-	'ENGINE': 'django.db.backends.postgresql_psycopg2',
-	'NAME': 'cavedb',
-	'HOST': '/var/run/postgresql/',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'cavedb',
+        'HOST': '/var/run/postgresql/',
     }
 }
 
@@ -60,7 +60,6 @@ ROOT_URLCONF = 'cavedb.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -74,7 +73,7 @@ TEMPLATES = [
                 #'django.template.loaders.eggs.load_template_source',
             ],
         },
-        'DIRS': ( INSTALL_ROOT + "/templates" ),
+        'DIRS': (INSTALL_ROOT + "/templates"),
     },
 ]
 
