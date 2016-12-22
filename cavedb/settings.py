@@ -3,13 +3,15 @@
 import os
 
 DEBUG = True
-TEMPLATE_DEBUG = DEBUG
+
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+INSTALL_ROOT = os.path.abspath(os.path.dirname(__file__))
 
 ADMINS = (
-    ('Your Name',   'user@domain.org'),
+    ('Your Name', 'user@domain.org'),
 )
 
-ALLOWED_HOSTS = ( 'localhost' )
+ALLOWED_HOSTS = ( 'localhost', )
 
 ADMIN_SITE_HEADER = "My Cave Database"
 
@@ -31,9 +33,6 @@ USE_TZ = False
 LANGUAGE_CODE = 'en-us'
 SITE_ID = 1
 
-INSTALL_ROOT = os.path.abspath(os.path.dirname(__file__))
-if os.sep != '/': INSTALL_ROOT = INSTALL_ROOT.replace(os.sep, '/')
-
 # Specifies where the application is deployed
 CONTEXT_PATH = '/'
 
@@ -43,11 +42,6 @@ STATIC_URL = '/media/'
 STATIC_ROOT = 'media/'
 
 SECRET_KEY = 'FIXME_CHANGE_THIS_SECRET_KEY'
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-    #'django.template.loaders.eggs.load_template_source',
-)
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -63,26 +57,27 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'cavedb.urls'
 
-# FIXME - this came from a brand new run of `python manage.py startproject`
-#TEMPLATES = [
-#    {
-#        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-#        'DIRS': [],
-#        'APP_DIRS': True,
-#        'OPTIONS': {
-#            'context_processors': [
-#                'django.template.context_processors.debug',
-#                'django.template.context_processors.request',
-#                'django.contrib.auth.context_processors.auth',
-#                'django.contrib.messages.context_processors.messages',
-#            ],
-#        },
-#    },
-#]
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+            'loaders': [
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
+                #'django.template.loaders.eggs.load_template_source',
+            ],
+        },
+        'DIRS': ( INSTALL_ROOT + "/templates" ),
+    },
+]
 
-TEMPLATE_DIRS = (
-    INSTALL_ROOT + "/templates",
-)
 
 WSGI_APPLICATION = 'cavedb.wsgi.application'
 
