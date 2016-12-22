@@ -1,13 +1,13 @@
 * Don't allow negative rotation
+* lat-long conversion from dd mm ss does not work
 * Only allow JPG, PNG and PDFs on feature photos
 * Add units field to length and depth on web interface
-* lat-long conversion from dd mm ss does not work
 * Dimension too large error: feature_attachments/9422/photos/McFerrin.jpg, feature_attachments/9760/photos/Rimstone_Falls.jpg
-* Large number of entrances on a single feature will cause a PDF formatting error
 * Move away from XML/XSLT. This has gotten out of hand.
-* Add paper size to bulletin (letter, legal, a4, etc)
-* Allow referencing an attachment on another feature
-* Allow specifying the specific entrance when uploading entrance photos.
-* Remove bulletin id off of attachment filenames
+* Large number of entrances on a single feature will cause a PDF formatting error
 * Automatically generate the survey ID field
 * Add 11 reasons a cave can be significant to WVASS
+* Add paper size to bulletin (letter, legal, a4, etc)
+* Remove bulletin id off of attachment filenames
+* Allow specifying the specific entrance when uploading entrance photos.
+* Allow referencing an attachment on another feature
