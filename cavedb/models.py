@@ -254,7 +254,6 @@ class Bulletin(models.Model):
         ordering = ('bulletin_name',)
 
 
-# FIXME - all kinds of ugliness in here
 # Restrict the list of choices to items that are underneath the current bulletin
 class BulletinChoice(models.ForeignKey):
     def formfield(self, **kwargs):
@@ -291,7 +290,6 @@ class BulletinRegion(models.Model):
         ordering = ('bulletin', 'region_name',)
 
 
-# FIXME - hack
 # Only show the user the regions that they are allowed to see.
 class RegionChoice(models.ForeignKey):
     def formfield(self, **kwargs):
