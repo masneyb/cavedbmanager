@@ -1,3 +1,5 @@
+# vim: set fileencoding=utf-8
+#
 # Copyright 2007-2016 Brian Masney <masneyb@onstation.org>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -46,7 +48,7 @@ class CavedbCharFormField(forms.CharField):
 
 class CavedbLatLonFormField(forms.DecimalField):
     def clean(self, value):
-        if value is None or value == '':
+        if value is None:
             return None
 
         # Check for a Lat/Lon in decimal degrees
@@ -58,7 +60,7 @@ class CavedbLatLonFormField(forms.DecimalField):
         ddmmss = re.compile(r'^(\-*)(\d{2})\s+(\d{2})\s+(\d{2}(\.\d+)*)$')
         ddmmss_groups = ddmmss.match(value)
 
-        if ddmmss_groups != None:
+        if ddmmss_groups:
             degrees = ddmmss_groups.group(2)
             mins = ddmmss_groups.group(3)
             secs = ddmmss_groups.group(4)
@@ -76,7 +78,7 @@ class CavedbLatLonFormField(forms.DecimalField):
         ddmm = re.compile(r'^(\-*)(\d{2})\s+(\d{2}(\.\d+)*)$')
         ddmm_groups = ddmm.match(value)
 
-        if ddmm_groups != None:
+        if ddmm_groups:
             degrees = ddmm_groups.group(2)
             mins = ddmm_groups.group(3)
 
@@ -88,7 +90,8 @@ class CavedbLatLonFormField(forms.DecimalField):
             print >> sys.stderr, 'Notice: Converted coordinate %s to %s\n' % (value, newvalue)
             return str(newvalue)
 
-        raise forms.ValidationError('Invalid coordinate. Supported values are dd mm ss[.frac sec], dd mm.[ss] and dd.[decimal degrees]')
+        raise forms.ValidationError('Invalid coordinate. Supported values are ' + \
+                                    'dd mm ss[.frac sec], dd mm.[ss] and dd.[decimal degrees]')
 
 
 class CavedbModelAdmin(BaseModelAdmin):

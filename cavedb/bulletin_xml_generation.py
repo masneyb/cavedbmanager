@@ -12,170 +12,172 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from cavedb.utils import *
-from os import makedirs, unlink, symlink, close, fork, setsid, chdir, system, _exit, chmod
-from django.http import HttpResponseRedirect
-from os.path import basename, isfile, isdir
-from django.conf import settings
-from django.http import Http404
-from zipfile import ZipFile
-from cavedb.models import *
-from popen2 import popen4
-from sys import stderr, exit
-from dateutil.relativedelta import *
-from dateutil.parser import *
-from datetime import *
-from xml.sax.saxutils import escape
 import hashlib
+import os
+import os.path
 import re
+import resource
+import subprocess
+from xml.sax.saxutils import escape
+from zipfile import ZipFile
+import datetime
+import dateutil.parser
+import dateutil.relativedelta
 import osgeo.osr
+from django.conf import settings
+from django.http import HttpResponseRedirect, Http404
+import cavedb.models
+import cavedb.utils
 
-###############################################################################
-### Coordinate Transformation                                               ###
-###############################################################################
-
-def get_wgs84(in_srs, x, y):
+def get_wgs84(in_srs, xcoord, ycoord):
     out_srs = osgeo.osr.SpatialReference()
     out_srs.SetWellKnownGeogCS('WGS84')
 
-    ct = osgeo.osr.CoordinateTransformation(in_srs, out_srs)
+    transformer = osgeo.osr.CoordinateTransformation(in_srs, out_srs)
+    (newx, newy, newz) = transformer.TransformPoint(xcoord, ycoord)
 
-    (newx, newy, newz) = ct.TransformPoint(x, y)
     return (newx, newy)
 
-def get_nad27(in_srs, utmzone, x, y):
+
+def get_nad27(in_srs, utmzone, xcoord, ycoord):
     out_srs = osgeo.osr.SpatialReference()
     out_srs.SetUTM(utmzone.utm_zone, utmzone.utm_north)
     out_srs.SetWellKnownGeogCS('NAD27')
 
-    ct = osgeo.osr.CoordinateTransformation(in_srs, out_srs)
+    transformer = osgeo.osr.CoordinateTransformation(in_srs, out_srs)
 
-    (newx, newy, newz) = ct.TransformPoint(x, y)
+    (newx, newy, newz) = transformer.TransformPoint(xcoord, ycoord)
     return (newx, newy)
 
+
 def transform_coordinate(entrance):
-   utmzone = entrance.utmzone
-   nad27_utmeast, nad27_utmnorth, wgs84_lat, wgs84_lon = '', '', '', ''
+    utmzone = entrance.utmzone
+    nad27_utmeast, nad27_utmnorth, wgs84_lat, wgs84_lon = '', '', '', ''
 
-   in_srs = osgeo.osr.SpatialReference()
-   in_srs.SetWellKnownGeogCS(entrance.datum.encode('ascii'))
+    in_srs = osgeo.osr.SpatialReference()
+    in_srs.SetWellKnownGeogCS(entrance.datum.encode('ascii'))
 
-   if (entrance.utmeast != None and entrance.utmeast != 0 and entrance.utmnorth != None and entrance.utmnorth != 0):
+    if entrance.utmeast != None and entrance.utmeast != 0 and entrance.utmnorth != None and \
+       entrance.utmnorth != 0:
         in_srs.SetUTM(entrance.utmzone.utm_zone, entrance.utmzone.utm_north)
 
         (wgs84_lon, wgs84_lat) = get_wgs84(in_srs, int(entrance.utmeast), int(entrance.utmnorth))
-        (nad27_utmeast, nad27_utmnorth) = get_nad27(in_srs, entrance.utmzone, int(entrance.utmeast), int(entrance.utmnorth))
+        (nad27_utmeast, nad27_utmnorth) = get_nad27(in_srs, entrance.utmzone, \
+                                                    int(entrance.utmeast), \
+                                                    int(entrance.utmnorth))
 
-   elif (entrance.longitude != None and entrance.longitude != 0 and entrance.latitude != None and entrance.latitude != 0):
-        (wgs84_lon, wgs84_lat) = get_wgs84(in_srs, float(entrance.longitude), float(entrance.latitude))
-        (nad27_utmeast, nad27_utmnorth) = get_nad27(in_srs, entrance.utmzone, float(entrance.longitude), float(entrance.latitude))
+    elif entrance.longitude != None and entrance.longitude != 0 and entrance.latitude != None and \
+         entrance.latitude != 0:
+        (wgs84_lon, wgs84_lat) = get_wgs84(in_srs, float(entrance.longitude), \
+                                           float(entrance.latitude))
+        (nad27_utmeast, nad27_utmnorth) = get_nad27(in_srs, entrance.utmzone, \
+                                                    float(entrance.longitude), \
+                                                    float(entrance.latitude))
 
-   return utmzone, nad27_utmeast, nad27_utmnorth, wgs84_lat, wgs84_lon
+    return utmzone, nad27_utmeast, nad27_utmnorth, wgs84_lat, wgs84_lon
 
 
-###############################################################################
-### Date Parsing                                                            ###
-###############################################################################
-
-def get_normalized_date(str):
+def get_normalized_date(datestr):
     # Parse different date formats including:
     # Sep 21, 1997, Fall/Winter 1997, Fall 1997, etc.
 
-    if (str == None or str == ''):
+    if not datestr:
         return "0000-00-00"
 
-    pattern = re.compile('/[\w\d]+')
-    str = pattern.sub('', str)
+    pattern = re.compile(r'/[\w\d]+')
+    datestr = pattern.sub('', datestr)
 
-    str = str.replace("Spring", "April");
-    str = str.replace("Summer", "July");
-    str = str.replace("Fall", "October");
-    str = str.replace("Winter", "January");
+    datestr = datestr.replace("Spring", "April")
+    datestr = datestr.replace("Summer", "July")
+    datestr = datestr.replace("Fall", "October")
+    datestr = datestr.replace("Winter", "January")
 
     try:
-        defaults = datetime.now() + relativedelta(month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
-        return parse(str, default=defaults)
-    except:
+        defaults = datetime.datetime.now() + \
+                   dateutil.relativedelta.relativedelta(month=1, day=1, hour=0, minute=0, \
+                                                        second=0, microsecond=0)
+        return dateutil.parser.parse(datestr, default=defaults)
+    except ValueError:
         return "0000-00-00"
 
 
-###############################################################################
-### Methods for creating the bulletin documents                             ###
-###############################################################################
-
-def convert_quotes(str):
+def convert_quotes(inputstr):
     # Directional quote support for LaTeX
     # FIXME - put this in the xml2latex.xsl stylesheet
 
-    if (str == None):
-      return ""
+    if not inputstr:
+        return ""
 
-    str = str.strip()
-    str = str.replace(" - ", " -- ")
+    inputstr = inputstr.strip()
+    inputstr = inputstr.replace(" - ", " -- ")
 
-    while (True):
-      if (str.count("\"") < 2):
-        break
+    while True:
+        if inputstr.count("\"") < 2:
+            break
 
-      oldstr = str
-      str = str.replace("\"", "``", 1)
-      str = str.replace("\"", "''", 1)
+        inputstr = inputstr.replace("\"", "``", 1)
+        inputstr = inputstr.replace("\"", "''", 1)
 
-    return escape(str)
+    return escape(inputstr)
 
 
-def clean_index(input):
+def clean_index(inputstr):
     # FIXME - ugly hack until Tucker County book is published
-    input = input.replace("\caveindex{\caveindex{Great Cave} of \caveindex{Dry Fork} of Cheat River}", "\caveindex{Great Cave of Dry Fork of Cheat River}")
-    input = input.replace("\caveindex{\caveindex{Great Cave} of \caveindex{Dry Fork} of \caveindex{Cheat River}}", "\caveindex{Great Cave of Dry Fork of Cheat River}")
+    inputstr = inputstr.replace(r"\caveindex{\caveindex{Great Cave} of \caveindex{Dry Fork} of Cheat River}", \
+                          r"\caveindex{Great Cave of Dry Fork of Cheat River}")
+    inputstr = inputstr.replace(r"\caveindex{\caveindex{Great Cave} of \caveindex{Dry Fork} of \caveindex{Cheat River}}", \
+                          r"\caveindex{Great Cave of Dry Fork of Cheat River}")
 
     flags = re.MULTILINE | re.DOTALL | re.VERBOSE
-    result = re.compile(r'(.*?)(\\caveindex{)(.*?)}(.*)', flags).match(input)
-    if (not result):
-        return input
-    elif (re.compile(r'^\\caveindex{.*', flags).match(result.group(3))):
+    result = re.compile(r'(.*?)(\\caveindex{)(.*?)}(.*)', flags).match(inputstr)
+    if not result:
+        return inputstr
+    elif re.compile(r'^\\caveindex{.*', flags).match(result.group(3)):
         value = re.sub(r'^\\caveindex{', '', result.group(3))
         return '%s%s%s%s' % (result.group(1), result.group(2), value, clean_index(result.group(4)))
-    elif (not re.compile(r'^.*\\caveindex.*$', flags).match(result.group(3))):
-        if (re.compile(r'^.*\\caveindex.*$', flags).match(result.group(4))):
-            return '%s%s%s}%s' % (result.group(1), result.group(2), result.group(3), clean_index(result.group(4)))
+    elif not re.compile(r'^.*\\caveindex.*$', flags).match(result.group(3)):
+        if re.compile(r'^.*\\caveindex.*$', flags).match(result.group(4)):
+            return '%s%s%s}%s' % (result.group(1), result.group(2), result.group(3), \
+                                  clean_index(result.group(4)))
         else:
-            return input
+            return inputstr
     else:
         value = re.sub(r'^(.*?)\s\\caveindex{(.*)', r'\1 \2', result.group(3))
-        return '%s%s' % (result.group(1), clean_index('%s%s%s' % (result.group(2), value, result.group(4))))
+        return '%s%s' % (result.group(1),
+                         clean_index('%s%s%s' % (result.group(2), value, result.group(4))))
 
 
-def finalize_index(input, indexedTerms):
+def finalize_index(inputstr, indexed_terms):
     flags = re.MULTILINE | re.DOTALL | re.VERBOSE
-    result = re.compile(r'(.*?)\\caveindex{(.*?)}(.*)', flags).match(input)
-    if (not result):
-        return input
+    result = re.compile(r'(.*?)\\caveindex{(.*?)}(.*)', flags).match(inputstr)
+    if not result:
+        return inputstr
 
-    return '%s%s%s' % (result.group(1), indexedTerms[1][result.group(2)], finalize_index(result.group(3), indexedTerms))
+    return '%s%s%s' % (result.group(1), indexed_terms[1][result.group(2)], \
+                       finalize_index(result.group(3), indexed_terms))
 
 
-def generate_index(str, indexedTerms):
+def generate_index(inputstr, indexed_terms):
     # Add terms to the index
-    for term in indexedTerms[0]:
+    for term in indexed_terms[0]:
         # This appears to be quicker than doing a single regular expression
-        str = str.replace('%s ' % (term), '\caveindex{%s} ' % (term))
-        str = str.replace('%s.' % (term), '\caveindex{%s}.' % (term))
-        str = str.replace('%s,' % (term), '\caveindex{%s},' % (term))
-        str = str.replace('%s:' % (term), '\caveindex{%s}:' % (term))
-        str = str.replace('%s)' % (term), '\caveindex{%s})' % (term))
-        str = str.replace('%s\'' % (term), '\caveindex{%s}\'' % (term))
-        #str = re.sub(r'([\s\.,]*)(' + term + r')([\s\.\,]*)', r'\1\caveindex{\2}\3', str)
+        inputstr = inputstr.replace('%s ' % (term), r'\caveindex{%s} ' % (term))
+        inputstr = inputstr.replace('%s.' % (term), r'\caveindex{%s}.' % (term))
+        inputstr = inputstr.replace('%s,' % (term), r'\caveindex{%s},' % (term))
+        inputstr = inputstr.replace('%s:' % (term), r'\caveindex{%s}:' % (term))
+        inputstr = inputstr.replace('%s)' % (term), r'\caveindex{%s})' % (term))
+        inputstr = inputstr.replace('%s\'' % (term), r'\caveindex{%s}\'' % (term))
+        #inputstr = re.sub(r'([\s\.,]*)(' + term + r')([\s\.\,]*)', r'\1\caveindex{\2}\3', inputstr)
 
-    return finalize_index(clean_index(str), indexedTerms)
+    return finalize_index(clean_index(inputstr), indexed_terms)
 
 
-def convert_nl_to_para(str):
-    str = convert_quotes(str)
+def convert_nl_to_para(inputstr):
+    inputstr = convert_quotes(inputstr)
     ret = ''
-    for para in str.split('\n'):
-        para = para.replace('\r', '');
-        if (para == ''):
+    for para in inputstr.split('\n'):
+        para = para.replace('\r', '')
+        if para == '':
             continue
 
         ret = '%s<para>%s</para>' % (ret, para)
@@ -183,662 +185,723 @@ def convert_nl_to_para(str):
     return ret
 
 
-# Add a \hbox{} around the cave and entrance names so that they appear on the 
+# Add a \hbox{} around the cave and entrance names so that they appear on the
 # same line in the PDF.
 def add_caption_hbox(caption, name):
-    if (caption.startswith(name)):
+    if caption.startswith(name):
         return caption
 
-    return caption.replace(name, '\hbox{%s}' % (name))
+    return caption.replace(name, r'\hbox{%s}' % (name))
 
 
 def format_photo_caption(feature, caption):
     caption = add_caption_hbox(caption, feature.name)
 
-    if (feature.alternate_names != None and feature.alternate_names != ''):
+    if feature.alternate_names:
         for alias in feature.alternate_names.split(','):
             alias = alias.strip()
-            if (alias != ""):
+            if alias != "":
                 caption = add_caption_hbox(caption, alias)
 
-    if (feature.additional_index_names != None and feature.additional_index_names != ''):
+    if feature.additional_index_names:
         for alias in feature.additional_index_names.split(','):
             alias = alias.strip()
-            if (alias != ""):
+            if alias != "":
                 caption = add_caption_hbox(caption, alias)
 
-    for entrance in FeatureEntrance.objects.filter(feature=feature.id):
-        if (entrance.entrance_name != None and entrance.entrance_name != ''):
+    for entrance in cavedb.models.FeatureEntrance.objects.filter(feature=feature.id):
+        if entrance.entrance_name:
             caption = add_caption_hbox(caption, entrance.entrance_name)
 
     return convert_quotes(caption)
 
-def generate_feature(f, feature, indexedTerms):
+
+def write_feature(xmlfile, feature, indexed_terms):
     missing_str = ''
 
     todo_descr = feature.todo_descr
     todo_enum = feature.todo_enum
-    if (todo_enum == None or todo_enum == ''):
+    if not todo_enum:
         todo_enum = 'minor_computer_work'
 
     feature_att_str = 'type="%s" internal_id="%s"' % (feature.feature_type, feature.id)
 
-    if (feature.is_significant):
+    if feature.is_significant:
         feature_att_str = '%s significant="yes"' % (feature_att_str)
     else:
         feature_att_str = '%s significant="no"' % (feature_att_str)
 
-
-    if (feature.cave_sign_installed):
+    if feature.cave_sign_installed:
         feature_att_str = '%s cave_sign_installed="yes"' % (feature_att_str)
     else:
         feature_att_str = '%s cave_sign_installed="no"' % (feature_att_str)
 
-
-    if (feature.survey_id != None and feature.survey_id != ''):
-        feature_att_str = '%s survey_prefix="%s" survey_suffix="%s" id="%s%s"' % (feature_att_str, feature.survey_county.survey_short_name, feature.survey_id, feature.survey_county.survey_short_name, feature.survey_id)
+    if feature.survey_id:
+        feature_att_str = '%s survey_prefix="%s" survey_suffix="%s" id="%s%s"' % \
+                          (feature_att_str, feature.survey_county.survey_short_name, \
+                           feature.survey_id, feature.survey_county.survey_short_name, \
+                           feature.survey_id)
     else:
         missing_str += ' ID'
 
-    f.write('<feature %s>\n' % (feature_att_str))
+    xmlfile.write('<feature %s>\n' % (feature_att_str))
 
-    f.write('<name>%s</name>\n' % (feature.name.strip()))
+    xmlfile.write('<name>%s</name>\n' % (feature.name.strip()))
 
-    if (feature.alternate_names != None and feature.alternate_names != ''):
+    if feature.alternate_names:
         for alias in feature.alternate_names.split(','):
             alias = alias.strip()
-            if (alias != ""):
-                f.write('<aliases>%s</aliases>\n' % (alias))
+            if alias:
+                xmlfile.write('<aliases>%s</aliases>\n' % (alias))
 
-    if (feature.additional_index_names != None and feature.additional_index_names != ''):
+    if feature.additional_index_names:
         for alias in feature.additional_index_names.split(','):
             alias = alias.strip()
-            if (alias != ""):
-                f.write('<additional_index_name>%s</additional_index_name>\n' % (alias))
+            if alias:
+                xmlfile.write('<additional_index_name>%s</additional_index_name>\n' % (alias))
 
     # For debugging coordinate problems...
-    f.flush()
+    xmlfile.flush()
 
     missing_coord = False
     missing_ele = False
     saw_entrance = False
 
-    for entrance in FeatureEntrance.objects.filter(feature=feature.id):
-        if (not entrance.publish_location):
+    for ent in cavedb.models.FeatureEntrance.objects.filter(feature=feature.id):
+        if not ent.publish_location:
             continue
 
         saw_entrance = True
-        if (entrance.elevation_ft == None or entrance.elevation_ft == ''):
+        if not ent.elevation_ft:
             missing_ele = True
 
-        utmzone, nad27_utmeast, nad27_utmnorth, wgs84_lat, wgs84_lon = transform_coordinate(entrance)
+        utmzone, nad27_utmeast, nad27_utmnorth, wgs84_lat, wgs84_lon = transform_coordinate(ent)
 
         attstr = ''
-        if (entrance.entrance_name != None and entrance.entrance_name != ''):
-            attstr += ' name="%s"' % (entrance.entrance_name)
+        if ent.entrance_name:
+            attstr += ' name="%s"' % (ent.entrance_name)
 
-        if (entrance.access_enum != None and entrance.access_enum != ''):
-            attstr += ' access_status="%s"' % (entrance.access_enum)
+        if ent.access_enum:
+            attstr += ' access_status="%s"' % (ent.access_enum)
 
-        if (entrance.coord_acquision != None and entrance.coord_acquision != ''):
-            attstr += ' coord_acquision="%s"' % (entrance.coord_acquision)
+        if ent.coord_acquision:
+            attstr += ' coord_acquision="%s"' % (ent.coord_acquision)
 
-        if (nad27_utmeast != '' and nad27_utmeast != 0):
+        if nad27_utmeast != '' and nad27_utmeast != 0:
             quad_name = ''
-            if (entrance.quad != None):
-                quad_name = entrance.quad
+            if ent.quad:
+                quad_name = ent.quad
 
-            f.write('<location%s id="%s" wgs84_lat="%s" wgs84_lon="%s" utmzone="%s" utm27_utmeast="%s" utm27_utmnorth="%s" ele="%s" county="%s" quad="%s"/>\n' % (attstr, entrance.id, wgs84_lat, wgs84_lon, utmzone, nad27_utmeast, nad27_utmnorth, entrance.elevation_ft, entrance.county, quad_name))
+            xmlfile.write('<location%s id="%s" wgs84_lat="%s" wgs84_lon="%s" utmzone="%s" utm27_utmeast="%s" utm27_utmnorth="%s" ele="%s" county="%s" quad="%s"/>\n' % \
+                          (attstr, ent.id, wgs84_lat, wgs84_lon, utmzone, nad27_utmeast, \
+                           nad27_utmnorth, ent.elevation_ft, ent.county, quad_name))
         else:
             missing_coord = True
 
-    if (missing_coord or not saw_entrance):
+    if missing_coord or not saw_entrance:
         missing_str += ' GPS'
         todo_enum = 'minor_field_work'
-    elif (missing_ele):
+    elif missing_ele:
         missing_str += ' elevation'
 
-
-    for attachment in FeatureAttachment.objects.filter(feature__id=feature.id):
+    for attachment in cavedb.models.FeatureAttachment.objects.filter(feature__id=feature.id):
         attrs = 'filename="%s" type="%s"' % (attachment.attachment, attachment.attachment_type)
-        if (attachment.description != None and attachment.description != ''):
+        if attachment.description:
             attrs += ' description="%s"' % (convert_quotes(attachment.description))
-        if (attachment.user_visible_file_suffix != None and attachment.user_visible_file_suffix != ''):
-            attrs += ' user_visible_file_suffix="%s"' % (convert_quotes(attachment.user_visible_file_suffix))
-        if (attachment.author != None and attachment.author != ''):
+        if attachment.user_visible_file_suffix:
+            attrs += ' user_visible_file_suffix="%s"' % \
+                     (convert_quotes(attachment.user_visible_file_suffix))
+        if attachment.author:
             attrs += ' author="%s"' % (convert_quotes(attachment.author))
 
-        f.write('<attachment %s/>\n' % (attrs))
-
+        xmlfile.write('<attachment %s/>\n' % (attrs))
 
     has_map = False
     num_in_pdf = 1
-    for photo in FeaturePhoto.objects.filter(feature__id=feature.id):
-        attrs = 'id="photo%s" type="%s" scale="%s" rotate="%s" base_directory="%s" primary_filename="%s" secondary_filename="%s" sort_order="%s" show_at_end="%s" include_on_dvd="%s" show_in_pdf="%s"' % (photo.id, photo.type, photo.scale, photo.rotate_degrees, settings.MEDIA_ROOT, photo.filename, photo.secondary_filename, photo.sort_order, int(photo.show_at_end), int(photo.include_on_dvd), int(photo.show_in_pdf))
+    for photo in cavedb.models.FeaturePhoto.objects.filter(feature__id=feature.id):
+        attrs = 'id="photo%s" type="%s" scale="%s" rotate="%s" base_directory="%s" primary_filename="%s" secondary_filename="%s" sort_order="%s" show_at_end="%s" include_on_dvd="%s" show_in_pdf="%s"' % \
+                (photo.id, photo.type, photo.scale, photo.rotate_degrees, settings.MEDIA_ROOT, \
+                 photo.filename, photo.secondary_filename, photo.sort_order, \
+                 int(photo.show_at_end), int(photo.include_on_dvd), int(photo.show_in_pdf))
 
-        if (photo.show_in_pdf):
-          attrs += ' num_in_pdf="%s"' % (num_in_pdf)
-          num_in_pdf = num_in_pdf + 1
-        if (photo.caption != None and photo.caption != ''):
-           attrs += ' caption="%s"' % (format_photo_caption(feature, photo.caption))
-        if (photo.people_shown != None and photo.people_shown != ''):
-           attrs += ' people_shown="%s"' % (convert_quotes(photo.people_shown))
-        if (photo.author != None and photo.author != ''):
-           attrs += ' author="%s"' % (convert_quotes(photo.author))
+        if photo.show_in_pdf:
+            attrs += ' num_in_pdf="%s"' % (num_in_pdf)
+            num_in_pdf = num_in_pdf + 1
+        if photo.caption:
+            attrs += ' caption="%s"' % (format_photo_caption(feature, photo.caption))
+        if photo.people_shown:
+            attrs += ' people_shown="%s"' % (convert_quotes(photo.people_shown))
+        if photo.author:
+            attrs += ' author="%s"' % (convert_quotes(photo.author))
 
-        f.write('<photo %s>\n' % (attrs))
-        
-        if (photo.indexed_terms != None and photo.indexed_terms != ''):
+        xmlfile.write('<photo %s>\n' % (attrs))
+
+        if photo.indexed_terms:
             for term in photo.indexed_terms.split('\n'):
-                f.write('<index>%s</index>\n' % (term.strip()))
+                xmlfile.write('<index>%s</index>\n' % (term.strip()))
 
-        f.write('</photo>\n')
+        xmlfile.write('</photo>\n')
 
-        if (photo.type == 'map'):
+        if photo.type == 'map':
             has_map = True
 
-    for photo in FeatureReferencedMap.objects.filter(feature__id=feature.id, map__show_in_pdf=True):
-        f.write('<photo ref="photo%s" type="map" show_in_pdf="1" />\n' % (photo.map.id))
+    for photo in cavedb.models.FeatureReferencedMap.objects.filter(feature__id=feature.id, map__show_in_pdf=True):
+        xmlfile.write('<photo ref="photo%s" type="map" show_in_pdf="1" />\n' % (photo.map.id))
         has_map = True
 
-
-    if (feature.length_ft != None and feature.length_ft != ''):
-        f.write('<length>%s</length>\n' % (feature.length_ft))
-        if (not has_map and feature.length_ft >= 3000):
+    if feature.length_ft:
+        xmlfile.write('<length>%s</length>\n' % (feature.length_ft))
+        if not has_map and feature.length_ft >= 3000:
             missing_str += ' map'
 
-    if (feature.depth_ft != None and feature.depth_ft != ''):
-        f.write('<depth>%s</depth>\n' % (feature.depth_ft))
+    if feature.depth_ft:
+        xmlfile.write('<depth>%s</depth>\n' % (feature.depth_ft))
 
-    if (feature.length_based_on != None and feature.length_based_on != ''):
-        f.write('<length_based_on>%s</length_based_on>\n' % (feature.length_based_on))
+    if feature.length_based_on:
+        xmlfile.write('<length_based_on>%s</length_based_on>\n' % (feature.length_based_on))
 
-    if (feature.description != None and feature.description != ''):
-        if (feature.source != None and feature.source != ''):
-            f.write('<desc author="%s">%s</desc>\n' % (convert_quotes(feature.source), generate_index(convert_nl_to_para(feature.description), indexedTerms)))
+    if feature.description:
+        if feature.source:
+            xmlfile.write('<desc author="%s">%s</desc>\n' % \
+                    (convert_quotes(feature.source), \
+                     generate_index(convert_nl_to_para(feature.description), indexed_terms)))
         else:
-            f.write('<desc>%s</desc>\n' % (generate_index(convert_nl_to_para(feature.description), indexedTerms)))
+            xmlfile.write('<desc>%s</desc>\n' % \
+                    (generate_index(convert_nl_to_para(feature.description), indexed_terms)))
     else:
         missing_str += ' description'
 
-    if (feature.history != None and feature.history != ''):
-        f.write('<history>%s</history>\n' % (generate_index(convert_quotes(feature.history), indexedTerms)))
+    if feature.history:
+        xmlfile.write('<history>%s</history>\n' % \
+                (generate_index(convert_quotes(feature.history), indexed_terms)))
 
-    if (feature.internal_history != None and feature.internal_history != ''):
-        f.write('<internal_history>%s</internal_history>\n' % (generate_index(convert_quotes(feature.internal_history), indexedTerms)))
+    if feature.internal_history:
+        xmlfile.write('<internal_history>%s</internal_history>\n' % \
+                (generate_index(convert_quotes(feature.internal_history), indexed_terms)))
 
-    if (feature.biology != None and feature.biology != ''):
-        f.write('<biology>%s</biology>\n' % (generate_index(convert_quotes(feature.biology), indexedTerms)))
+    if feature.biology:
+        xmlfile.write('<biology>%s</biology>\n' % \
+                (generate_index(convert_quotes(feature.biology), indexed_terms)))
 
-    if (feature.geology_hydrology != None and feature.geology_hydrology != ''):
-        f.write('<geology>%s</geology>\n' % (generate_index(convert_quotes(feature.geology_hydrology), indexedTerms)))
+    if feature.geology_hydrology:
+        xmlfile.write('<geology>%s</geology>\n' % \
+                (generate_index(convert_quotes(feature.geology_hydrology), indexed_terms)))
 
-    if (feature.hazards != None and feature.hazards != ''):
-        f.write('<hazards>%s</hazards>\n' % (generate_index(convert_quotes(feature.hazards), indexedTerms)))
+    if feature.hazards:
+        xmlfile.write('<hazards>%s</hazards>\n' % \
+                (generate_index(convert_quotes(feature.hazards), indexed_terms)))
 
+    if feature.owner_name:
+        xmlfile.write('<owner_name>%s</owner_name>\n' % (feature.owner_name))
 
-    if (feature.owner_name != None and feature.owner_name != ''):
-        f.write('<owner_name>%s</owner_name>\n' % (feature.owner_name))
+    if feature.owner_address:
+        xmlfile.write('<owner_address>%s</owner_address>\n' % (feature.owner_address))
 
-    if (feature.owner_address != None and feature.owner_address != ''):
-        f.write('<owner_address>%s</owner_address>\n' % (feature.owner_address))
+    if feature.owner_phone:
+        xmlfile.write('<owner_phone>%s</owner_phone>\n' % (feature.owner_phone))
 
-    if (feature.owner_phone != None and feature.owner_phone != ''):
-        f.write('<owner_phone>%s</owner_phone>\n' % (feature.owner_phone))
+    for ref in cavedb.models.FeatureReference.objects.filter(feature=feature.id):
+        write_reference(xmlfile, ref)
 
+    if feature.access_enum and feature.access_descr:
+        xmlfile.write('<access status="%s">%s</access>\n' % \
+                      (feature.access_enum, feature.access_descr))
 
-    for ref in FeatureReference.objects.filter(feature=feature.id):
-        generate_reference_xml(f, ref)
-
-
-    if (feature.access_enum != None and feature.access_enum != '' and feature.access_descr != None and feature.access_descr != ''):
-        f.write('<access status="%s">%s</access>\n' % (feature.access_enum, feature.access_descr))
-
-
-    if (missing_str != ''):
+    if missing_str:
         missing_str = 'The following fields are missing: (%s ).' % (missing_str)
 
-        if (todo_descr == None):
+        if not todo_descr:
             todo_descr = missing_str
         else:
             todo_descr = '%s %s' % (todo_descr, missing_str)
 
-    if (todo_descr != None and todo_descr != ''):
-        f.write('<bulletin_work category="%s">%s</bulletin_work>\n' % (todo_enum, todo_descr))
+    if todo_descr:
+        xmlfile.write('<bulletin_work category="%s">%s</bulletin_work>\n' % (todo_enum, todo_descr))
 
-    f.write('</feature>\n')
+    xmlfile.write('</feature>\n')
 
 
 def get_region_gis_hash(region_id):
-    m = hashlib.md5()
-    for feature in Feature.objects.filter(bulletin_region__id=region_id):
-        for entrance in FeatureEntrance.objects.filter(feature=feature.id):
-            if (not entrance.publish_location):
+    md5hash = hashlib.md5()
+    for feature in cavedb.models.Feature.objects.filter(bulletin_region__id=region_id):
+        for entrance in cavedb.models.FeatureEntrance.objects.filter(feature=feature.id):
+            if not entrance.publish_location:
                 continue
-            utmzone, nad27_utmeast, nad27_utmnorth, wgs84_lat, wgs84_lon = transform_coordinate(entrance)
-            entranceinfo = '%s,%s,%s,%s,%s,%s,%s,%s,%s' % (feature.name, feature.feature_type, feature.is_significant, entrance.entrance_name, utmzone, nad27_utmeast, nad27_utmnorth, wgs84_lat, wgs84_lon)
-            m.update(entranceinfo)
-    return m.hexdigest()
+
+            utmzone, nad27_utmeast, nad27_utmnorth, wgs84_lat, wgs84_lon = \
+               transform_coordinate(entrance)
+
+            entranceinfo = '%s,%s,%s,%s,%s,%s,%s,%s,%s' % \
+                           (feature.name, feature.feature_type, feature.is_significant, \
+                            entrance.entrance_name, utmzone, nad27_utmeast, nad27_utmnorth, \
+                            wgs84_lat, wgs84_lon)
+            md5hash.update(entranceinfo)
+
+    return md5hash.hexdigest()
 
 
 def get_all_regions_gis_hash(bulletin_id):
-    m = hashlib.md5()
-    for region in BulletinRegion.objects.filter(bulletin__id=bulletin_id):
+    md5 = hashlib.md5()
+    for region in cavedb.models.BulletinRegion.objects.filter(bulletin__id=bulletin_id):
         gis_region_hash = get_region_gis_hash(region.id)
-        m.update(gis_region_hash)
-    return m.hexdigest()
+        md5.update(gis_region_hash)
+
+    return md5.hexdigest()
 
 
-def generate_reference_xml(f, ref):
-    hidden_in_bibliography = ref.title.startswith('unpublished trip report') or ref.title.startswith('Tucker County Speleological Survey Files') or ref.title.startswith('personal communication') or ref.title.startswith('e-mail') or ref.title.startswith('letter to') or ref.title.startswith('Trip Report in NSS Files')
+def write_reference(xmlfile, ref):
+    hidden_in_bibliography = ref.title.startswith('unpublished trip report') or \
+                             ref.title.startswith('Tucker County Speleological Survey Files') or \
+                             ref.title.startswith('personal communication') or \
+                             ref.title.startswith('e-mail') or \
+                             ref.title.startswith('letter to') or \
+                             ref.title.startswith('Trip Report in NSS Files')
 
-    f.write('<reference author="%s" title="%s" book="%s" volume="%s" number="%s" pages="%s" url="%s" date="%s" extra="%s" parsed_date="%s" hidden_in_bibliography="%s"/>\n' % (convert_quotes(ref.author), convert_quotes(ref.title), convert_quotes(ref.book), convert_quotes(ref.volume), convert_quotes(ref.number), convert_quotes(ref.pages), convert_quotes(ref.url), convert_quotes(ref.date), convert_quotes(ref.extra), get_normalized_date(ref.date), hidden_in_bibliography))
+    xmlfile.write('<reference author="%s" title="%s" book="%s" volume="%s" number="%s" pages="%s" url="%s" date="%s" extra="%s" parsed_date="%s" hidden_in_bibliography="%s"/>\n' % \
+                  (convert_quotes(ref.author), convert_quotes(ref.title), \
+                   convert_quotes(ref.book), convert_quotes(ref.volume), \
+                   convert_quotes(ref.number), convert_quotes(ref.pages), \
+                   convert_quotes(ref.url), convert_quotes(ref.date), convert_quotes(ref.extra), \
+                   get_normalized_date(ref.date), hidden_in_bibliography))
 
 
-def generate_bulletin_xml_file(bulletin, basedir):
-    latex_output_dir = basedir + '/output'
-    if not isdir(latex_output_dir):
-        makedirs(latex_output_dir)
-
-    filename = '%s/output/bulletin_%s.xml' % (basedir, bulletin.id)
-    f = open(filename, 'w')
-
-
-    indexedTerms = [], {}
-    if (bulletin.indexed_terms != None):
-        for searchTerm in bulletin.indexed_terms.split('\n'):
-            searchTerm = convert_quotes(searchTerm.replace('\r', '').strip())
-            if (searchTerm == ''):
+def get_indexed_terms(bulletin):
+    indexed_terms = [], {}
+    if bulletin.indexed_terms:
+        for search_term in bulletin.indexed_terms.split('\n'):
+            search_term = convert_quotes(search_term.replace('\r', '').strip())
+            if not search_term:
                 continue
-    
-            allIndexTerms = searchTerm.split(':')
-            if (len(allIndexTerms) == 1):
-                indexedTerms[0].append(searchTerm)
-                indexedTerms[1][searchTerm] = '\index{%s}%s' % (searchTerm, searchTerm)
+
+            all_index_terms = search_term.split(':')
+            if len(all_index_terms) == 1:
+                indexed_terms[0].append(search_term)
+                indexed_terms[1][search_term] = r'\index{%s}%s' % (search_term, search_term)
             else:
                 replacement = ''
-                for indexTerm in allIndexTerms[1:]:
-                    replacement = '%s\index{%s}' % (replacement, indexTerm)
-                indexedTerms[0].append(allIndexTerms[0])
-                indexedTerms[1][allIndexTerms[0]] = '%s%s' % (replacement, allIndexTerms[0])
+                for index_term in all_index_terms[1:]:
+                    replacement = r'%s\index{%s}' % (replacement, index_term)
+                indexed_terms[0].append(all_index_terms[0])
+                indexed_terms[1][all_index_terms[0]] = '%s%s' % (replacement, all_index_terms[0])
 
+    for region in cavedb.models.BulletinRegion.objects.filter(bulletin__id=bulletin.id):
+        for feature in cavedb.models.Feature.objects.filter(bulletin_region__id=region.id):
+            feature_name = feature.name.strip()
+            indexed_terms[0].append(feature_name)
+            indexed_terms[1][feature_name] = r'\index{%s}%s' % (feature_name, feature_name)
 
-    for region in BulletinRegion.objects.filter(bulletin__id=bulletin.id):
-        for feature in Feature.objects.filter(bulletin_region__id=region.id):
-            fn = feature.name.strip()
-            indexedTerms[0].append(fn)
-            indexedTerms[1][fn] = '\index{%s}%s' % (fn, fn)
-
-            if (feature.alternate_names != None and feature.alternate_names != ''):
+            if feature.alternate_names:
                 for alias in feature.alternate_names.split(','):
                     alias = alias.strip()
-                    if (alias != ""):
-                        indexedTerms[0].append(alias)
-                        indexedTerms[1][alias] = '\index{%s}%s' % (alias, alias)
+                    if alias:
+                        indexed_terms[0].append(alias)
+                        indexed_terms[1][alias] = r'\index{%s}%s' % (alias, alias)
 
-            if (feature.additional_index_names != None and feature.additional_index_names != ''):
+            if feature.additional_index_names:
                 for alias in feature.additional_index_names.split(','):
                     alias = alias.strip()
-                    if (alias != ""):
-                        indexedTerms[0].append(alias)
-                        indexedTerms[1][alias] = '\index{%s}%s' % (alias, alias)
+                    if alias:
+                        indexed_terms[0].append(alias)
+                        indexed_terms[1][alias] = r'\index{%s}%s' % (alias, alias)
 
-    indexedTerms[0].sort(key=lambda term: len(term), reverse=True)
+    indexed_terms[0].sort(key=lambda term: len(term), reverse=True)
+
+    return indexed_terms
 
 
-    bulletin_gis_hash = get_all_regions_gis_hash(bulletin.id)
+def write_chapters(xmlfile, bulletin, indexed_terms):
+    xmlfile.write('<chapters>\n')
 
-    f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
-    f.write('<regions name="%s" editors="%s" file_prefix="bulletin_%s" all_regions_gis_hash="%s">\n' % (bulletin.bulletin_name, bulletin.editors, bulletin.id, bulletin_gis_hash))
+    for chapter in cavedb.models.BulletinChapter.objects.filter(bulletin__id=bulletin.id):
+        xmlfile.write('<chapter title="%s" is_appendix="%i">\n' % \
+                (chapter.chapter_title, chapter.is_appendix))
 
-    f.write('<indexed_terms>\n')
-    for term in indexedTerms[0]:
-        f.write('<term search="%s" index="%s"/>\n' % (term, indexedTerms[1][term]))
-    f.write('</indexed_terms>\n')
-
-    f.write('<maps>\n')
-    for map in GisMap.objects.all():
-        f.write('<map name="%s" description="%s" website_url="%s" license_url="%s" map_label="%s"/>\n' % (convert_quotes(map.name), convert_quotes(map.description), convert_quotes(map.website_url), convert_quotes(map.license_url), convert_quotes(map.map_label)))
-    f.write('</maps>\n')
-
-    generate_gis_section (basedir, f, bulletin.id)
-
-    if (bulletin.bw_map1 != None and bulletin.bw_map1 != ''):
-        f.write('<map type="black_and_white">%s</map>\n' % (bulletin.bw_map1))
-    if (bulletin.bw_map2 != None and bulletin.bw_map2 != ''):
-        f.write('<map type="black_and_white">%s</map>\n' % (bulletin.bw_map2))
-    if (bulletin.bw_map3 != None and bulletin.bw_map3 != ''):
-        f.write('<map type="black_and_white">%s</map>\n' % (bulletin.bw_map3))
-    if (bulletin.color_map1 != None and bulletin.color_map1 != ''):
-        f.write('<map type="color">%s</map>\n' % (bulletin.color_map1))
-    if (bulletin.color_map2 != None and bulletin.color_map2 != ''):
-        f.write('<map type="color">%s</map>\n' % (bulletin.color_map2))
-    if (bulletin.color_map3 != None and bulletin.color_map3 != ''):
-        f.write('<map type="color">%s</map>\n' % (bulletin.color_map3))
-
-    f.write('<title_page>%s</title_page>\n' % (generate_index(convert_quotes(bulletin.title_page), indexedTerms)))
-
-    f.write('<preamble_page>%s</preamble_page>\n' % (generate_index(convert_quotes(bulletin.preamble_page), indexedTerms)))
-
-    if (bulletin.contributor_page != None and bulletin.contributor_page != ''):
-        f.write('<contributor_page>%s</contributor_page>\n' % (generate_index(convert_quotes(bulletin.contributor_page), indexedTerms)))
-
-    if (bulletin.toc_footer != None and bulletin.toc_footer != ''):
-        f.write('<toc_footer>%s</toc_footer>\n' % (generate_index(convert_quotes(bulletin.toc_footer), indexedTerms)))
-
-    if (bulletin.caves_header != None and bulletin.caves_header != ''):
-        f.write('<caves_header>%s</caves_header>\n' % (generate_index(convert_quotes(bulletin.caves_header), indexedTerms)))
-
-    if (bulletin.photo_index_header != None and bulletin.photo_index_header != ''):
-        f.write('<photo_index_header>%s</photo_index_header>\n' % (convert_quotes(bulletin.photo_index_header)))
-
-    if (bulletin.dvd_readme != None and bulletin.dvd_readme != ''):
-        f.write('<dvd_readme>%s</dvd_readme>\n' % (escape(bulletin.dvd_readme)))
-
-    f.write('<chapters>\n')
-
-    for chapter in BulletinChapter.objects.filter(bulletin__id=bulletin.id):
-        f.write('<chapter title="%s" is_appendix="%i">\n' % (chapter.chapter_title, chapter.is_appendix))
-
-        for section in BulletinSection.objects.filter(bulletin_chapter__id=chapter.id):
+        for section in cavedb.models.BulletinSection.objects.filter(bulletin_chapter__id=chapter.id):
             section_attrs = ''
-            if (section.section_title != None and section.section_title != ''):
+            if section.section_title:
                 section_attrs = '%s title="%s"' % (section_attrs, section.section_title)
 
-            if (section.section_subtitle != None and section.section_subtitle != ''):
+            if section.section_subtitle:
                 section_attrs = '%s subtitle="%s"' % (section_attrs, section.section_subtitle)
 
-            f.write('<section%s>\n' % (section_attrs))
-            f.write('<text num_columns="%s">%s</text>' % (section.num_columns, generate_index(convert_quotes(section.section_data), indexedTerms)))
-            for ref in BulletinSectionReference.objects.filter(bulletinsection__id=section.id):
-              generate_reference_xml(f, ref)
+            xmlfile.write('<section%s>\n' % (section_attrs))
+            xmlfile.write('<text num_columns="%s">%s</text>' % \
+                    (section.num_columns, \
+                     generate_index(convert_quotes(section.section_data), indexed_terms)))
 
-            f.write('</section>\n')
-       
-        f.write('</chapter>')
+            for ref in cavedb.models.BulletinSectionReference.objects.filter(bulletinsection__id=section.id):
+                write_reference(xmlfile, ref)
 
-    f.write('</chapters>\n')
+            xmlfile.write('</section>\n')
 
+        xmlfile.write('</chapter>')
 
-    for region in BulletinRegion.objects.filter(bulletin__id=bulletin.id):
-        map_name = region.map_region_name
-        if (map_name == None or map_name == ''):
-            map_name = region.region_name
-
-        gis_region_hash = get_region_gis_hash(region.id)
-
-        f.write('<region name="%s" map_name="%s" file_prefix="bulletin_%s_region_%s" show_gis_map="%s" gis_hash="%s">\n' % (region.region_name, map_name, bulletin.id, region.id, int(region.show_gis_map), gis_region_hash))
-        if (region.introduction != None and region.introduction != ''):
-            f.write('<introduction>%s</introduction>' % (generate_index(convert_quotes(region.introduction), indexedTerms)))
-
-        f.write('<features>\n')
-
-        for feature in Feature.objects.filter(bulletin_region__id=region.id):
-            generate_feature(f, feature, indexedTerms)
-
-        f.write('</features>\n')
-        f.write('</region>\n')
+    xmlfile.write('</chapters>\n')
 
 
-    # Write out all references together for the bibliography
-    f.write('<all_references>\n')
-
-    for region in BulletinRegion.objects.filter(bulletin__id=bulletin.id):
-        for feature in Feature.objects.filter(bulletin_region__id=region.id):
-            for ref in FeatureReference.objects.filter(feature=feature.id):
-                generate_reference_xml(f, ref)
-
-    for chapter in BulletinChapter.objects.filter(bulletin__id=bulletin.id):
-        for section in BulletinSection.objects.filter(bulletin_chapter__id=chapter.id):
-            for ref in BulletinSectionReference.objects.filter(bulletinsection__id=section.id):
-              generate_reference_xml(f, ref)
-
-    f.write('</all_references>\n')
-
-
+def write_feature_indexes(xmlfile, bulletin):
     aliases = {}
+
     # Show all of the names and aliases in one place so that they can be sorted in the index
-    f.write('<feature_indexes>\n')
+    xmlfile.write('<feature_indexes>\n')
 
-    for feature in Feature.objects.filter(bulletin_region__bulletin__id=bulletin.id):
-        f.write('<index name="%s" is_primary="1"/>\n' % (feature.name.strip()))
+    for feature in cavedb.models.Feature.objects.filter(bulletin_region__bulletin__id=bulletin.id):
+        xmlfile.write('<index name="%s" is_primary="1"/>\n' % (feature.name.strip()))
 
-        if (feature.alternate_names != None and feature.alternate_names != ''):
+        if feature.alternate_names:
             for alias in feature.alternate_names.split(','):
                 alias = alias.strip()
-                if (alias != ""):
-                    if (alias in aliases):
+                if alias:
+                    if alias in aliases:
                         aliases[alias].append(feature.id)
                     else:
                         aliases[alias] = [feature.id]
 
-        if (feature.additional_index_names != None and feature.additional_index_names != ''):
+        if feature.additional_index_names:
             for alias in feature.additional_index_names.split(','):
                 alias = alias.strip()
-                if (alias != ""):
-                    if (alias in aliases):
+                if alias:
+                    if alias in aliases:
                         aliases[alias].append(feature.id)
                     else:
                         aliases[alias] = [feature.id]
 
     for alias in aliases:
-        f.write('<index name="%s" is_alias="1">\n' % (alias))
-        for id in aliases[alias]:
-            f.write('<feature_id>%s</feature_id>\n' % (id))
+        xmlfile.write('<index name="%s" is_alias="1">\n' % (alias))
+        for feature_id in aliases[alias]:
+            xmlfile.write('<feature_id>%s</feature_id>\n' % (feature_id))
 
-        f.write('</index>\n')
+        xmlfile.write('</index>\n')
 
-    f.write('</feature_indexes>\n')
-
-    f.write('</regions>\n')
-
-    f.close()
+    xmlfile.write('</feature_indexes>\n')
 
 
-def generate_makefile(bulletin_id, basedir):
+def write_all_references(xmlfile, bulletin):
+    # Write out all references together for the bibliography
+    xmlfile.write('<all_references>\n')
+
+    for region in cavedb.models.BulletinRegion.objects.filter(bulletin__id=bulletin.id):
+        for feature in cavedb.models.Feature.objects.filter(bulletin_region__id=region.id):
+            for ref in cavedb.models.FeatureReference.objects.filter(feature=feature.id):
+                write_reference(xmlfile, ref)
+
+    for chapter in cavedb.models.BulletinChapter.objects.filter(bulletin__id=bulletin.id):
+        for section in cavedb.models.BulletinSection.objects.filter(bulletin_chapter__id=chapter.id):
+            for ref in cavedb.models.BulletinSectionReference.objects.filter(bulletinsection__id=section.id):
+                write_reference(xmlfile, ref)
+
+    xmlfile.write('</all_references>\n')
+
+
+def write_bulletin_maps(xmlfile, bulletin):
+    if bulletin.bw_map1:
+        xmlfile.write('<map type="black_and_white">%s</map>\n' % (bulletin.bw_map1))
+    if bulletin.bw_map2:
+        xmlfile.write('<map type="black_and_white">%s</map>\n' % (bulletin.bw_map2))
+    if bulletin.bw_map3:
+        xmlfile.write('<map type="black_and_white">%s</map>\n' % (bulletin.bw_map3))
+    if bulletin.color_map1:
+        xmlfile.write('<map type="color">%s</map>\n' % (bulletin.color_map1))
+    if bulletin.color_map2:
+        xmlfile.write('<map type="color">%s</map>\n' % (bulletin.color_map2))
+    if bulletin.color_map3:
+        xmlfile.write('<map type="color">%s</map>\n' % (bulletin.color_map3))
+
+
+def write_bulletin_xml_file(bulletin, basedir):
+    latex_output_dir = basedir + '/output'
+    if not os.path.isdir(latex_output_dir):
+        os.makedirs(latex_output_dir)
+
+    filename = '%s/output/bulletin_%s.xml' % (basedir, bulletin.id)
+    xmlfile = open(filename, 'w')
+
+    bulletin_gis_hash = get_all_regions_gis_hash(bulletin.id)
+
+    xmlfile.write('<?xml version="1.0" encoding="UTF-8"?>\n')
+    xmlfile.write('<regions name="%s" editors="%s" file_prefix="bulletin_%s" all_regions_gis_hash="%s">\n' % \
+                  (bulletin.bulletin_name, bulletin.editors, bulletin.id, bulletin_gis_hash))
+
+    indexed_terms = get_indexed_terms(bulletin)
+
+    xmlfile.write('<indexed_terms>\n')
+    for term in indexed_terms[0]:
+        xmlfile.write('<term search="%s" index="%s"/>\n' % (term, indexed_terms[1][term]))
+    xmlfile.write('</indexed_terms>\n')
+
+    xmlfile.write('<maps>\n')
+    for gismap in cavedb.models.GisMap.objects.all():
+        xmlfile.write('<map name="%s" description="%s" website_url="%s" license_url="%s" map_label="%s"/>\n' % \
+                      (convert_quotes(gismap.name), convert_quotes(gismap.description), \
+                       convert_quotes(gismap.website_url), convert_quotes(gismap.license_url), \
+                       convert_quotes(gismap.map_label)))
+    xmlfile.write('</maps>\n')
+
+    write_bulletin_maps(xmlfile, bulletin)
+
+    write_gis_section(xmlfile, bulletin.id)
+
+    xmlfile.write('<title_page>%s</title_page>\n' % \
+            (generate_index(convert_quotes(bulletin.title_page), indexed_terms)))
+
+    xmlfile.write('<preamble_page>%s</preamble_page>\n' % \
+            (generate_index(convert_quotes(bulletin.preamble_page), indexed_terms)))
+
+    if bulletin.contributor_page:
+        xmlfile.write('<contributor_page>%s</contributor_page>\n' % \
+                (generate_index(convert_quotes(bulletin.contributor_page), indexed_terms)))
+
+    if bulletin.toc_footer:
+        xmlfile.write('<toc_footer>%s</toc_footer>\n' % \
+                (generate_index(convert_quotes(bulletin.toc_footer), indexed_terms)))
+
+    if bulletin.caves_header:
+        xmlfile.write('<caves_header>%s</caves_header>\n' % \
+                (generate_index(convert_quotes(bulletin.caves_header), indexed_terms)))
+
+    if bulletin.photo_index_header:
+        xmlfile.write('<photo_index_header>%s</photo_index_header>\n' % \
+                (convert_quotes(bulletin.photo_index_header)))
+
+    if bulletin.dvd_readme:
+        xmlfile.write('<dvd_readme>%s</dvd_readme>\n' % (escape(bulletin.dvd_readme)))
+
+    write_chapters(xmlfile, bulletin, indexed_terms)
+
+    for region in cavedb.models.BulletinRegion.objects.filter(bulletin__id=bulletin.id):
+        map_name = region.map_region_name
+        if not map_name:
+            map_name = region.region_name
+
+        gis_region_hash = get_region_gis_hash(region.id)
+
+        xmlfile.write('<region name="%s" map_name="%s" file_prefix="bulletin_%s_region_%s" show_gis_map="%s" gis_hash="%s">\n' % \
+                      (region.region_name, map_name, bulletin.id, region.id, int(region.show_gis_map), gis_region_hash))
+        if region.introduction:
+            xmlfile.write('<introduction>%s</introduction>' % \
+                    (generate_index(convert_quotes(region.introduction), indexed_terms)))
+
+        xmlfile.write('<features>\n')
+
+        for feature in cavedb.models.Feature.objects.filter(bulletin_region__id=region.id):
+            write_feature(xmlfile, feature, indexed_terms)
+
+        xmlfile.write('</features>\n')
+        xmlfile.write('</region>\n')
+
+    write_all_references(xmlfile, bulletin)
+
+    write_feature_indexes(xmlfile, bulletin)
+
+    xmlfile.write('</regions>\n')
+
+    xmlfile.close()
+
+
+def write_makefile(bulletin_id, basedir):
     filename = '%s/Makefile' % (basedir)
-    f = open(filename, 'w')
+    xmlfile = open(filename, 'w')
 
-    f.write('DOCPREFIX=bulletin_%s\n' % (bulletin_id))
-    f.write('DOC_BASE_DIR=$(shell pwd)\n')
-    f.write('OUTPUTDIR=$(DOC_BASE_DIR)/output\n')
-    f.write('TEMPLATE_BASE_DIR=$(DOC_BASE_DIR)/../base_bulletin\n')
-    f.write('include $(TEMPLATE_BASE_DIR)/Makefile.include\n')
+    xmlfile.write('DOCPREFIX=bulletin_%s\n' % (bulletin_id))
+    xmlfile.write('DOC_BASE_DIR=$(shell pwd)\n')
+    xmlfile.write('OUTPUTDIR=$(DOC_BASE_DIR)/output\n')
+    xmlfile.write('TEMPLATE_BASE_DIR=$(DOC_BASE_DIR)/../base_bulletin\n')
+    xmlfile.write('include $(TEMPLATE_BASE_DIR)/Makefile.include\n')
 
-    f.close()
+    xmlfile.close()
 
 
 def close_all_fds():
-    import resource
     maxfd = resource.getrlimit(resource.RLIMIT_NOFILE)[1]
-    if (maxfd == resource.RLIM_INFINITY):
-        maxfd = MAXFD
-  
-    for fd in range(3, maxfd):
+    if maxfd == resource.RLIM_INFINITY:
+        maxfd = subprocess.MAXFD
+
+    for filed in range(3, maxfd):
         try:
-            close(fd)
+            os.close(filed)
         except OSError:
             pass
 
 
-def generate_buildscript(basedir):
+def write_buildscript(basedir):
     filename = '%s/build' % (basedir)
-    f = open(filename, 'w')
+    xmlfile = open(filename, 'w')
 
     # This lockfile is checked by the web interface to see if a build is
     # in progress.
 
-    f.write('#!/bin/bash\n')
-    f.write('touch build-in-progress.lock\n');
-    f.write('make\n');
-    f.write('rm -f build-in-progress.lock\n');
+    xmlfile.write('#!/bin/bash\n')
+    xmlfile.write('touch build-in-progress.lock\n')
+    xmlfile.write('make\n')
+    xmlfile.write('rm -f build-in-progress.lock\n')
 
-    f.close()
-    chmod(filename, 0755);
+    xmlfile.close()
+    os.chmod(filename, 0755)
 
 
 def run_make_command(basedir):
     # Rebuild the bulletin
-    pid1 = fork()
-    if (pid1 == 0):
-        setsid()
+    pid1 = os.fork()
+    if pid1 == 0:
+        os.setsid()
         close_all_fds()
 
-        pid2 = fork()
-        if (pid2 == 0):
-            chdir(basedir)
-            status = system('./build > bulletin-build-output.txt 2>&1')
+        pid2 = os.fork()
+        if pid2 == 0:
+            os.chdir(basedir)
+            status = os.system('./build > bulletin-build-output.txt 2>&1')
 
-            _exit (status)
+            os._exit(status)
         else:
-            _exit (0)
+            os._exit(0)
 
 
-###############################################################################
-### Generate GIS section                                                    ###
-###############################################################################
-
-def add_gis_lineplot(f, lineplot, gisdir, type):
+def add_gis_lineplot(xmlfile, lineplot, gisdir, lineplot_type):
     zipfile_name = '%s/%s' % (settings.MEDIA_ROOT, lineplot.attach_zip)
 
-    if not isdir(gisdir):
-        makedirs(gisdir)
+    if not os.path.isdir(gisdir):
+        os.makedirs(gisdir)
 
-    zip = ZipFile(zipfile_name, "r")
-    for name in zip.namelist():
-        if (name.endswith('/')):
+    zipfile = ZipFile(zipfile_name, "r")
+    for name in zipfile.namelist():
+        if name.endswith('/'):
             continue
 
-        base = basename(name)
-        if(base == ''): base = name
+        base = os.path.basename(name)
+        if base == '':
+            base = name
 
-        gisfile = '%s/%s' % (gisdir, base)
-        g = open(gisfile, 'w')
-        g.write(zip.read(name))
-        g.close()
-    zip.close()
+        gisfile_name = '%s/%s' % (gisdir, base)
+        gisfile = open(gisfile_name, 'w')
+        gisfile.write(zipfile.read(name))
+        gisfile.close()
 
-    f.write('<lineplot>\n<id>%s</id>\n<type>%s</type>\n<file>%s/%s</file>\n<description>%s</description>\n<datum>%s</datum>\n<coord_sys>%s</coord_sys>\n</lineplot>\n' % (lineplot.id, type, gisdir, lineplot.shp_filename, lineplot.description, lineplot.datum, lineplot.coord_sys))
+    zipfile.close()
+
+    xmlfile.write('<lineplot>\n<id>%s</id>\n<type>%s</type>\n<file>%s/%s</file>\n<description>%s</description>\n<datum>%s</datum>\n<coord_sys>%s</coord_sys>\n</lineplot>\n' % \
+                  (lineplot.id, lineplot_type, gisdir, lineplot.shp_filename, \
+                   lineplot.description, lineplot.datum, lineplot.coord_sys))
 
 
-def generate_gis_section (basedir, f, bulletin_id):
+def expand_gis_lineplots(xmlfile, bulletin_id):
+    # Expand cave and surface lineplots
+    for lineplot in cavedb.models.BulletinGisLineplot.objects.filter(bulletin__id=bulletin_id):
+        gisdir = '%s/bulletins/bulletin_%s/output/lineplots/bulletin_lineplot_%s' % \
+                 (settings.MEDIA_ROOT, lineplot.bulletin.id, lineplot.id)
+        add_gis_lineplot(xmlfile, lineplot, gisdir, 'surface')
+
+
+    for lineplot in cavedb.models.FeatureGisLineplot.objects.filter(feature__bulletin_region__bulletin__id=bulletin_id):
+        gisdir = '%s/bulletins/bulletin_%s/output/lineplots/feature_lineplot_%s' % \
+                 (settings.MEDIA_ROOT, lineplot.feature.bulletin_region.bulletin.id, lineplot.id)
+        add_gis_lineplot(xmlfile, lineplot, gisdir, 'underground')
+
+
+def write_gis_section(xmlfile, bulletin_id):
     legend_titles = {}
 
-    f.write('<gis_layers>\n')
+    xmlfile.write('<gis_layers>\n')
 
-    for layer in GisLayer.objects.all():
-        f.write('<gis_layer>\n')
-        f.write('<name>%s</name>\n' % (layer.table_name))
+    for layer in cavedb.models.GisLayer.objects.all():
+        xmlfile.write('<gis_layer>\n')
+        xmlfile.write('<name>%s</name>\n' % (layer.table_name))
 
-        for map in layer.maps.all():
-            f.write('<map_name>%s</map_name>\n' % (map.name))
+        for gismap in layer.maps.all():
+            xmlfile.write('<map_name>%s</map_name>\n' % (gismap.name))
 
-        f.write('<connection_type>%s</connection_type>\n' % (settings.GIS_CONNECTION_TYPE))
-        f.write('<connection>%s</connection>\n' % (settings.GIS_CONNECTION))
+        xmlfile.write('<connection_type>%s</connection_type>\n' % (settings.GIS_CONNECTION_TYPE))
+        xmlfile.write('<connection>%s</connection>\n' % (settings.GIS_CONNECTION))
 
-        if (layer.filename != None and layer.filename != ''):
-            f.write('<data>%s</data>\n' % (layer.filename))
+        if layer.filename:
+            xmlfile.write('<data>%s</data>\n' % (layer.filename))
         else:
-            f.write('<data>geom from %s</data>\n' % (layer.table_name))
+            xmlfile.write('<data>geom from %s</data>\n' % (layer.table_name))
 
-        f.write('<display>%s</display>\n' % (int(layer.display)))
-        f.write('<type>%s</type>\n' % (layer.type))
+        xmlfile.write('<display>%s</display>\n' % (int(layer.display)))
+        xmlfile.write('<type>%s</type>\n' % (layer.type))
 
-        if (layer.label_item != None and layer.label_item != ''):
-            f.write('<label_item>%s</label_item>\n' % (layer.label_item))
+        if layer.label_item:
+            xmlfile.write('<label_item>%s</label_item>\n' % (layer.label_item))
 
-        if (layer.description != None and layer.description != ''):
-            if (layer.description not in legend_titles):
+        if layer.description:
+            if layer.description not in legend_titles:
                 legend_titles[layer.description] = 1
-                f.write('<legend first_occurance="1">%s</legend>\n' % (layer.description))
+                xmlfile.write('<legend first_occurance="1">%s</legend>\n' % (layer.description))
             else:
-                f.write('<legend first_occurance="0">%s</legend>\n' % (layer.description))
+                xmlfile.write('<legend first_occurance="0">%s</legend>\n' % (layer.description))
 
         colors = layer.color.split(' ')
-        if (len(colors) > 2):
-            f.write('<color red="%s" green="%s" blue="%s"/>\n' % (colors[0], colors[1], colors[2]))
+        if len(colors) > 2:
+            xmlfile.write('<color red="%s" green="%s" blue="%s"/>\n' % \
+                          (colors[0], colors[1], colors[2]))
 
-        if (layer.symbol != None and layer.symbol != ''):
-            f.write('<symbol>%s</symbol>\n' % (layer.symbol))
-            f.write('<symbol_size>%s</symbol_size>\n' % (layer.symbol_size))
-        elif (layer.symbol_size != None):
-            f.write('<symbol></symbol>\n')
-            f.write('<symbol_size>%s</symbol_size>\n' % (layer.symbol_size))
+        if layer.symbol:
+            xmlfile.write('<symbol>%s</symbol>\n' % (layer.symbol))
+            xmlfile.write('<symbol_size>%s</symbol_size>\n' % (layer.symbol_size))
+        elif layer.symbol_size:
+            xmlfile.write('<symbol></symbol>\n')
+            xmlfile.write('<symbol_size>%s</symbol_size>\n' % (layer.symbol_size))
 
-        if (layer.line_type != None and layer.line_type != ''):
-            f.write('<line_type>%s</line_type>\n' % (layer.line_type))
+        if layer.line_type:
+            xmlfile.write('<line_type>%s</line_type>\n' % (layer.line_type))
 
-        if (layer.max_scale != None and layer.max_scale != ''):
-            f.write('<max_scale>%s</max_scale>\n' % (layer.max_scale))
+        if layer.max_scale:
+            xmlfile.write('<max_scale>%s</max_scale>\n' % (layer.max_scale))
 
-        if (layer.label_item != None and layer.label_item != ''):
+        if layer.label_item:
             colors = layer.font_color.split(' ')
-            f.write('<font_color red="%s" green="%s" blue="%s"/>\n' % (colors[0], colors[1], colors[2]))
-            f.write('<font_size>%s</font_size>\n' % (layer.font_size))
+            xmlfile.write('<font_color red="%s" green="%s" blue="%s"/>\n' % \
+                    (colors[0], colors[1], colors[2]))
+            xmlfile.write('<font_size>%s</font_size>\n' % (layer.font_size))
 
-        f.write('</gis_layer>\n')
+        xmlfile.write('</gis_layer>\n')
 
+    expand_gis_lineplots(xmlfile, bulletin_id)
 
-    # Expand cave and surface lineplots
-    for lineplot in BulletinGisLineplot.objects.filter(bulletin__id=bulletin_id):
-        name = 'bulletin_lineplot%s' % (lineplot.id)
-        gisdir = '%s/bulletins/bulletin_%s/output/lineplots/bulletin_lineplot_%s' % (settings.MEDIA_ROOT, lineplot.bulletin.id, lineplot.id)
-        add_gis_lineplot(f, lineplot, gisdir, 'surface')
+    xmlfile.write('</gis_layers>\n')
 
-
-    for lineplot in FeatureGisLineplot.objects.filter(feature__bulletin_region__bulletin__id=bulletin_id):
-        name = 'feature_lineplot%s' % (lineplot.id)
-        gisdir = '%s/bulletins/bulletin_%s/output/lineplots/feature_lineplot_%s' % (settings.MEDIA_ROOT, lineplot.feature.bulletin_region.bulletin.id, lineplot.id)
-        add_gis_lineplot(f, lineplot, gisdir, 'underground')
-
-    f.write('</gis_layers>\n')
-
-
-###############################################################################
-### View for generating the bulletin data                                   ###
-###############################################################################
 
 def generate_bulletin(request, bulletin_id):
-    if (not is_bulletin_generation_allowed(bulletin_id)):
+    if not cavedb.utils.is_bulletin_generation_allowed(bulletin_id):
         raise Http404
 
-    bulletins = Bulletin.objects.filter(id=bulletin_id)
-    if (bulletins.count() == 0):
+    bulletins = cavedb.models.Bulletin.objects.filter(id=bulletin_id)
+    if bulletins.count() == 0:
         raise Http404
 
     bulletin = bulletins[0]
     basedir = '%s/bulletins/bulletin_%s' % (settings.MEDIA_ROOT, bulletin_id)
 
-    generate_bulletin_xml_file (bulletin, basedir)
-    generate_makefile (bulletin_id, basedir)
-    generate_buildscript(basedir)
-    run_make_command (basedir)
+    write_bulletin_xml_file(bulletin, basedir)
+    write_makefile(bulletin_id, basedir)
+    write_buildscript(basedir)
+    run_make_command(basedir)
 
     return HttpResponseRedirect('%sadmin/cavedb/bulletin/' % (settings.CONTEXT_PATH))
 
 
 def generate_xml_only_bulletin(request, bulletin_id):
-    if (not is_bulletin_generation_allowed(bulletin_id)):
+    if not cavedb.utils.is_bulletin_generation_allowed(bulletin_id):
         raise Http404
 
-    bulletins = Bulletin.objects.filter(id=bulletin_id)
-    if (bulletins.count() == 0):
+    bulletins = cavedb.models.Bulletin.objects.filter(id=bulletin_id)
+    if bulletins.count() == 0:
         raise Http404
 
     bulletin = bulletins[0]
     basedir = '%s/bulletins/bulletin_%s' % (settings.MEDIA_ROOT, bulletin_id)
 
-    generate_bulletin_xml_file (bulletin, basedir)
-    generate_makefile (bulletin_id, basedir)
+    write_bulletin_xml_file(bulletin, basedir)
+    write_makefile(bulletin_id, basedir)
 
     return HttpResponseRedirect('%sadmin/cavedb/bulletin/' % (settings.CONTEXT_PATH))
 
 def generate_all_xml_only_bulletin(request):
-    for bulletin in Bulletin.objects.all():
-        if (not is_bulletin_generation_allowed(bulletin.id)):
-             continue
+    for bulletin in cavedb.models.Bulletin.objects.all():
+        if not cavedb.utils.is_bulletin_generation_allowed(bulletin.id):
+            continue
 
-        generate_xml_only_bulletin(request, bulletin.id);
+        generate_xml_only_bulletin(request, bulletin.id)
 
     return HttpResponseRedirect('%sadmin/cavedb/bulletin/' % (settings.CONTEXT_PATH))
 

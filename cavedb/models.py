@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from os.path import isfile, getmtime
+import os
 import re
 from time import strftime, localtime
 from django.conf import settings
@@ -110,7 +111,7 @@ class UtmZone(models.Model):
         verbose_name = 'UTM zone'
 
 
-def CavedbBulletinUploadTo(instance, filename):
+def bulletin_upload_to(instance, filename):
     return 'bulletin_attachments/%s/cover/%s' % (instance.id, filename)
 
 
@@ -118,11 +119,9 @@ class Bulletin(models.Model):
     bulletin_name = models.CharField(max_length=80, unique=True)
     short_name = models.CharField(max_length=80, unique=True)
     editors = models.CharField(max_length=255)
-    bw_front_cover_image = models.ImageField(upload_to=CavedbBulletinUploadTo, blank=True, \
-                                             null=True)
-    color_front_cover_image = models.ImageField(upload_to=CavedbBulletinUploadTo, blank=True, \
-                                                null=True)
-    back_cover_image = models.ImageField(upload_to=CavedbBulletinUploadTo, blank=True, null=True)
+    bw_front_cover_image = models.ImageField(upload_to=bulletin_upload_to, blank=True, null=True)
+    color_front_cover_image = models.ImageField(upload_to=bulletin_upload_to, blank=True, null=True)
+    back_cover_image = models.ImageField(upload_to=bulletin_upload_to, blank=True, null=True)
     bw_map1 = models.ForeignKey(GisMap, blank=True, null=True, related_name='bw_map1', \
                                 verbose_name='Map #1 for the B&W bulletin')
     bw_map2 = models.ForeignKey(GisMap, blank=True, null=True, related_name='bw_map2', \
@@ -156,7 +155,7 @@ class Bulletin(models.Model):
 
         try:
             mtime = getmtime(filename)
-        except Exception:
+        except os.error:
             return None
 
         return localtime(mtime)
@@ -265,8 +264,9 @@ class BulletinChoice(models.ForeignKey):
 
         regex = re.compile(r'.*?bulletin\\/(\d+)\\/')
         matches = regex.match(get_request_uri())
-        if matches != None:
-            return super(BulletinChoice, self).formfield(queryset=self.rel.to._default_manager.complex_filter({'bulletin__id': matches.group(1)}))
+        if matches:
+            return super(BulletinChoice, self).formfield(queryset=self.rel.to._default_manager \
+                      .complex_filter({'bulletin__id': matches.group(1)}))
         else:
             return super(BulletinChoice, self).formfield(**kwargs)
 
@@ -295,16 +295,17 @@ class BulletinRegion(models.Model):
 # Only show the user the regions that they are allowed to see.
 class RegionChoice(models.ForeignKey):
     def formfield(self, **kwargs):
-        return super(RegionChoice, self).formfield(queryset=self.rel.to._default_manager.complex_filter({'bulletin__id__in': get_valid_bulletins()}))
+        return super(RegionChoice, self).formfield(queryset=self.rel.to._default_manager \
+                   .complex_filter({'bulletin__id__in': get_valid_bulletins()}))
 
 
-def CavedbBulletinGislineplotUploadTo(instance, filename):
+def gis_lineplot_upload_to(instance, filename):
     return 'bulletin_attachments/%s/gis_lineplot/%s' % (instance.bulletin.id, filename)
 
 
 class BulletinGisLineplot(models.Model):
     bulletin = models.ForeignKey(Bulletin)
-    attach_zip = models.FileField("Lineplot ZIP File", upload_to=CavedbBulletinGislineplotUploadTo)
+    attach_zip = models.FileField("Lineplot ZIP File", upload_to=gis_lineplot_upload_to)
     shp_filename = models.CharField("SHP File Name", max_length=80)
     description = models.CharField(max_length=255, null=True, blank=True)
     datum = models.CharField("Datum", max_length=64, choices=DATUM_CHOICES)
@@ -382,13 +383,13 @@ class BulletinSectionReference(models.Model):
         ordering = ('book', 'volume', 'number', 'pages')
 
 
-def CavedbBulletinAttachmentUploadTo(instance, filename):
+def bulletin_attachment_upload_to(instance, filename):
     return 'bulletin_attachments/%s/attachments/%s' % (instance.bulletin.id, filename)
 
 
 class BulletinAttachment(models.Model):
     bulletin = models.ForeignKey('Bulletin')
-    attachment = models.FileField(upload_to=CavedbBulletinAttachmentUploadTo)
+    attachment = models.FileField(upload_to=bulletin_attachment_upload_to)
     description = models.CharField(max_length=255)
 
     create_date = models.DateTimeField("Creation Date", auto_now_add=True, editable=False, \
@@ -443,7 +444,7 @@ class TopoQuad(models.Model):
         ordering = ["quad_name"]
 
 
-def CavedbFeaturePhotoUploadTo(instance, filename):
+def feature_photo_upload_to(instance, filename):
     # FIXME - replace with only known good characters
     return 'feature_attachments/%s/photos/%s' % \
               (instance.feature.id, \
@@ -463,10 +464,9 @@ class FeaturePhoto(models.Model):
 
     feature = models.ForeignKey('Feature')
     filename = models.FileField('Primary Photo (color if you have it)', \
-                                upload_to=CavedbFeaturePhotoUploadTo)
+                                upload_to=feature_photo_upload_to)
     secondary_filename = models.FileField('Optional Secondary Photo (b/w)', \
-                                          upload_to=CavedbFeaturePhotoUploadTo, null=True, \
-                                          blank=True)
+                                          upload_to=feature_photo_upload_to, null=True, blank=True)
     type = models.CharField(max_length=64, choices=PHOTO_TYPE_CHOICES)
     caption = models.CharField(max_length=255, null=True, blank=True)
     people_shown = models.CharField(max_length=255, null=True, blank=True)
@@ -485,7 +485,7 @@ class FeaturePhoto(models.Model):
     mod_date = models.DateTimeField("Modification Date", auto_now=True, editable=False, null=True)
 
     def __unicode__(self):
-        if self.caption != None and self.caption != '':
+        if self.caption:
             return u'%s - %s' % (self.filename.path, self.caption)
         else:
             return u'%s %s' % (self.filename.path, self.type)
@@ -516,7 +516,7 @@ class FeatureReferencedMap(models.Model):
         verbose_name = 'referenced map'
 
 
-def CavedbFeatureAttachmentUploadTo(instance, filename):
+def feature_attachment_upload_to(instance, filename):
     return 'feature_attachments/%s/attachments/%s' % (instance.feature.id, filename)
 
 
@@ -527,7 +527,7 @@ class FeatureAttachment(models.Model):
     )
 
     feature = models.ForeignKey('Feature')
-    attachment = models.FileField(upload_to=CavedbFeatureAttachmentUploadTo)
+    attachment = models.FileField(upload_to=feature_attachment_upload_to)
     attachment_type = models.CharField(max_length=64, choices=ATTACHMENT_TYPE_CHOICES)
     user_visible_file_suffix = models.CharField(max_length=255, null=True, blank=True)
     author = models.CharField(max_length=64, null=True, blank=True)
@@ -552,13 +552,13 @@ class FeatureAttachment(models.Model):
         verbose_name = 'attachment'
 
 
-def CavedbFeatureGislineplotUploadTo(instance, filename):
+def feature_gis_lineplot_upload_to(instance, filename):
     return 'feature_attachments/%s/gis_lineplot/%s' % (instance.feature.id, filename)
 
 
 class FeatureGisLineplot(models.Model):
     feature = models.ForeignKey('Feature')
-    attach_zip = models.FileField("Lineplot ZIP File", upload_to=CavedbFeatureGislineplotUploadTo)
+    attach_zip = models.FileField("Lineplot ZIP File", upload_to=feature_gis_lineplot_upload_to)
     shp_filename = models.CharField("SHP File Name", max_length=80)
     description = models.CharField(max_length=255, null=True, blank=True)
     datum = models.CharField("Datum", max_length=64, choices=DATUM_CHOICES)
@@ -593,12 +593,20 @@ class FeatureEntrance(models.Model):
     elevation_ft = models.IntegerField('Elevation (ft)', blank=True, null=True)
     utmzone = models.ForeignKey(UtmZone, verbose_name='UTM zone')
     utmeast = models.IntegerField('UTM Easting', blank=True, null=True, \
-                                  help_text='Note: You only have to enter a UTM or lat/lon coordinate. The system will automatically convert the coordinate for you. Please refrain from doing any kind of transformation of the coordinate that you have so that the original coordinate is not lost.')
+                                  help_text='You only have to enter a UTM or lat/lon coordinate. ' +
+                                  'The system will automatically convert the coordinate for you. ' +
+                                  'Please refrain from doing any kind of transformation of the ' +
+                                  'coordinate that you have so that the original coordinate is ' +
+                                  'not lost.')
     utmnorth = models.IntegerField('UTM Northing', blank=True, null=True)
     latitude = LatLonField(blank=True, null=True, decimal_places=9, max_digits=13, \
-                           help_text='You can specify the latitude and longitude in one of the following formats: dd mm ss[.frac secs], dd mm.frac mins or dd.frac degrees. The coordinate will be automatically converted to the format dd.frac degrees.')
+                           help_text='You can specify the latitude and longitude in one of the ' +
+                           'following formats: dd mm ss[.frac secs], dd mm.frac mins or dd.frac ' +
+                           'degrees. The coordinate will be automatically converted to the ' +
+                           'format dd.frac degrees.')
     longitude = LatLonField(blank=True, null=True, decimal_places=9, max_digits=13, \
-                            help_text='Make sure that you remember to put a negative sign at the beginning if the cave is in the western hemisphere.')
+                            help_text='Make sure that you remember to put a negative sign at the ' +
+                            'beginning if the cave is in the western hemisphere.')
     access_enum = models.CharField("Access", max_length=64, choices=ACCESS_CHOICES, blank=True, \
                                    null=True, db_index=True)
     publish_location = models.BooleanField(null=False, default=True)
@@ -608,7 +616,7 @@ class FeatureEntrance(models.Model):
     mod_date = models.DateTimeField("Modification Date", auto_now=True, editable=False, null=True)
 
     def __unicode__(self):
-        if self.entrance_name != None:
+        if self.entrance_name:
             return self.entrance_name
         else:
             return u'Entrance'
@@ -708,7 +716,7 @@ class Feature(models.Model):
 class CaveUserProfile(models.Model):
     user = models.OneToOneField(User)
     bulletins = models.ManyToManyField(Bulletin, \
-                                       help_text='Select the bulletins the user is allowed to edit.')
+                                       help_text='Bulletins that the user is allowed to access.')
     can_download_docs = models.BooleanField(default=True)
     can_download_gis_maps = models.BooleanField(default=True)
     can_generate_docs = models.BooleanField(default=False)

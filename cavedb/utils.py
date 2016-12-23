@@ -36,7 +36,7 @@ def send_file(localfile, remotefile):
         mimetype = "application/octet-stream"
 
     response = HttpResponse(output, content_type=mimetype)
-    if remotefile != None and (mimetype is None or not mimetype.startswith('image')):
+    if remotefile and (mimetype is None or not mimetype.startswith('image')):
         response['Content-Disposition'] = 'attachment; filename=' + remotefile
 
     response['Content-Length'] = getsize(localfile)
