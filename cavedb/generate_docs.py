@@ -24,12 +24,14 @@ from django.http import HttpResponseRedirect, Http404
 import cavedb.models
 import cavedb.utils
 import cavedb.docgen_composite
+import cavedb.docgen_gpx
 import cavedb.docgen_mxf
 import cavedb.docgen_xml
 
 def write_bulletin_files(bulletin, basedir):
     outputter = cavedb.docgen_composite.Composite(basedir, bulletin,
-                                                  [cavedb.docgen_mxf.Mxf(basedir, bulletin),
+                                                  [cavedb.docgen_gpx.Gpx(basedir, bulletin),
+                                                   cavedb.docgen_mxf.Mxf(basedir, bulletin),
                                                    cavedb.docgen_xml.Xml(basedir, bulletin)])
 
     all_regions_gis_hash = get_all_regions_gis_hash(bulletin.id)
