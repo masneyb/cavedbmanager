@@ -18,8 +18,7 @@ import cavedb.docgen_common
 
 class Mxf(cavedb.docgen_common.Common):
     def __init__(self, basedir, bulletin):
-        self.basedir = basedir
-        self.bulletin = bulletin
+        cavedb.docgen_common.Common.__init__(self, basedir, bulletin)
         self.number = 1
 
 
