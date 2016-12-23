@@ -17,25 +17,19 @@ from mimetypes import guess_type
 from os.path import getsize
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
+from django.core.servers.basehttp import FileWrapper
 from django.http import HttpResponse
 from django.http import Http404
 from cavedb.middleware import get_current_user
 
 def send_file(localfile, remotefile):
-    # FIXME - Find out how the file transfer can be streamed
-
-    try:
-        filed = open(localfile, 'r')
-        output = filed.read()
-        filed.close()
-    except IOError:
-        raise Http404
-
     mimetype = guess_type(localfile)[0]
     if mimetype is None:
         mimetype = "application/octet-stream"
 
-    response = HttpResponse(output, content_type=mimetype)
+    wrapper = FileWrapper(file(localfile))
+    response = HttpResponse(wrapper, content_type=mimetype)
+
     if remotefile and (mimetype is None or not mimetype.startswith('image')):
         response['Content-Disposition'] = 'attachment; filename=' + remotefile
 
