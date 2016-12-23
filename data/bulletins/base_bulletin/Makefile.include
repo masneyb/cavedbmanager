@@ -7,7 +7,6 @@ GPX_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2gpx.xsl
 KML_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2kml.xsl
 TEXT_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2text.xsl
 CSV_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2csv.xsl
-MXF_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2mxf.xsl
 GIS_MAPS_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2gis_map.xsl
 GIS_EXTENTS_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2gis_region_extents.xsl
 MAPSERVER_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2mapserver_project.xsl 
@@ -51,9 +50,6 @@ PDF_DRAFT_OUTPUTDIR=$(OUTPUTDIR)/pdf_draft
 PDF_DRAFT_LATEX_CAVES=$(PDF_DRAFT_OUTPUTDIR)/$(DOCPREFIX).tex
 PDF_DRAFT=$(PDF_DRAFT_OUTPUTDIR)/$(DOCPREFIX).pdf
 
-MXF_OUTPUTDIR=$(OUTPUTDIR)/mxf
-MXF=$(MXF_OUTPUTDIR)/$(DOCPREFIX).mxf
-
 CSV_OUTPUTDIR=$(OUTPUTDIR)/csv
 CSV=$(CSV_OUTPUTDIR)/$(DOCPREFIX).csv
 
@@ -72,9 +68,9 @@ TODO_PDF=$(TODO_OUTPUTDIR)/$(DOCPREFIX)_todo.pdf
 
 LOCKFILE=$(DOC_BASE_DIR)/build-in-progress.lock
 
-.PHONY: all todo_pdf gpx mxf kml text csv ovf shp gis_maps validate print clean dvd pdf color_pdf draft_pdf 
+.PHONY: all todo_pdf gpx kml text csv ovf shp gis_maps validate print clean dvd pdf color_pdf draft_pdf 
 
-all: init clean validate $(TODO_PDF) $(GPX) $(KML) $(TEXT) $(CSV) $(SHP) $(MXF) dvd gis_maps $(PDF) $(PDF_COLOR) $(PDF_DRAFT)
+all: init clean validate $(TODO_PDF) $(GPX) $(KML) $(TEXT) $(CSV) $(SHP) dvd gis_maps $(PDF) $(PDF_COLOR) $(PDF_DRAFT)
 	rm -f $(LOCKFILE)
 
 init:
@@ -129,13 +125,6 @@ $(TODO_PDF): $(CAVE_SRC_XML) $(PDF_DRAFT_LATEX_CAVES)
 	if [ ! -d $(TODO_OUTPUTDIR) ]; then    mkdir $(TODO_OUTPUTDIR) ;     fi
 	xsltproc $(TODO_STYLESHEET) $(CAVE_SRC_XML) > $(TODO_HTML)
 	htmldoc --header "   " --footer "   " --outfile $(TODO_PDF) --webpage $(TODO_HTML)
-
-mxf: $(MXF)
-
-$(MXF): $(MXF_STYLESHEET)
-	if [ ! -d $(MXF_OUTPUTDIR) ]; then    mkdir $(MXF_OUTPUTDIR) ;     fi
-
-	xsltproc -o $(MXF) $(MXF_STYLESHEET) $(CAVE_SRC_XML)
 
 gpx: $(GPX)
 
@@ -224,6 +213,5 @@ clean:
 	rm -rf $(GPX_OUTPUTDIR)
 	rm -rf $(KML_OUTPUTDIR)
 	rm -rf $(TEXT_OUTPUTDIR)
-	rm -rf $(MXF_OUTPUTDIR)
 	rm -rf $(SHP_DIR)
 	rm -rf $(TODO_OUTPUTDIR)
