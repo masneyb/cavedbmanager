@@ -19,7 +19,6 @@ from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.core.servers.basehttp import FileWrapper
 from django.http import HttpResponse
-from django.http import Http404
 from cavedb.middleware import get_current_user
 
 def send_file(localfile, remotefile):
