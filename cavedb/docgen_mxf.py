@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
-import os.path
 import cavedb.docgen_common
 
 class Mxf(cavedb.docgen_common.Common):
@@ -34,7 +32,7 @@ class Mxf(cavedb.docgen_common.Common):
 
     def feature_entrance(self, feature, ent, utmzone, nad27_utmeast, nad27_utmnorth, wgs84_lat, \
                          wgs84_lon):
-        if (ent.entrance_name):
+        if ent.entrance_name:
             name = '%s - %s' % (feature.name, ent.entrance_name)
         else:
             name = feature.name
