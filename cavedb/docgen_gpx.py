@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from xml.sax.saxutils import escape
 import cavedb.docgen_common
 import cavedb.utils
 
@@ -31,7 +32,7 @@ class Gpx(cavedb.docgen_common.Common):
                            'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' + \
                            'http://www.topografix.com/GPX/1/1/gpx.xsd">\n')
         self.gpxfile.write('  <metadata>\n')
-        self.gpxfile.write('    <name>%s</name>\n' % (self.bulletin.bulletin_name))
+        self.gpxfile.write('    <name>%s</name>\n' % (escape(self.bulletin.bulletin_name)))
         self.gpxfile.write('  </metadata>\n')
 
 
@@ -41,9 +42,9 @@ class Gpx(cavedb.docgen_common.Common):
         self.gpxfile.write('  <wpt lat="%s" lon="%s">\n' % \
                            (coordinates.wgs84_lat, coordinates.wgs84_lon))
         self.gpxfile.write('    <ele>%s</ele>\n' % (entrance.elevation_ft))
-        self.gpxfile.write('    <name>%s</name>\n' % (name))
+        self.gpxfile.write('    <name>%s</name>\n' % (escape(name)))
         self.gpxfile.write('    <cmt>%s</cmt>\n' % (feature.feature_type))
-        self.gpxfile.write('    <desc>%s</desc>\n' % (name))
+        self.gpxfile.write('    <desc>%s</desc>\n' % (escape(name)))
         self.gpxfile.write('    <sym>Waypoint</sym>\n')
         self.gpxfile.write('  </wpt>\n')
 
