@@ -3,7 +3,6 @@ CAVE_SRC_XML=$(DOC_BASE_DIR)/output/$(DOCPREFIX).xml
 
 # Stylesheets
 LATEX_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2latex.xsl
-TEXT_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2text.xsl
 CSV_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2csv.xsl
 GIS_MAPS_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2gis_map.xsl
 GIS_EXTENTS_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2gis_region_extents.xsl
@@ -47,14 +46,11 @@ PDF_DRAFT=$(PDF_DRAFT_OUTPUTDIR)/$(DOCPREFIX).pdf
 CSV_OUTPUTDIR=$(OUTPUTDIR)/csv
 CSV=$(CSV_OUTPUTDIR)/$(DOCPREFIX).csv
 
-TEXT_OUTPUTDIR=$(OUTPUTDIR)/text
-TEXT=$(TEXT_OUTPUTDIR)/$(DOCPREFIX).txt
-
 LOCKFILE=$(DOC_BASE_DIR)/build-in-progress.lock
 
-.PHONY: all text csv ovf shp gis_maps validate print clean dvd pdf color_pdf draft_pdf 
+.PHONY: all csv ovf shp gis_maps validate print clean dvd pdf color_pdf draft_pdf 
 
-all: init clean validate $(TEXT) $(CSV) $(SHP) dvd gis_maps $(PDF) $(PDF_COLOR) $(PDF_DRAFT)
+all: init clean validate $(CSV) $(SHP) dvd gis_maps $(PDF) $(PDF_COLOR) $(PDF_DRAFT)
 	rm -f $(LOCKFILE)
 
 init:
@@ -103,13 +99,6 @@ $(PDF_DRAFT): $(CAVE_SRC_XML) $(PDF_DRAFT_LATEX_CAVES)
 	openout_any=a makeindex $(PDF_DRAFT_OUTPUTDIR)/$(DOCPREFIX).idx
 	pdflatex -output-directory $(PDF_DRAFT_OUTPUTDIR) $(PDF_DRAFT_LATEX_CAVES)
 
-text: $(TEXT)
-
-$(TEXT): $(TEXT_STYLESHEET)
-	if [ ! -d $(TEXT_OUTPUTDIR) ]; then    mkdir $(TEXT_OUTPUTDIR) ;     fi
-
-	xsltproc -o $(TEXT) $(TEXT_STYLESHEET) $(CAVE_SRC_XML)
-
 csv: $(CSV)
 
 $(CSV): $(CSV_STYLESHEET)
@@ -153,7 +142,6 @@ gis_maps: $(SHP) $(GIS_MAPS_STYLESHEET)
 validate: $(CAVE_SRC_XML)
 	xmllint -noout $(CAVE_SRC_XML)
 	xmllint -noout $(LATEX_STYLESHEET)
-	xmllint -noout $(TEXT_STYLESHEET)
 	xmllint -noout $(CSV_STYLESHEET)
 
 print: $(PDF)
@@ -167,5 +155,4 @@ clean:
 	rm -rf $(PDF_BW_OUTPUTDIR)
 	rm -rf $(PDF_COLOR_OUTPUTDIR)
 	rm -rf $(CSV_OUTPUTDIR)
-	rm -rf $(TEXT_OUTPUTDIR)
 	rm -rf $(SHP_DIR)
