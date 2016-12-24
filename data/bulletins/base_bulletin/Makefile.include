@@ -3,7 +3,6 @@ CAVE_SRC_XML=$(DOC_BASE_DIR)/output/$(DOCPREFIX).xml
 
 # Stylesheets
 LATEX_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2latex.xsl
-KML_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2kml.xsl
 TEXT_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2text.xsl
 CSV_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2csv.xsl
 GIS_MAPS_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2gis_map.xsl
@@ -52,9 +51,6 @@ PDF_DRAFT=$(PDF_DRAFT_OUTPUTDIR)/$(DOCPREFIX).pdf
 CSV_OUTPUTDIR=$(OUTPUTDIR)/csv
 CSV=$(CSV_OUTPUTDIR)/$(DOCPREFIX).csv
 
-KML_OUTPUTDIR=$(OUTPUTDIR)/kml
-KML=$(KML_OUTPUTDIR)/$(DOCPREFIX).kml
-
 TEXT_OUTPUTDIR=$(OUTPUTDIR)/text
 TEXT=$(TEXT_OUTPUTDIR)/$(DOCPREFIX).txt
 
@@ -64,9 +60,9 @@ TODO_PDF=$(TODO_OUTPUTDIR)/$(DOCPREFIX)_todo.pdf
 
 LOCKFILE=$(DOC_BASE_DIR)/build-in-progress.lock
 
-.PHONY: all todo_pdf kml text csv ovf shp gis_maps validate print clean dvd pdf color_pdf draft_pdf 
+.PHONY: all todo_pdf text csv ovf shp gis_maps validate print clean dvd pdf color_pdf draft_pdf 
 
-all: init clean validate $(TODO_PDF) $(KML) $(TEXT) $(CSV) $(SHP) dvd gis_maps $(PDF) $(PDF_COLOR) $(PDF_DRAFT)
+all: init clean validate $(TODO_PDF) $(TEXT) $(CSV) $(SHP) dvd gis_maps $(PDF) $(PDF_COLOR) $(PDF_DRAFT)
 	rm -f $(LOCKFILE)
 
 init:
@@ -122,13 +118,6 @@ $(TODO_PDF): $(CAVE_SRC_XML) $(PDF_DRAFT_LATEX_CAVES)
 	xsltproc $(TODO_STYLESHEET) $(CAVE_SRC_XML) > $(TODO_HTML)
 	htmldoc --header "   " --footer "   " --outfile $(TODO_PDF) --webpage $(TODO_HTML)
 
-kml: $(KML)
-
-$(KML): $(KML_STYLESHEET)
-	if [ ! -d $(KML_OUTPUTDIR) ]; then    mkdir $(KML_OUTPUTDIR) ;     fi
-
-	xsltproc -o $(KML) $(KML_STYLESHEET) $(CAVE_SRC_XML)
-
 text: $(TEXT)
 
 $(TEXT): $(TEXT_STYLESHEET)
@@ -183,7 +172,6 @@ gis_maps: $(SHP) $(GIS_MAPS_STYLESHEET) $(QGIS_PROJECT_FULLPATH)
 validate: $(CAVE_SRC_XML)
 	xmllint -noout $(CAVE_SRC_XML)
 	xmllint -noout $(LATEX_STYLESHEET)
-	xmllint -noout $(KML_STYLESHEET)
 	xmllint -noout $(TEXT_STYLESHEET)
 	xmllint -noout $(CSV_STYLESHEET)
 
@@ -198,7 +186,6 @@ clean:
 	rm -rf $(PDF_BW_OUTPUTDIR)
 	rm -rf $(PDF_COLOR_OUTPUTDIR)
 	rm -rf $(CSV_OUTPUTDIR)
-	rm -rf $(KML_OUTPUTDIR)
 	rm -rf $(TEXT_OUTPUTDIR)
 	rm -rf $(SHP_DIR)
 	rm -rf $(TODO_OUTPUTDIR)
