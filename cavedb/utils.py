@@ -13,12 +13,13 @@
 # limitations under the License.
 
 import math
+import sys
 from mimetypes import guess_type
 from os.path import getsize
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.core.servers.basehttp import FileWrapper
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from cavedb.middleware import get_current_user
 
 def send_file(localfile, remotefile):
@@ -26,13 +27,18 @@ def send_file(localfile, remotefile):
     if mimetype is None:
         mimetype = "application/octet-stream"
 
-    wrapper = FileWrapper(file(localfile))
-    response = HttpResponse(wrapper, content_type=mimetype)
+    try:
+        wrapper = FileWrapper(file(localfile))
+        response = HttpResponse(wrapper, content_type=mimetype)
 
-    if remotefile and (mimetype is None or not mimetype.startswith('image')):
-        response['Content-Disposition'] = 'attachment; filename=' + remotefile
+        if remotefile and (mimetype is None or not mimetype.startswith('image')):
+            response['Content-Disposition'] = 'attachment; filename=' + remotefile
 
-    response['Content-Length'] = getsize(localfile)
+        response['Content-Length'] = getsize(localfile)
+    except IOError:
+        print >> sys.stderr, 'Cannot find %s\n' % (localfile)
+        raise Http404
+
 
     return response
 
@@ -52,8 +58,8 @@ def get_draft_pdf_filename(bulletin_id):
                (settings.MEDIA_ROOT, bulletin_id, bulletin_id)
 
 
-def get_todo_pdf_filename(bulletin_id):
-    return '%s/bulletins/bulletin_%s/output/todo/bulletin_%s_todo.pdf' % \
+def get_todo_txt_filename(bulletin_id):
+    return '%s/bulletins/bulletin_%s/output/todo/bulletin_%s_todo.txt' % \
                (settings.MEDIA_ROOT, bulletin_id, bulletin_id)
 
 

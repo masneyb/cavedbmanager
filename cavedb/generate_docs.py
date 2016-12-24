@@ -23,18 +23,20 @@ from django.conf import settings
 from django.http import HttpResponseRedirect, Http404
 import cavedb.models
 import cavedb.utils
-import cavedb.docgen_composite
+from cavedb.docgen_composite import Composite
 import cavedb.docgen_gpx
 import cavedb.docgen_kml
 import cavedb.docgen_mxf
+import cavedb.docgen_todo_txt
 import cavedb.docgen_xml
 
 def write_bulletin_files(bulletin, basedir):
-    outputter = cavedb.docgen_composite.Composite(basedir, bulletin,
-                                                  [cavedb.docgen_gpx.Gpx(basedir, bulletin),
-                                                   cavedb.docgen_kml.Kml(basedir, bulletin),
-                                                   cavedb.docgen_mxf.Mxf(basedir, bulletin),
-                                                   cavedb.docgen_xml.Xml(basedir, bulletin)])
+    outputter = Composite(basedir, bulletin,
+                          [cavedb.docgen_gpx.Gpx(basedir, bulletin),
+                           cavedb.docgen_kml.Kml(basedir, bulletin),
+                           cavedb.docgen_mxf.Mxf(basedir, bulletin),
+                           cavedb.docgen_todo_txt.TodoTxt(basedir, bulletin),
+                           cavedb.docgen_xml.Xml(basedir, bulletin)])
 
     all_regions_gis_hash = get_all_regions_gis_hash(bulletin.id)
 
@@ -149,7 +151,7 @@ class FeatureTodoAnalyzer:
         self.has_map = True
 
 
-    def write_todo(self, outputter):
+    def write_todo(self, feature, outputter):
         if self.missing_coord or not self.saw_entrance:
             self.missing_str += ' GPS'
             self.todo_enum = 'minor_field_work'
@@ -165,7 +167,7 @@ class FeatureTodoAnalyzer:
                 self.todo_descr = '%s %s' % (self.todo_descr, self.missing_str)
 
         if self.todo_descr:
-            outputter.feature_todo(self.todo_enum, self.todo_descr)
+            outputter.feature_todo(feature, self.todo_enum, self.todo_descr)
 
 
 def write_feature(feature, outputter):
@@ -198,7 +200,7 @@ def write_feature(feature, outputter):
     for ref in cavedb.models.FeatureReference.objects.filter(feature=feature.id):
         outputter.feature_reference(feature, ref)
 
-    todo.write_todo(outputter)
+    todo.write_todo(feature, outputter)
     outputter.end_feature()
 
 

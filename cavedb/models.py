@@ -206,8 +206,8 @@ class Bulletin(models.Model):
                    (base_url, get_file_size(cavedb.utils.get_color_pdf_filename(self.id))) + \
                    '<a href="%s/draft_pdf">Draft PDF (No images)</a> [%s]<br/>' % \
                    (base_url, get_file_size(cavedb.utils.get_draft_pdf_filename(self.id))) + \
-                   '<a href="%s/todo_pdf">TODO PDF</a> [%s]<br/>' % \
-                   (base_url, get_file_size(cavedb.utils.get_todo_pdf_filename(self.id))) + \
+                   '<a href="%s/todo">TODO TXT</a> [%s]<br/>' % \
+                   (base_url, get_file_size(cavedb.utils.get_todo_txt_filename(self.id))) + \
                    '<a href="%s/mxf">Maptech File (MXF)</a> [%s]<br/>' % \
                    (base_url, get_file_size(cavedb.utils.get_mxf_filename(self.id))) + \
                    '<a href="%s/csv">Spreadsheet (CSV)</a> [%s]<br/>' % \

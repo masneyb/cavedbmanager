@@ -285,7 +285,7 @@ class Xml(cavedb.docgen_common.Common):
                                (feature.access_enum, feature.access_descr))
 
 
-    def feature_todo(self, todo_enum, todo_descr):
+    def feature_todo(self, feature, todo_enum, todo_descr):
         self.xmlfile.write('<bulletin_work category="%s">%s</bulletin_work>\n' % \
                            (todo_enum, todo_descr))
 

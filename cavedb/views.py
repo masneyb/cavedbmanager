@@ -72,12 +72,12 @@ def show_draft_pdf(request, bulletin_id):
     return cavedb.utils.send_file(cavedb.utils.get_draft_pdf_filename(bulletin_id), remotefile)
 
 
-def show_todo_pdf(request, bulletin_id):
+def show_todo_txt(request, bulletin_id):
     if not cavedb.utils.is_bulletin_docs_allowed(bulletin_id):
         raise Http404
 
-    remotefile = '%s_todo.pdf' % (get_bulletin_base_name(bulletin_id))
-    return cavedb.utils.send_file(cavedb.utils.get_todo_pdf_filename(bulletin_id), remotefile)
+    remotefile = '%s_todo.txt' % (get_bulletin_base_name(bulletin_id))
+    return cavedb.utils.send_file(cavedb.utils.get_todo_txt_filename(bulletin_id), remotefile)
 
 
 def show_kml(request, bulletin_id):

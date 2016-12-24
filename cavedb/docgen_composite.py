@@ -80,9 +80,9 @@ class Composite(cavedb.docgen_common.Common):
             composite.begin_feature(feature)
 
 
-    def feature_todo(self, todo_enum, todo_descr):
+    def feature_todo(self, feature, todo_enum, todo_descr):
         for composite in self.composites:
-            composite.feature_todo(todo_enum, todo_descr)
+            composite.feature_todo(feature, todo_enum, todo_descr)
 
 
     def feature_entrance(self, feature, entrance, coordinates):

@@ -39,7 +39,7 @@ urlpatterns = [
     url(r'^cavedb/bulletin/(?P<bulletin_id>\d+)/pdf$', 'cavedb.views.show_pdf'),
     url(r'^cavedb/bulletin/(?P<bulletin_id>\d+)/color_pdf$', 'cavedb.views.show_color_pdf'),
     url(r'^cavedb/bulletin/(?P<bulletin_id>\d+)/draft_pdf$', 'cavedb.views.show_draft_pdf'),
-    url(r'^cavedb/bulletin/(?P<bulletin_id>\d+)/todo_pdf$', 'cavedb.views.show_todo_pdf'),
+    url(r'^cavedb/bulletin/(?P<bulletin_id>\d+)/todo$', 'cavedb.views.show_todo_txt'),
     url(r'^cavedb/bulletin/(?P<bulletin_id>\d+)/kml$', 'cavedb.views.show_kml'),
     url(r'^cavedb/bulletin/(?P<bulletin_id>\d+)/text$', 'cavedb.views.show_text'),
     url(r'^cavedb/bulletin/(?P<bulletin_id>\d+)/gpx$', 'cavedb.views.show_gpx'),
