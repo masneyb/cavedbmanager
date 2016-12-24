@@ -85,11 +85,9 @@ class Composite(cavedb.docgen_common.Common):
             composite.feature_todo(todo_enum, todo_descr)
 
 
-    def feature_entrance(self, feature, ent, utmzone, nad27_utmeast, nad27_utmnorth, wgs84_lat, \
-                         wgs84_lon):
+    def feature_entrance(self, feature, entrance, coordinates):
         for composite in self.composites:
-            composite.feature_entrance(feature, ent, utmzone, nad27_utmeast, nad27_utmnorth, \
-                                       wgs84_lat, wgs84_lon)
+            composite.feature_entrance(feature, entrance, coordinates)
 
 
     def feature_attachment(self, feature, attachment):

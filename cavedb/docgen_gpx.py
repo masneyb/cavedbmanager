@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import cavedb.docgen_common
+import cavedb.utils
 
 class Gpx(cavedb.docgen_common.Common):
     def __init__(self, basedir, bulletin):
@@ -20,8 +21,8 @@ class Gpx(cavedb.docgen_common.Common):
 
 
     def open(self, all_regions_gis_hash):
-        self.create_directory('/output/gpx')
-        filename = '%s/output/gpx/bulletin_%s.gpx' % (self.basedir, self.bulletin.id)
+        filename = cavedb.utils.get_gpx_filename(self.bulletin.id)
+        cavedb.docgen_common.create_base_directory(filename)
         self.gpxfile = open(filename, 'w')
 
         self.gpxfile.write('<?xml version="1.0" encoding="US-ASCII"?>\n')
@@ -34,15 +35,12 @@ class Gpx(cavedb.docgen_common.Common):
         self.gpxfile.write('  </metadata>\n')
 
 
-    def feature_entrance(self, feature, ent, utmzone, nad27_utmeast, nad27_utmnorth, wgs84_lat, \
-                         wgs84_lon):
-        if ent.entrance_name:
-            name = '%s - %s' % (feature.name, ent.entrance_name)
-        else:
-            name = feature.name
+    def feature_entrance(self, feature, entrance, coordinates):
+        name = cavedb.docgen_common.get_entrance_name(feature, entrance)
 
-        self.gpxfile.write('  <wpt lat="%s" lon="%s">\n' % (wgs84_lat, wgs84_lon))
-        self.gpxfile.write('    <ele>%s</ele>\n' % (ent.elevation_ft))
+        self.gpxfile.write('  <wpt lat="%s" lon="%s">\n' % \
+                           (coordinates.wgs84_lat, coordinates.wgs84_lon))
+        self.gpxfile.write('    <ele>%s</ele>\n' % (entrance.elevation_ft))
         self.gpxfile.write('    <name>%s</name>\n' % (name))
         self.gpxfile.write('    <cmt>%s</cmt>\n' % (feature.feature_type))
         self.gpxfile.write('    <desc>%s</desc>\n' % (name))

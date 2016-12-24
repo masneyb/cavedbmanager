@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import cavedb.docgen_common
+import cavedb.utils
 
 class Mxf(cavedb.docgen_common.Common):
     def __init__(self, basedir, bulletin):
@@ -21,8 +22,8 @@ class Mxf(cavedb.docgen_common.Common):
 
 
     def open(self, all_regions_gis_hash):
-        self.create_directory('/output/mxf')
-        filename = '%s/output/mxf/bulletin_%s.mxf' % (self.basedir, self.bulletin.id)
+        filename = cavedb.utils.get_mxf_filename(self.bulletin.id)
+        cavedb.docgen_common.create_base_directory(filename)
         self.mxffile = open(filename, 'w')
 
 
@@ -30,15 +31,11 @@ class Mxf(cavedb.docgen_common.Common):
         self.mxffile.close()
 
 
-    def feature_entrance(self, feature, ent, utmzone, nad27_utmeast, nad27_utmnorth, wgs84_lat, \
-                         wgs84_lon):
-        if ent.entrance_name:
-            name = '%s - %s' % (feature.name, ent.entrance_name)
-        else:
-            name = feature.name
-
+    def feature_entrance(self, feature, entrance, coordinates):
         self.mxffile.write('%s, %s, \"%s\", \"%s%s\", \"Number: %s Height: %s\", ff0000, 3\n' % \
-                           (wgs84_lat, wgs84_lon, name, feature.survey_county.survey_short_name, \
-                            feature.survey_id, self.number, ent.elevation_ft))
+                           (coordinates.wgs84_lat, coordinates.wgs84_lon, \
+                            cavedb.docgen_common.get_entrance_name(feature, entrance), \
+                            feature.survey_county.survey_short_name, feature.survey_id, \
+                            self.number, entrance.elevation_ft))
 
         self.number = self.number + 1

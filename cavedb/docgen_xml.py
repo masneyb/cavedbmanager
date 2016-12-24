@@ -32,8 +32,8 @@ class Xml(cavedb.docgen_common.Common):
 
 
     def open(self, all_regions_gis_hash):
-        self.create_directory('/output')
-        filename = '%s/output/bulletin_%s.xml' % (self.basedir, self.bulletin.id)
+        filename = cavedb.utils.get_xml_filename(self.bulletin.id)
+        cavedb.docgen_common.create_base_directory(filename)
         self.xmlfile = open(filename, 'w')
 
         self.xmlfile.write('<?xml version="1.0" encoding="UTF-8"?>\n')
@@ -290,26 +290,23 @@ class Xml(cavedb.docgen_common.Common):
                            (todo_enum, todo_descr))
 
 
-    def feature_entrance(self, feature, ent, utmzone, nad27_utmeast, nad27_utmnorth, wgs84_lat, \
-                         wgs84_lon):
+    def feature_entrance(self, feature, entrance, coordinates):
         attstr = ''
-        if ent.entrance_name:
-            attstr += ' name="%s"' % (ent.entrance_name)
+        if entrance.entrance_name:
+            attstr += ' name="%s"' % (entrance.entrance_name)
 
-        if ent.access_enum:
-            attstr += ' access_status="%s"' % (ent.access_enum)
+        if entrance.access_enum:
+            attstr += ' access_status="%s"' % (entrance.access_enum)
 
-        if ent.coord_acquision:
-            attstr += ' coord_acquision="%s"' % (ent.coord_acquision)
+        if entrance.coord_acquision:
+            attstr += ' coord_acquision="%s"' % (entrance.coord_acquision)
 
-        if nad27_utmeast != '' and nad27_utmeast != 0:
-            quad_name = ''
-            if ent.quad:
-                quad_name = ent.quad
-
+        if coordinates.nad27_utmeast != '':
             self.xmlfile.write('<location%s id="%s" wgs84_lat="%s" wgs84_lon="%s" utmzone="%s" utm27_utmeast="%s" utm27_utmnorth="%s" ele="%s" county="%s" quad="%s"/>\n' % \
-                               (attstr, ent.id, wgs84_lat, wgs84_lon, utmzone, nad27_utmeast, \
-                                nad27_utmnorth, ent.elevation_ft, ent.county, quad_name))
+                               (attstr, entrance.id, coordinates.wgs84_lat, coordinates.wgs84_lon, \
+                                coordinates.utmzone, coordinates.nad27_utmeast, \
+                                coordinates.nad27_utmnorth, entrance.elevation_ft, \
+                                entrance.county, entrance.quad))
 
 
     def feature_attachment(self, feature, attachment):

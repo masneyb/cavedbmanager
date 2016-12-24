@@ -73,8 +73,7 @@ class Common:
         pass
 
 
-    def feature_entrance(self, feature, ent, utmzone, nad27_utmeast, nad27_utmnorth, wgs84_lat, \
-                         wgs84_lon):
+    def feature_entrance(self, feature, entrance, coordinates):
         pass
 
 
@@ -98,8 +97,14 @@ class Common:
         pass
 
 
-    def create_directory(self, suffix):
-        outdir = self.basedir + suffix
-        if not os.path.isdir(outdir):
-            os.makedirs(outdir)
+def create_base_directory(filename):
+    outdir = os.path.dirname(filename)
+    if not os.path.isdir(outdir):
+        os.makedirs(outdir)
+
+def get_entrance_name(feature, ent):
+    if ent.entrance_name:
+        return '%s - %s' % (feature.name, ent.entrance_name)
+    else:
+        return feature.name
 
