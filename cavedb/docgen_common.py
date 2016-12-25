@@ -97,6 +97,10 @@ class Common:
         pass
 
 
+    def generate_buildscript(self):
+        return None
+
+
 def create_base_directory(filename):
     outdir = os.path.dirname(filename)
     if not os.path.isdir(outdir):

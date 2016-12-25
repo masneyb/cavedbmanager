@@ -26,6 +26,7 @@ import cavedb.utils
 from cavedb.docgen_composite import Composite
 import cavedb.docgen_entrance_csv
 import cavedb.docgen_gpx
+import cavedb.docgen_gis_locations_shp
 import cavedb.docgen_kml
 import cavedb.docgen_mxf
 import cavedb.docgen_text
@@ -35,6 +36,7 @@ import cavedb.docgen_xml
 def write_bulletin_files(bulletin, basedir):
     outputter = Composite(basedir, bulletin,
                           [cavedb.docgen_entrance_csv.EntranceCsv(basedir, bulletin),
+                           cavedb.docgen_gis_locations_shp.GisLocationsShp(basedir, bulletin),
                            cavedb.docgen_gpx.Gpx(basedir, bulletin),
                            cavedb.docgen_kml.Kml(basedir, bulletin),
                            cavedb.docgen_mxf.Mxf(basedir, bulletin),
@@ -68,6 +70,14 @@ def write_bulletin_files(bulletin, basedir):
         outputter.end_region()
 
     outputter.close()
+
+    buildscript = outputter.generate_buildscript()
+    if buildscript:
+        buildscriptfile = cavedb.utils.get_buildscript(bulletin.id)
+        with open(buildscriptfile, 'w') as output:
+            output.write('/bin/bash -e\n')
+            output.write(buildscript)
+        os.chmod(buildscriptfile, 0755)
 
 
 def add_gis_lineplot(lineplot, gisdir, lineplot_type, outputter):

@@ -114,3 +114,16 @@ class Composite(cavedb.docgen_common.Common):
         for composite in self.composites:
             composite.end_feature()
 
+
+    def generate_buildscript(self):
+        ret = ''
+        for composite in self.composites:
+            composite_ret = composite.generate_buildscript()
+            if composite_ret:
+                if ret:
+                    ret = '%s\n%s' % (ret, composite_ret)
+                else:
+                    ret = composite_ret
+
+        return ret
+
