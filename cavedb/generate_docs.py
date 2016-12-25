@@ -26,9 +26,9 @@ import cavedb.utils
 from cavedb.docgen_composite import Composite
 import cavedb.docgen_entrance_csv
 import cavedb.docgen_gpx
-import cavedb.docgen_gis_locations_shp
 import cavedb.docgen_kml
 import cavedb.docgen_mxf
+import cavedb.docgen_shp
 import cavedb.docgen_text
 import cavedb.docgen_todo_txt
 import cavedb.docgen_xml
