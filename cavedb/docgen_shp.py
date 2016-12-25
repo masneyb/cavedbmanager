@@ -16,7 +16,7 @@ import os
 import cavedb.docgen_common
 import cavedb.utils
 
-class GisLocationsShp(cavedb.docgen_common.Common):
+class Shp(cavedb.docgen_common.Common):
     def __init__(self, basedir, bulletin):
         cavedb.docgen_common.Common.__init__(self, basedir, bulletin)
         self.buildscript = ''

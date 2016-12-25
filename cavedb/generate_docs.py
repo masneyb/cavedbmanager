@@ -36,10 +36,10 @@ import cavedb.docgen_xml
 def write_bulletin_files(bulletin, basedir):
     outputter = Composite(basedir, bulletin,
                           [cavedb.docgen_entrance_csv.EntranceCsv(basedir, bulletin),
-                           cavedb.docgen_gis_locations_shp.GisLocationsShp(basedir, bulletin),
                            cavedb.docgen_gpx.Gpx(basedir, bulletin),
                            cavedb.docgen_kml.Kml(basedir, bulletin),
                            cavedb.docgen_mxf.Mxf(basedir, bulletin),
+                           cavedb.docgen_shp.Shp(basedir, bulletin),
                            cavedb.docgen_text.Text(basedir, bulletin),
                            cavedb.docgen_todo_txt.TodoTxt(basedir, bulletin),
                            cavedb.docgen_xml.Xml(basedir, bulletin)])
