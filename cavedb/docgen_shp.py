@@ -34,9 +34,9 @@ class Shp(cavedb.docgen_gis_common.GisCommon):
         extents_csvfile = self.write_region_extents_csv()
         extents_ovffile = self.write_region_extents_ovf(extents_csvfile)
 
-        self.buildscript = 'ogr2ogr -f "ESRI Shapefile" "%s" "%s"\n' % \
+        self.buildscript = 'ogr2ogr -overwrite -f "ESRI Shapefile" "%s" "%s"\n' % \
                            (self.shp_dir, locs_ovffile) + \
-                           'ogr2ogr -f "ESRI Shapefile" "%s" "%s"\n' % \
+                           'ogr2ogr -overwrite -f "ESRI Shapefile" "%s" "%s"\n' % \
                            (self.shp_dir, extents_ovffile) + \
                            'cd %s\n' % (self.shp_dir) + \
                            'zip %s *.{shp,shx,dbf,prj}\n' % (self.shp_zip_file)
