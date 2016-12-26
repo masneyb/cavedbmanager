@@ -132,15 +132,15 @@ def write_layer(gis_options, layer):
         mapfile.write('    CONNECTION %s\n' % (cavedb.settings.GIS_CONNECTION))
 
     if layer.filename:
-        mapfile.write('    DATA %s\n' % (layer.filename))
+        mapfile.write('    DATA "%s"\n' % (layer.filename))
     else:
-        mapfile.write('    DATA geom from %s\n' % (layer.table_name))
+        mapfile.write('    DATA "geom from %s"\n' % (layer.table_name))
 
     mapfile.write('    STATUS ON\n')
     mapfile.write('    TYPE %s\n' % (layer.type))
 
     if layer.label_item:
-        mapfile.write('    LABELITEM %s\n' % (layer.label_item))
+        mapfile.write('    LABELITEM "%s"\n' % (layer.label_item))
 
     if layer.type != 'RASTER':
         mapfile.write('    CLASS\n')
