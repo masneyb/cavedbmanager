@@ -101,10 +101,15 @@ class Common:
         return None
 
 
-def create_base_directory(filename):
-    outdir = os.path.dirname(filename)
+def create_directory(outdir):
     if not os.path.isdir(outdir):
         os.makedirs(outdir)
+
+
+def create_base_directory(filename):
+    outdir = os.path.dirname(filename)
+    create_directory(outdir)
+
 
 def get_entrance_name(feature, ent):
     if ent.entrance_name:
