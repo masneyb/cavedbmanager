@@ -48,8 +48,8 @@ SITE_ID = 1
 # Specifies where the application is deployed
 CONTEXT_PATH = '/'
 
-GIS_INCLUDES_DIR = '/usr/local/cavedbmanager-data/gis_maps'
-MEDIA_ROOT = '/usr/local/cavedbmanager-data/'
+MEDIA_ROOT = '/usr/local/cavedbmanager-data'
+GIS_INCLUDES_DIR = MEDIA_ROOT + '/gis_maps'
 MEDIA_URL = CONTEXT_PATH + 'cavedb/'
 STATIC_URL = '/media/'
 STATIC_ROOT = 'media/'
