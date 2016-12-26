@@ -3,23 +3,9 @@ CAVE_SRC_XML=$(DOC_BASE_DIR)/output/$(DOCPREFIX).xml
 
 # Stylesheets
 LATEX_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2latex.xsl
-CSV_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2csv.xsl
 GIS_MAPS_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2gis_map.xsl
-GIS_EXTENTS_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2gis_region_extents.xsl
 MAPSERVER_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2mapserver_project.xsl 
 DVD_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2dvd.xsl
-
-# GIS project
-SHP_DIR=$(OUTPUTDIR)/shp
-SHP_LAYER_NAME=karst_feature_locations
-SHP=$(SHP_DIR)/$(SHP_LAYER_NAME).shp
-PRJ=$(SHP_DIR)/$(SHP_LAYER_NAME).prj
-OVF_FILE=$(OUTPUTDIR)/virtual.ovf
-
-EXTENTS_SHP_LAYER_NAME=region_extents
-EXTENTS_CSV_BASE=region_extents
-EXTENTS_CSV=$(SHP_DIR)/$(EXTENTS_CSV_BASE).csv
-EXTENTS_PRJ=$(SHP_DIR)/$(EXTENTS_CSV_BASE).prj
 
 MAPSERVER_PROJECT_FILE=cave.map
 MAPSERVER_PROJECT_FULLPATH=$(GIS_OUTPUT_DIR)/$(MAPSERVER_PROJECT_FILE)
@@ -43,14 +29,11 @@ PDF_DRAFT_OUTPUTDIR=$(OUTPUTDIR)/pdf_draft
 PDF_DRAFT_LATEX_CAVES=$(PDF_DRAFT_OUTPUTDIR)/$(DOCPREFIX).tex
 PDF_DRAFT=$(PDF_DRAFT_OUTPUTDIR)/$(DOCPREFIX).pdf
 
-CSV_OUTPUTDIR=$(OUTPUTDIR)/csv
-CSV=$(CSV_OUTPUTDIR)/$(DOCPREFIX).csv
-
 LOCKFILE=$(DOC_BASE_DIR)/build-in-progress.lock
 
-.PHONY: all csv ovf shp gis_maps validate print clean dvd pdf color_pdf draft_pdf 
+.PHONY: all ovf shp gis_maps validate print clean dvd pdf color_pdf draft_pdf 
 
-all: init clean validate $(CSV) $(SHP) dvd gis_maps $(PDF) $(PDF_COLOR) $(PDF_DRAFT)
+all: init clean validate dvd gis_maps $(PDF) $(PDF_COLOR) $(PDF_DRAFT)
 	rm -f $(LOCKFILE)
 
 init:
@@ -99,38 +82,10 @@ $(PDF_DRAFT): $(CAVE_SRC_XML) $(PDF_DRAFT_LATEX_CAVES)
 	openout_any=a makeindex $(PDF_DRAFT_OUTPUTDIR)/$(DOCPREFIX).idx
 	pdflatex -output-directory $(PDF_DRAFT_OUTPUTDIR) $(PDF_DRAFT_LATEX_CAVES)
 
-csv: $(CSV)
-
-$(CSV): $(CSV_STYLESHEET)
-	if [ ! -d $(CSV_OUTPUTDIR) ]; then    mkdir $(CSV_OUTPUTDIR) ;     fi
-
-	xsltproc -o $(CSV) $(CSV_STYLESHEET) $(CAVE_SRC_XML)
-
 dvd: $(DVD_STYLESHEET)
 	xsltproc $(DVD_STYLESHEET) $(CAVE_SRC_XML) | sh -v
 
-shp: $(SHP)
-
-$(SHP): $(CSV)
-	rm -rf $(SHP_DIR)
-
-	# Generate a SHP file that contains the feature coordinates
-	echo "<OGRVRTDataSource> <OGRVRTLayer name=\"$(SHP_LAYER_NAME)\"> <SrcDataSource>$(CSV)</SrcDataSource> <SrcLayer>$(DOCPREFIX)</SrcLayer> <GeometryType>wkbPoint</GeometryType> <GeometryField encoding=\"PointFromColumns\" x=\"wgs84_lon\" y=\"wgs84_lat\" z=\"elevation\"/> </OGRVRTLayer> </OGRVRTDataSource>" > $(OVF_FILE)
-	ogr2ogr -f "ESRI Shapefile" $(SHP_DIR) $(OVF_FILE)
-
-	# Generate a SHP file for the region extents
-	xsltproc $(GIS_XSLT_OPTS) $(GIS_EXTENTS_STYLESHEET) $(CAVE_SRC_XML) > $(EXTENTS_CSV)
-	echo "<OGRVRTDataSource> <OGRVRTLayer name=\"$(EXTENTS_SHP_LAYER_NAME)\"> <SrcDataSource>$(EXTENTS_CSV)</SrcDataSource> <SrcLayer>$(EXTENTS_CSV_BASE)</SrcLayer> <GeometryType>wkbPolygon</GeometryType> <GeometryField encoding=\"WKT\" x=\"utmeast\" field=\"wkt\"/> </OGRVRTLayer> </OGRVRTDataSource>" > $(OVF_FILE)
-	ogr2ogr -f "ESRI Shapefile" $(SHP_DIR) $(OVF_FILE)
-	rm -f $(EXTENTS_CSV)
-
-	echo "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.01745329251994328,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]]" > $(PRJ)
-	cp $(PRJ) $(EXTENTS_PRJ)
-
-	rm -f $(OVF_FILE)
-	zip -jr $(SHP_DIR)/$(SHP_LAYER_NAME).zip $(SHP_DIR)/
-
-gis_maps: $(SHP) $(GIS_MAPS_STYLESHEET)
+gis_maps: $(GIS_MAPS_STYLESHEET)
 	mkdir -p $(GIS_OUTPUT_DIR)
 	if [ ! -f $(GIS_OUTPUT_DIR)/fonts.list ] ; then ln -s $(DOC_BASE_DIR)/../../gis_maps/fonts.list $(GIS_OUTPUT_DIR) ; fi
 
@@ -142,7 +97,6 @@ gis_maps: $(SHP) $(GIS_MAPS_STYLESHEET)
 validate: $(CAVE_SRC_XML)
 	xmllint -noout $(CAVE_SRC_XML)
 	xmllint -noout $(LATEX_STYLESHEET)
-	xmllint -noout $(CSV_STYLESHEET)
 
 print: $(PDF)
 	pdftops -paper letter $(PDF) $(OUTPUTDIR)/$(DOCPREFIX).ps
@@ -154,5 +108,3 @@ clean:
 	rm -rf $(PDF_DRAFT_OUTPUTDIR)
 	rm -rf $(PDF_BW_OUTPUTDIR)
 	rm -rf $(PDF_COLOR_OUTPUTDIR)
-	rm -rf $(CSV_OUTPUTDIR)
-	rm -rf $(SHP_DIR)
