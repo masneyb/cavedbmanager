@@ -59,9 +59,9 @@ class GisCommon(cavedb.docgen_common.Common):
             extents['maxy'] = coordinates.wgs84_lat + self.gis_y_buffer
 
 
-def init_extents(id, name, gishash):
+def init_extents(region_id, name, gishash):
     ret = {}
-    ret['id'] = id
+    ret['id'] = region_id
     ret['name'] = name
     ret['gishash'] = gishash
     ret['minx'] = None
