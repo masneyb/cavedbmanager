@@ -27,14 +27,15 @@ class GisCommon(cavedb.docgen_common.Common):
 
 
     def open(self, all_regions_gis_hash):
-        self.overall_extents = init_extents(None, all_regions_gis_hash)
+        self.overall_extents = init_extents(None, None, all_regions_gis_hash)
 
 
     def begin_region(self, region, gis_region_hash, map_name):
         if not region.show_gis_map:
             return
 
-        self.region_extents[region.id] = init_extents(region.region_name, gis_region_hash)
+        self.region_extents[region.id] = init_extents(region.id, region.region_name, \
+                                                      gis_region_hash)
 
 
     def feature_entrance(self, feature, entrance, coordinates):
@@ -58,8 +59,9 @@ class GisCommon(cavedb.docgen_common.Common):
             extents['maxy'] = coordinates.wgs84_lat + self.gis_y_buffer
 
 
-def init_extents(name, gishash):
+def init_extents(id, name, gishash):
     ret = {}
+    ret['id'] = id
     ret['name'] = name
     ret['gishash'] = gishash
     ret['minx'] = None
