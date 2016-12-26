@@ -92,6 +92,15 @@ def get_mxf_filename(bulletin_id):
                (settings.MEDIA_ROOT, bulletin_id, bulletin_id)
 
 
+def get_gis_maps_directory(bulletin_id):
+    return '%s/bulletins/bulletin_%s/output/gis_maps' % \
+               (settings.MEDIA_ROOT, bulletin_id)
+
+
+def get_mapserver_mapfile(bulletin_id, mapname):
+    return '%s/%s.map' % (get_gis_maps_directory(bulletin_id), mapname)
+
+
 def get_shp_filename(bulletin_id):
     return '%s/bulletins/bulletin_%s/output/shp/karst_feature_locations.zip' % \
                (settings.MEDIA_ROOT, bulletin_id)

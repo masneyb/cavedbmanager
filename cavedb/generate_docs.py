@@ -27,6 +27,7 @@ from cavedb.docgen_composite import Composite
 import cavedb.docgen_entrance_csv
 import cavedb.docgen_gpx
 import cavedb.docgen_kml
+import cavedb.docgen_mapserver_mapfile
 import cavedb.docgen_mxf
 import cavedb.docgen_shp
 import cavedb.docgen_text
@@ -39,6 +40,7 @@ def write_bulletin_files(bulletin, basedir):
                            cavedb.docgen_gpx.Gpx(basedir, bulletin),
                            cavedb.docgen_kml.Kml(basedir, bulletin),
                            cavedb.docgen_mxf.Mxf(basedir, bulletin),
+                           cavedb.docgen_mapserver_mapfile.MapserverMapfile(basedir, bulletin),
                            cavedb.docgen_shp.Shp(basedir, bulletin),
                            cavedb.docgen_text.Text(basedir, bulletin),
                            cavedb.docgen_todo_txt.TodoTxt(basedir, bulletin),
@@ -75,7 +77,7 @@ def write_bulletin_files(bulletin, basedir):
     if buildscript:
         buildscriptfile = cavedb.utils.get_buildscript(bulletin.id)
         with open(buildscriptfile, 'w') as output:
-            output.write('/bin/bash -e\n')
+            output.write('#!/bin/bash -e\n')
             output.write(buildscript)
         os.chmod(buildscriptfile, 0755)
 
