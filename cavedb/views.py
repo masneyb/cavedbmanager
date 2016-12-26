@@ -156,8 +156,7 @@ def show_region_gis_map(request, bulletin_id, region_id, map_name):
     if not cavedb.utils.is_bulletin_gis_maps_allowed(bulletin_id):
         raise Http404
 
-    localfile = '%s/bulletins/bulletin_%s/output/gis_maps/bulletin_%s_region_%s_gis_%s_map.jpg' % \
-                    (settings.MEDIA_ROOT, bulletin_id, bulletin_id, region_id, map_name)
+    localfile = cavedb.utils.get_region_gis_map(bulletin_id, region_id, map_name)
     return cavedb.utils.send_file(localfile, None)
 
 
