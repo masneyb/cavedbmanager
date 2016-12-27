@@ -31,7 +31,7 @@ init:
 $(PDF_BW_LATEX_CAVES): $(LATEX_STYLESHEET)
 	if [ ! -d $(PDF_BW_OUTPUTDIR) ]; then    mkdir $(PDF_BW_OUTPUTDIR) ;     fi
 
-	xsltproc --stringparam feature_photo secondary --stringparam bulletin_type black_and_white $(LATEX_STYLESHEET) $(CAVE_SRC_XML) \
+	xsltproc --stringparam gis_output_dir ./output/gis_maps/ --stringparam feature_photo secondary --stringparam bulletin_type black_and_white $(LATEX_STYLESHEET) $(CAVE_SRC_XML) \
 	| sed "/Title Page/,$$ s/\\#/\\\\#/g" \
 	> $(PDF_BW_LATEX_CAVES)
 
@@ -45,7 +45,7 @@ $(PDF): $(CAVE_SRC_XML) $(PDF_BW_LATEX_CAVES)
 $(PDF_COLOR_LATEX_CAVES): $(LATEX_STYLESHEET)
 	if [ ! -d $(PDF_COLOR_OUTPUTDIR) ]; then    mkdir $(PDF_COLOR_OUTPUTDIR) ;     fi
 
-	xsltproc --stringparam feature_photo primary --stringparam bulletin_type color $(LATEX_STYLESHEET) $(CAVE_SRC_XML) \
+	xsltproc --stringparam gis_output_dir ./output/gis_maps/ --stringparam feature_photo primary --stringparam bulletin_type color $(LATEX_STYLESHEET) $(CAVE_SRC_XML) \
 	| sed "/Title Page/,$$ s/\\#/\\\\#/g" \
 	> $(PDF_COLOR_LATEX_CAVES)
 
@@ -59,7 +59,7 @@ $(PDF_COLOR): $(CAVE_SRC_XML) $(PDF_COLOR_LATEX_CAVES)
 $(PDF_DRAFT_LATEX_CAVES): $(LATEX_STYLESHEET)
 	if [ ! -d $(PDF_DRAFT_OUTPUTDIR) ]; then    mkdir $(PDF_DRAFT_OUTPUTDIR) ;     fi
 
-	xsltproc --stringparam feature_photo primary --stringparam draft_mode 1 --stringparam bulletin_type black_and_white $(LATEX_STYLESHEET) $(CAVE_SRC_XML) \
+	xsltproc --stringparam gis_output_dir ./output/gis_maps/ --stringparam feature_photo primary --stringparam draft_mode 1 --stringparam bulletin_type black_and_white $(LATEX_STYLESHEET) $(CAVE_SRC_XML) \
 	| sed "/Title Page/,$$ s/\\#/\\\\#/g" \
 	> $(PDF_DRAFT_LATEX_CAVES)
 
