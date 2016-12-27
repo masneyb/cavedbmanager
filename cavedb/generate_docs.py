@@ -24,6 +24,7 @@ from django.http import HttpResponseRedirect, Http404
 import cavedb.models
 import cavedb.utils
 from cavedb.docgen_composite import Composite
+import cavedb.docgen_dvd
 import cavedb.docgen_entrance_csv
 import cavedb.docgen_gis_maps
 import cavedb.docgen_gpx
@@ -37,7 +38,8 @@ import cavedb.docgen_xml
 
 def write_bulletin_files(bulletin, basedir):
     outputter = Composite(basedir, bulletin,
-                          [cavedb.docgen_entrance_csv.EntranceCsv(basedir, bulletin),
+                          [cavedb.docgen_dvd.Dvd(basedir, bulletin),
+                           cavedb.docgen_entrance_csv.EntranceCsv(basedir, bulletin),
                            cavedb.docgen_gpx.Gpx(basedir, bulletin),
                            cavedb.docgen_kml.Kml(basedir, bulletin),
                            cavedb.docgen_mxf.Mxf(basedir, bulletin),

@@ -125,9 +125,13 @@ def get_xml_filename(bulletin_id):
                (settings.MEDIA_ROOT, bulletin_id, bulletin_id)
 
 
-def get_dvd_filename(bulletin_id):
-    return '%s/bulletins/bulletin_%s/output/dvd/dvd.zip' % \
+def get_dvd_directory(bulletin_id):
+    return '%s/bulletins/bulletin_%s/output/dvd' % \
                (settings.MEDIA_ROOT, bulletin_id)
+
+
+def get_dvd_filename(bulletin_id):
+    return '%s/dvd.zip' % (get_dvd_directory(bulletin_id))
 
 
 def get_build_log_filename(bulletin_id):

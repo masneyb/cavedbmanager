@@ -3,7 +3,6 @@ CAVE_SRC_XML=$(DOC_BASE_DIR)/output/$(DOCPREFIX).xml
 
 # Stylesheets
 LATEX_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2latex.xsl
-DVD_STYLESHEET=$(TEMPLATE_BASE_DIR)/xml2dvd.xsl
 
 PDF_BW_OUTPUTDIR=$(OUTPUTDIR)/pdf_bw
 PDF_BW_LATEX_CAVES=$(PDF_BW_OUTPUTDIR)/$(DOCPREFIX).tex
@@ -19,9 +18,9 @@ PDF_DRAFT=$(PDF_DRAFT_OUTPUTDIR)/$(DOCPREFIX).pdf
 
 LOCKFILE=$(DOC_BASE_DIR)/build-in-progress.lock
 
-.PHONY: all validate print clean dvd pdf color_pdf draft_pdf 
+.PHONY: all validate print clean pdf color_pdf draft_pdf 
 
-all: init clean validate dvd $(PDF) $(PDF_COLOR) $(PDF_DRAFT)
+all: init clean validate $(PDF) $(PDF_COLOR) $(PDF_DRAFT)
 	rm -f $(LOCKFILE)
 
 init:
@@ -69,9 +68,6 @@ $(PDF_DRAFT): $(CAVE_SRC_XML) $(PDF_DRAFT_LATEX_CAVES)
 	pdflatex -output-directory $(PDF_DRAFT_OUTPUTDIR) $(PDF_DRAFT_LATEX_CAVES)
 	openout_any=a makeindex $(PDF_DRAFT_OUTPUTDIR)/$(DOCPREFIX).idx
 	pdflatex -output-directory $(PDF_DRAFT_OUTPUTDIR) $(PDF_DRAFT_LATEX_CAVES)
-
-dvd: $(DVD_STYLESHEET)
-	xsltproc $(DVD_STYLESHEET) $(CAVE_SRC_XML) | sh -v
 
 validate: $(CAVE_SRC_XML)
 	xmllint -noout $(CAVE_SRC_XML)
