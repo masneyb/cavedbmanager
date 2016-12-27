@@ -77,10 +77,13 @@ def write_bulletin_files(bulletin, basedir):
 
     outputter.close()
 
-    buildscript = outputter.generate_buildscript()
-    buildscript += "make\n"
-
     buildscriptfile = cavedb.utils.get_buildscript(bulletin.id)
+    buildscriptdir = os.path.dirname(buildscriptfile)
+
+    buildscript = outputter.generate_buildscript()
+    buildscript += "cd %s\n" % (buildscriptdir) + \
+                   "make\n"
+
     with open(buildscriptfile, 'w') as output:
         output.write('#!/bin/bash -ev\n')
         output.write(buildscript)
