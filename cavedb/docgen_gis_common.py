@@ -39,7 +39,7 @@ class GisCommon(cavedb.docgen_common.Common):
 
 
     def feature_entrance(self, feature, entrance, coordinates):
-        if self.region_extents[feature.bulletin_region.id]:
+        if feature.bulletin_region.id in self.region_extents:
             self.update_extent_boundary(self.overall_extents, coordinates)
             self.update_extent_boundary(self.region_extents[feature.bulletin_region.id], \
                                         coordinates)
