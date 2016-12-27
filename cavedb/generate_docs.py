@@ -270,7 +270,7 @@ def get_wgs84(in_srs, xcoord, ycoord):
     out_srs.SetWellKnownGeogCS('WGS84')
 
     transformer = osgeo.osr.CoordinateTransformation(in_srs, out_srs)
-    (newx, newy, newz) = transformer.TransformPoint(xcoord, ycoord)
+    (newx, newy, _) = transformer.TransformPoint(xcoord, ycoord)
 
     return (newx, newy)
 
@@ -282,7 +282,7 @@ def get_nad27(in_srs, utmzone, xcoord, ycoord):
 
     transformer = osgeo.osr.CoordinateTransformation(in_srs, out_srs)
 
-    (newx, newy, newz) = transformer.TransformPoint(xcoord, ycoord)
+    (newx, newy, _) = transformer.TransformPoint(xcoord, ycoord)
     return (newx, newy)
 
 
@@ -373,6 +373,7 @@ def run_make_command(basedir):
 
 
 def generate_bulletin(request, bulletin_id):
+    #pylint: disable=unused-argument
     if not cavedb.utils.is_bulletin_generation_allowed(bulletin_id):
         raise Http404
 
@@ -392,6 +393,7 @@ def generate_bulletin(request, bulletin_id):
 
 
 def generate_bulletin_source(request, bulletin_id):
+    #pylint: disable=unused-argument
     if not cavedb.utils.is_bulletin_generation_allowed(bulletin_id):
         raise Http404
 
