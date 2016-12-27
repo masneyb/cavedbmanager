@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 import cavedb.docgen_common
 import cavedb.utils
 import cavedb.models
@@ -79,7 +80,8 @@ class Dvd(cavedb.docgen_common.Common):
                     ret += 'ln "%s" "%s"\n' % (photo_meta['src'], destfile)
 
         dvd_zip_file = cavedb.utils.get_dvd_filename(self.bulletin.id)
-        ret += 'zip -r "%s" "%s"\n' % (dvd_zip_file, base_dvd_dir)
+        ret += 'cd %s/..\n' % (base_dvd_dir)
+        ret += 'zip -r "%s" "%s"\n' % (dvd_zip_file, os.path.basename(base_dvd_dir))
 
         return ret
 

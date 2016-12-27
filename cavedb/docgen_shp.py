@@ -38,8 +38,9 @@ class Shp(cavedb.docgen_gis_common.GisCommon):
                            (self.shp_dir, locs_ovffile) + \
                            'ogr2ogr -overwrite -f "ESRI Shapefile" "%s" "%s"\n' % \
                            (self.shp_dir, extents_ovffile) + \
-                           'cd %s\n' % (self.shp_dir) + \
-                           'zip %s *.{shp,shx,dbf,prj}\n' % (self.shp_zip_file)
+                           'cd %s/..\n' % (self.shp_dir) + \
+                           'zip %s %s/*.{shp,shx,dbf,prj}\n' % \
+                           (self.shp_zip_file, os.path.basename(self.shp_dir))
 
 
     def write_region_extents_csv(self):
