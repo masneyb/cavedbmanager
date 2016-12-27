@@ -78,12 +78,13 @@ def write_bulletin_files(bulletin, basedir):
     outputter.close()
 
     buildscript = outputter.generate_buildscript()
-    if buildscript:
-        buildscriptfile = cavedb.utils.get_buildscript(bulletin.id)
-        with open(buildscriptfile, 'w') as output:
-            output.write('#!/bin/bash -ev\n')
-            output.write(buildscript)
-        os.chmod(buildscriptfile, 0755)
+    buildscript += "make\n"
+
+    buildscriptfile = cavedb.utils.get_buildscript(bulletin.id)
+    with open(buildscriptfile, 'w') as output:
+        output.write('#!/bin/bash -ev\n')
+        output.write(buildscript)
+    os.chmod(buildscriptfile, 0755)
 
 
 def add_gis_lineplot(lineplot, gisdir, lineplot_type, outputter):
@@ -348,14 +349,14 @@ def write_buildscript(basedir):
 
     buildscriptfile.write('#!/bin/bash\n')
     buildscriptfile.write('touch build-in-progress.lock\n')
-    buildscriptfile.write('make\n')
+    buildscriptfile.write('./dobuild\n')
     buildscriptfile.write('rm -f build-in-progress.lock\n')
 
     buildscriptfile.close()
     os.chmod(filename, 0755)
 
 
-def run_make_command(basedir):
+def run_buildscript(basedir):
     # Rebuild the bulletin
     pid1 = os.fork()
     if pid1 == 0:
@@ -387,7 +388,7 @@ def generate_bulletin(request, bulletin_id):
     write_bulletin_files(bulletin, basedir)
     write_makefile(bulletin_id, basedir)
     write_buildscript(basedir)
-    run_make_command(basedir)
+    run_buildscript(basedir)
 
     return HttpResponseRedirect('%sadmin/cavedb/bulletin/' % (settings.CONTEXT_PATH))
 

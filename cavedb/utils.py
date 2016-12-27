@@ -44,7 +44,7 @@ def send_file(localfile, remotefile):
 
 
 def get_buildscript(bulletin_id):
-    return '%s/bulletins/bulletin_%s/compile' % (settings.MEDIA_ROOT, bulletin_id)
+    return '%s/bulletins/bulletin_%s/dobuild' % (settings.MEDIA_ROOT, bulletin_id)
 
 
 def get_pdf_filename(bulletin_id):
