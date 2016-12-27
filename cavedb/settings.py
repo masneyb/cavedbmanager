@@ -108,3 +108,9 @@ INSTALLED_APPS = (
 GIS_CONNECTION_TYPE = 'postgis'
 GIS_CONNECTION = 'dbname=wvgis'
 
+# Contents of fonts.list file for Mapserver
+# Debian-based systems
+GIS_FONTS_LIST='opensymbol /usr/share/fonts/truetype/freefont/FreeSansBold.ttf'
+# Fedora-based systems
+#GIS_FONTS_LIST='opensymbol /usr/share/fonts/gnu-free/FreeSansBold.ttf'
+

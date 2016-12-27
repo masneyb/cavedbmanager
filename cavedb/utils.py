@@ -101,6 +101,10 @@ def get_mapserver_mapfile(bulletin_id, map_name):
     return '%s/%s.map' % (get_gis_maps_directory(bulletin_id), map_name)
 
 
+def get_mapserver_fonts_list(bulletin_id):
+    return '%s/fonts.list' % (get_gis_maps_directory(bulletin_id))
+
+
 def get_all_regions_gis_map(bulletin_id, map_name):
     return '%s/bulletin_%s_gis_%s_map.jpg' % \
            (get_gis_maps_directory(bulletin_id), bulletin_id, map_name)

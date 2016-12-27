@@ -52,6 +52,10 @@ class MapserverMapfile(cavedb.docgen_common.Common):
             write_mapserver_footer(gis_options)
             gis_options['fd'].close()
 
+        fonts_list = cavedb.utils.get_mapserver_fonts_list(self.bulletin.id)
+        with open(fonts_list, "w") as output:
+            output.write(cavedb.settings.GIS_FONTS_LIST)
+
 
 def write_mapserver_header(gis_options):
     mapfile = gis_options['fd']
