@@ -47,58 +47,62 @@ def get_buildscript(bulletin_id):
     return '%s/bulletins/bulletin_%s/dobuild' % (settings.MEDIA_ROOT, bulletin_id)
 
 
+def get_build_log_filename(bulletin_id):
+    return '%s/bulletins/bulletin_%s/bulletin-build-output.txt' % \
+               (settings.MEDIA_ROOT, bulletin_id)
+
+
 def get_output_base_dir(bulletin_id):
     return '%s/bulletins/bulletin_%s/output' % (settings.MEDIA_ROOT, bulletin_id)
 
 
 def get_pdf_filename(bulletin_id):
-    return '%s/bulletins/bulletin_%s/output/pdf_bw/bulletin_%s.pdf' % \
-               (settings.MEDIA_ROOT, bulletin_id, bulletin_id)
+    return '%s/pdf_bw/bulletin_%s.pdf' % \
+               (get_output_base_dir(bulletin_id), bulletin_id)
 
 
 def get_color_pdf_filename(bulletin_id):
-    return '%s/bulletins/bulletin_%s/output/pdf_color/bulletin_%s.pdf' % \
-               (settings.MEDIA_ROOT, bulletin_id, bulletin_id)
+    return '%s/pdf_color/bulletin_%s.pdf' % \
+               (get_output_base_dir(bulletin_id), bulletin_id)
 
 
 def get_draft_pdf_filename(bulletin_id):
-    return '%s/bulletins/bulletin_%s/output/pdf_draft/bulletin_%s.pdf' % \
-               (settings.MEDIA_ROOT, bulletin_id, bulletin_id)
+    return '%s/pdf_draft/bulletin_%s.pdf' % \
+               (get_output_base_dir(bulletin_id), bulletin_id)
 
 
 def get_todo_txt_filename(bulletin_id):
-    return '%s/bulletins/bulletin_%s/output/todo/bulletin_%s_todo.txt' % \
-               (settings.MEDIA_ROOT, bulletin_id, bulletin_id)
+    return '%s/todo/bulletin_%s_todo.txt' % \
+               (get_output_base_dir(bulletin_id), bulletin_id)
 
 
 def get_kml_filename(bulletin_id):
-    return '%s/bulletins/bulletin_%s/output/kml/bulletin_%s.kml' % \
-               (settings.MEDIA_ROOT, bulletin_id, bulletin_id)
+    return '%s/kml/bulletin_%s.kml' % \
+               (get_output_base_dir(bulletin_id), bulletin_id)
 
 
 def get_text_filename(bulletin_id):
-    return '%s/bulletins/bulletin_%s/output/text/bulletin_%s.txt' % \
-               (settings.MEDIA_ROOT, bulletin_id, bulletin_id)
+    return '%s/text/bulletin_%s.txt' % \
+               (get_output_base_dir(bulletin_id), bulletin_id)
 
 
 def get_gpx_filename(bulletin_id):
-    return '%s/bulletins/bulletin_%s/output/gpx/bulletin_%s.gpx' % \
-               (settings.MEDIA_ROOT, bulletin_id, bulletin_id)
+    return '%s/gpx/bulletin_%s.gpx' % \
+               (get_output_base_dir(bulletin_id), bulletin_id)
 
 
 def get_csv_filename(bulletin_id):
-    return '%s/bulletins/bulletin_%s/output/csv/bulletin_%s.csv' % \
-               (settings.MEDIA_ROOT, bulletin_id, bulletin_id)
+    return '%s/csv/bulletin_%s.csv' % \
+               (get_output_base_dir(bulletin_id), bulletin_id)
 
 
 def get_mxf_filename(bulletin_id):
-    return '%s/bulletins/bulletin_%s/output/mxf/bulletin_%s.mxf' % \
-               (settings.MEDIA_ROOT, bulletin_id, bulletin_id)
+    return '%s/mxf/bulletin_%s.mxf' % \
+               (get_output_base_dir(bulletin_id), bulletin_id)
 
 
 def get_gis_maps_directory(bulletin_id):
-    return '%s/bulletins/bulletin_%s/output/gis_maps' % \
-               (settings.MEDIA_ROOT, bulletin_id)
+    return '%s/gis_maps' % (get_output_base_dir(bulletin_id))
 
 
 def get_mapserver_mapfile(bulletin_id, map_name):
@@ -124,8 +128,7 @@ REGION_EXTENTS_SHP_LAYER_NAME = 'region_extents'
 
 
 def get_shp_directory(bulletin_id):
-    return '%s/bulletins/bulletin_%s/output/shp' % \
-               (settings.MEDIA_ROOT, bulletin_id)
+    return '%s/shp' % (get_output_base_dir(bulletin_id))
 
 
 def get_shp_zip_filename(bulletin_id):
@@ -133,22 +136,15 @@ def get_shp_zip_filename(bulletin_id):
 
 
 def get_xml_filename(bulletin_id):
-    return '%s/bulletins/bulletin_%s/output/bulletin_%s.xml' % \
-               (settings.MEDIA_ROOT, bulletin_id, bulletin_id)
+    return '%s/bulletin_%s.xml' % (get_output_base_dir(bulletin_id), bulletin_id)
 
 
 def get_dvd_directory(bulletin_id):
-    return '%s/bulletins/bulletin_%s/output/dvd' % \
-               (settings.MEDIA_ROOT, bulletin_id)
+    return '%s/dvd' % (get_output_base_dir(bulletin_id))
 
 
 def get_dvd_filename(bulletin_id):
     return '%s/dvd.zip' % (get_dvd_directory(bulletin_id))
-
-
-def get_build_log_filename(bulletin_id):
-    return '%s/bulletins/bulletin_%s/bulletin-build-output.txt' % \
-               (settings.MEDIA_ROOT, bulletin_id)
 
 
 def is_bulletin_generation_allowed(bulletin_id):
