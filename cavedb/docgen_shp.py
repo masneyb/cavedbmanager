@@ -44,7 +44,7 @@ class Shp(cavedb.docgen_gis_common.GisCommon):
 
 
     def write_region_extents_csv(self):
-        csvfile = '%s/region_extents.csv' % (self.shp_dir)
+        csvfile = '%s/%s.csv' % (self.shp_dir, cavedb.utils.REGION_EXTENTS_SHP_LAYER_NAME)
         with open(csvfile, 'w') as output:
             output.write('region_name,wkt\n')
             for region_id, extents in self.region_extents.items():
@@ -87,18 +87,19 @@ class Shp(cavedb.docgen_gis_common.GisCommon):
 
 
     def write_region_extents_ovf(self, csvfile):
-        extents_ovffile = '%s/region_extents.ovf' % (self.shp_dir)
+        extents_ovffile = '%s/%s.ovf' % (self.shp_dir, cavedb.utils.REGION_EXTENTS_SHP_LAYER_NAME)
         with open(extents_ovffile, 'w') as output:
             output.write('<OGRVRTDataSource>')
-            output.write('<OGRVRTLayer name="region_extents">')
+            output.write('<OGRVRTLayer name="%s">' % (cavedb.utils.REGION_EXTENTS_SHP_LAYER_NAME))
             output.write('<SrcDataSource>%s</SrcDataSource>' % (csvfile))
-            output.write('<SrcLayer>region_extents</SrcLayer>')
+            output.write('<SrcLayer>%s</SrcLayer>' % (cavedb.utils.REGION_EXTENTS_SHP_LAYER_NAME))
             output.write('<GeometryType>wkbPolygon</GeometryType>')
             output.write('<GeometryField encoding="WKT" field="wkt"/>')
             output.write('</OGRVRTLayer>')
             output.write('</OGRVRTDataSource>')
 
-        create_epsg_4326_prjfile('%s/region_extents.prj' % (self.shp_dir))
+        create_epsg_4326_prjfile('%s/%s.prj' % \
+                                 (self.shp_dir, cavedb.utils.REGION_EXTENTS_SHP_LAYER_NAME))
 
         return extents_ovffile
 

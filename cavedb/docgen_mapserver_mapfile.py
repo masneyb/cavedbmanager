@@ -26,7 +26,12 @@ class MapserverMapfile(cavedb.docgen_common.Common):
         gis_options = {}
         gis_options['basename'] = gismap.name
         gis_options['path'] = cavedb.utils.get_mapserver_mapfile(self.bulletin.id, gismap.name)
-        gis_options['locations_shp'] = cavedb.utils.get_shp_basename(self.bulletin.id)
+        gis_options['locations_shp'] = '%s/%s' % \
+                                       (cavedb.utils.get_shp_directory(self.bulletin.id), \
+                                        cavedb.utils.LOCATIONS_SHP_LAYER_NAME)
+        gis_options['extents_shp'] = '%s/%s' % \
+                                     (cavedb.utils.get_shp_directory(self.bulletin.id), \
+                                      cavedb.utils.REGION_EXTENTS_SHP_LAYER_NAME)
 
         cavedb.docgen_common.create_base_directory(gis_options['path'])
 
@@ -341,8 +346,8 @@ def write_mapserver_footer(gis_options):
     mapfile.write('    END\n')
     mapfile.write('  END\n')
     mapfile.write('  LAYER\n')
-    mapfile.write('    NAME region_extents\n')
-    mapfile.write('    DATA ../shp/region_extents\n')
+    mapfile.write('    NAME %s\n' % (cavedb.utils.REGION_EXTENTS_SHP_LAYER_NAME))
+    mapfile.write('    DATA %s\n' % (gis_options['extents_shp']))
     mapfile.write('    STATUS  ON\n')
     mapfile.write('    TYPE  POLYGON\n')
     mapfile.write('    PROJECTION\n')

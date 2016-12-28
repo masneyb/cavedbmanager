@@ -115,20 +115,17 @@ def get_region_gis_map(bulletin_id, region_id, map_name):
            (get_gis_maps_directory(bulletin_id), bulletin_id, region_id, map_name)
 
 
+LOCATIONS_SHP_LAYER_NAME = 'karst_feature_locations'
+REGION_EXTENTS_SHP_LAYER_NAME = 'region_extents'
+
+
 def get_shp_directory(bulletin_id):
     return '%s/bulletins/bulletin_%s/output/shp' % \
                (settings.MEDIA_ROOT, bulletin_id)
 
 
-LOCATIONS_SHP_LAYER_NAME = 'karst_feature_locations'
-
-
 def get_shp_zip_filename(bulletin_id):
     return '%s/%s.zip' % (get_shp_directory(bulletin_id), LOCATIONS_SHP_LAYER_NAME)
-
-
-def get_shp_basename(bulletin_id):
-    return '%s/%s' % (get_shp_directory(bulletin_id), LOCATIONS_SHP_LAYER_NAME)
 
 
 def get_xml_filename(bulletin_id):
