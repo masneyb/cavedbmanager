@@ -47,6 +47,10 @@ def get_buildscript(bulletin_id):
     return '%s/bulletins/bulletin_%s/dobuild' % (settings.MEDIA_ROOT, bulletin_id)
 
 
+def get_output_base_dir(bulletin_id):
+    return '%s/bulletins/bulletin_%s/output' % (settings.MEDIA_ROOT, bulletin_id)
+
+
 def get_pdf_filename(bulletin_id):
     return '%s/bulletins/bulletin_%s/output/pdf_bw/bulletin_%s.pdf' % \
                (settings.MEDIA_ROOT, bulletin_id, bulletin_id)
