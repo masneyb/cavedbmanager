@@ -139,12 +139,8 @@ def get_xml_filename(bulletin_id):
     return '%s/bulletin_%s.xml' % (get_output_base_dir(bulletin_id), bulletin_id)
 
 
-def get_dvd_directory(bulletin_id):
-    return '%s/dvd' % (get_output_base_dir(bulletin_id))
-
-
 def get_dvd_filename(bulletin_id):
-    return '%s/dvd.zip' % (get_dvd_directory(bulletin_id))
+    return '%s/dvd.zip' % (get_output_base_dir(bulletin_id))
 
 
 def is_bulletin_generation_allowed(bulletin_id):

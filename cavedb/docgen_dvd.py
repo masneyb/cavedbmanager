@@ -52,18 +52,19 @@ class Dvd(cavedb.docgen_common.Common):
 
 
     def generate_buildscript(self):
-        base_dvd_dir = cavedb.utils.get_dvd_directory(self.bulletin.id)
+        output_base_dir = cavedb.utils.get_output_base_dir(self.bulletin.id)
+        dvd_tmp_dir = '%s/dvd' % (output_base_dir)
 
         readme_file = '%s/README.txt' % (cavedb.utils.get_output_base_dir(self.bulletin.id))
         with open(readme_file, 'w') as output:
             output.write(self.bulletin.dvd_readme)
 
-        ret = 'rm -rf "%s"\n' % (base_dvd_dir)
-        ret += 'mkdir -p "%s"\n' % (base_dvd_dir)
-        ret += 'mv "%s" "%s/"\n' % (readme_file, base_dvd_dir)
+        ret = 'rm -rf "%s/"\n' % (dvd_tmp_dir)
+        ret += 'mkdir -p "%s"\n' % (dvd_tmp_dir)
+        ret += 'mv "%s" "%s/"\n' % (readme_file, dvd_tmp_dir)
 
         for photo_type in self.files.keys():
-            dvd_dir = '%s/%s' % (base_dvd_dir, self.phototypes[photo_type][0])
+            dvd_dir = '%s/%s' % (dvd_tmp_dir, self.phototypes[photo_type][0])
             ret += 'mkdir -p "%s"\n' % (dvd_dir)
 
             for feature_name in self.files[photo_type].keys():
@@ -86,8 +87,9 @@ class Dvd(cavedb.docgen_common.Common):
                     ret += 'ln "%s" "%s"\n' % (photo_meta['src'], destfile)
 
         dvd_zip_file = cavedb.utils.get_dvd_filename(self.bulletin.id)
-        ret += 'cd %s/..\n' % (base_dvd_dir)
-        ret += 'zip -r "%s" "%s"\n' % (dvd_zip_file, os.path.basename(base_dvd_dir))
+        ret += 'cd %s\n' % (output_base_dir)
+        ret += 'zip -r "%s" "%s"\n' % (dvd_zip_file, os.path.basename(dvd_tmp_dir))
+        ret += 'rm -rf "%s/"\n' % (dvd_tmp_dir)
 
         return ret
 
