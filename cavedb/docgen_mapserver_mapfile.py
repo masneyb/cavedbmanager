@@ -26,6 +26,7 @@ class MapserverMapfile(cavedb.docgen_common.Common):
         gis_options = {}
         gis_options['basename'] = gismap.name
         gis_options['path'] = cavedb.utils.get_mapserver_mapfile(self.bulletin.id, gismap.name)
+        gis_options['locations_shp'] = cavedb.utils.get_shp_basename(self.bulletin.id)
 
         cavedb.docgen_common.create_base_directory(gis_options['path'])
 
@@ -234,8 +235,8 @@ def write_mapserver_footer(gis_options):
     mapfile = gis_options['fd']
 
     mapfile.write('  LAYER\n')
-    mapfile.write('    NAME karst_feature_locations\n')
-    mapfile.write('    DATA ../shp/karst_feature_locations\n')
+    mapfile.write('    NAME %s\n' % (cavedb.utils.LOCATIONS_SHP_LAYER_NAME))
+    mapfile.write('    DATA %s\n' % (gis_options['locations_shp']))
     mapfile.write('    STATUS ON\n')
     mapfile.write('    TYPE POINT\n')
     mapfile.write('    PROJECTION\n')

@@ -219,7 +219,7 @@ class Bulletin(models.Model):
                    '<a href="%s/gpx">GPS Unit (GPX)</a> [%s]<br/>' % \
                    (base_url, get_file_size(cavedb.utils.get_gpx_filename(self.id))) + \
                    '<a href="%s/shp">Shapefile (SHP)</a> [%s]<br/>' % \
-                   (base_url, get_file_size(cavedb.utils.get_shp_filename(self.id))) + \
+                   (base_url, get_file_size(cavedb.utils.get_shp_zip_filename(self.id))) + \
                    '<a href="%s/dvd">Supplemental DVD (ZIP)</a> [%s]<br/>' % \
                    (base_url, get_file_size(cavedb.utils.get_dvd_filename(self.id))) + \
                    '<a href="%s/xml">XML</a> [%s]<br/>' % \

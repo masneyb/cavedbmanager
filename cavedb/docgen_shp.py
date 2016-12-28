@@ -23,8 +23,8 @@ class Shp(cavedb.docgen_gis_common.GisCommon):
                                                     gis_y_buffer)
         self.buildscript = ''
 
-        self.shp_zip_file = cavedb.utils.get_shp_filename(self.bulletin.id)
-        self.shp_dir = os.path.dirname(self.shp_zip_file)
+        self.shp_zip_file = cavedb.utils.get_shp_zip_filename(self.bulletin.id)
+        self.shp_dir = cavedb.utils.get_shp_directory(self.bulletin.id)
         cavedb.docgen_common.create_directory(self.shp_dir)
 
 
@@ -68,10 +68,10 @@ class Shp(cavedb.docgen_gis_common.GisCommon):
         csvfile = cavedb.utils.get_csv_filename(self.bulletin.id)
         csv_data_source_name = os.path.basename(csvfile).replace('.csv', '')
 
-        locs_ovffile = '%s/karst_feature_locations.ovf' % (self.shp_dir)
+        locs_ovffile = '%s/%s.ovf' % (self.shp_dir, cavedb.utils.LOCATIONS_SHP_LAYER_NAME)
         with open(locs_ovffile, 'w') as output:
             output.write('<OGRVRTDataSource>')
-            output.write('<OGRVRTLayer name="karst_feature_locations">')
+            output.write('<OGRVRTLayer name="%s">' % (cavedb.utils.LOCATIONS_SHP_LAYER_NAME))
             output.write('<SrcDataSource>%s</SrcDataSource>' % (csvfile))
             output.write('<SrcLayer>%s</SrcLayer>' % (csv_data_source_name))
             output.write('<GeometryType>wkbPoint</GeometryType>')
@@ -80,7 +80,8 @@ class Shp(cavedb.docgen_gis_common.GisCommon):
             output.write('</OGRVRTLayer>')
             output.write('</OGRVRTDataSource>')
 
-        create_epsg_4326_prjfile('%s/karst_feature_locations.prj' % (self.shp_dir))
+        create_epsg_4326_prjfile('%s/%s.prj' % \
+                                 (self.shp_dir, cavedb.utils.LOCATIONS_SHP_LAYER_NAME))
 
         return locs_ovffile
 

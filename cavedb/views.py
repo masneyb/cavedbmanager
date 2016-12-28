@@ -75,7 +75,7 @@ def show_mxf(request, bulletin_id):
 
 
 def show_shp(request, bulletin_id):
-    localfile = cavedb.utils.get_shp_filename(bulletin_id)
+    localfile = cavedb.utils.get_shp_zip_filename(bulletin_id)
     remotefile = '%s_shp_files.zip' % (get_bulletin_base_name(bulletin_id))
     return do_show_bulletin_attachment(request, bulletin_id, localfile, remotefile)
 
