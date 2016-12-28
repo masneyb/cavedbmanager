@@ -54,7 +54,8 @@ class EntranceCsv(cavedb.docgen_common.Common):
                                  coordinates.wgs84_lat, coordinates.utmzone,
                                  coordinates.nad27_utmeast, coordinates.nad27_utmnorth,
                                  entrance.elevation_ft, feature.bulletin_region.region_name,
-                                 feature.survey_county.county_name, entrance.quad.quad_name,
+                                 feature.survey_county.county_name,
+                                 entrance.quad.quad_name if entrance.quad else '',
                                  feature.length_ft, feature.depth_ft, feature.length_based_on,
                                  feature.is_significant, feature.access_enum, feature.access_descr,
                                  feature.todo_enum, feature.todo_descr, feature.source, gislbl_pri])
