@@ -162,7 +162,8 @@ class LatexCommon(cavedb.docgen_common.Common):
 
 
     def end_region(self):
-        # FIXME - show feature photos at end
+        for photo in self.feature_attrs['photos_at_end']:
+            self.__show_feature_photo(feature, photo)
 
         self.writeln(r'\onecolumn')
 
@@ -377,6 +378,7 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.feature_attrs['feature'] = feature
         self.feature_attrs['entrances'] = []
         self.feature_attrs['photos'] = []
+        self.feature_attrs['photos_at_end'] = []
         self.feature_attrs['refmaps'] = []
         self.feature_attrs['refs'] = []
 
@@ -389,8 +391,10 @@ class LatexCommon(cavedb.docgen_common.Common):
         if not photo.show_in_pdf:
             return
 
-        # FIXME - check for features added to the end of the region
-        self.feature_attrs['photos'].append(photo)
+        if photo.show_at_end:
+            self.feature_attrs['photos_at_end'].append(photo)
+        else:
+            self.feature_attrs['photos'].append(photo)
 
 
     def feature_referenced_map(self, feature, refmap):
@@ -678,14 +682,6 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.writeln(r'{ \footnotesize')
         self.writeln(r'\leftskip 0.2in')
         self.writeln(r'\parindent -0.1in')
-
-        # FIXME - sort references
-        # <xsl:sort select="@parsed_date"/>
-        # <xsl:sort select="@volume" data-type="number"/>
-        # <xsl:sort select="@number" data-type="number"/>
-        # <xsl:sort select="@pages" data-type="number"/>
-        # <xsl:sort select="@book"/>
-        # <xsl:sort select="@title"/>
 
         num_refs = len(refs)
 
