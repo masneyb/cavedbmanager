@@ -19,6 +19,7 @@ import dateutil.relativedelta
 import cavedb.models
 import cavedb.utils
 import cavedb.docgen_common
+import cavedb.latex_indexer
 
 # TODO AFTER - look for trailing space at end of strings
 
@@ -32,7 +33,7 @@ class LatexCommon(cavedb.docgen_common.Common):
 
         self.num_in_pdf = 1
         self.feature_attrs = None
-        self.indexed_terms = None
+        self.indexer = None
         self.gis_map_labels = {}
         self.list_of_photos = []
         self.list_of_caves = []
@@ -42,7 +43,8 @@ class LatexCommon(cavedb.docgen_common.Common):
         cavedb.docgen_common.create_base_directory(self.filename)
         self.file_handle = open(self.filename, 'w')
 
-        self.indexed_terms = self.get_indexed_terms()
+        self.indexer = cavedb.latex_indexer.LatexIndexer()
+        self.populate_indexed_terms()
 
         self.__show_document_header()
         self.__show_title_page()
@@ -69,7 +71,7 @@ class LatexCommon(cavedb.docgen_common.Common):
             self.writeln(r'\chapter{Introduction}')
             self.writeln(r'\begin{multicols}{2}')
             self.writeln(r'\parindent 2ex')
-            self.writeln(escape(self.generate_index(self.bulletin.caves_header.strip())))
+            self.writeln(escape(self.indexer.generate_index(self.bulletin.caves_header.strip())))
             self.writeln(r'\parindent 0ex')
             self.writeln(r'\end{multicols}')
 
@@ -157,13 +159,14 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.writeln(r'\setlength\parskip{1ex plus 0in minus 0in}')
 
         if region.introduction:
-            self.writeln(r'\section*{Introduction} { ' + region.introduction + '}')
+            self.writeln(r'\section*{Introduction} { ' + \
+                         escape(self.indexer.generate_index(region.introduction)) + '}')
             self.writeln(r'')
 
 
     def end_region(self):
         for photo in self.feature_attrs['photos_at_end']:
-            self.__show_feature_photo(feature, photo)
+            self.__show_feature_photo(self.feature_attrs['feature'], photo)
 
         self.writeln(r'\onecolumn')
 
@@ -296,7 +299,7 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.writeln(r'')
         self.writeln(r'\clearpage')
         self.writeln(r'\thispagestyle{empty}')
-        self.writeln(escape(self.generate_index(self.bulletin.title_page.strip())))
+        self.writeln(escape(self.indexer.generate_index(self.bulletin.title_page.strip())))
         self.writeln(r'\newpage')
         self.writeln(r'')
 
@@ -305,7 +308,7 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.writeln(r'')
         self.writeln(r'\clearpage')
         self.writeln(r'\thispagestyle{empty}')
-        self.writeln(escape(self.generate_index(self.bulletin.preamble_page.strip())))
+        self.writeln(escape(self.indexer.generate_index(self.bulletin.preamble_page.strip())))
         self.writeln(r'\newpage')
         self.writeln(r'')
 
@@ -313,7 +316,7 @@ class LatexCommon(cavedb.docgen_common.Common):
     def __show_contributor_page(self):
         self.writeln(r'')
         self.writeln(r'\clearpage')
-        self.writeln(escape(self.generate_index(self.bulletin.contributor_page.strip())))
+        self.writeln(escape(self.indexer.generate_index(self.bulletin.contributor_page.strip())))
         self.writeln(r'\newpage')
         self.writeln(r'')
 
@@ -326,7 +329,7 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.writeln(r'')
 
         if self.bulletin.toc_footer:
-            self.writeln(escape(self.generate_index(self.bulletin.toc_footer.strip())))
+            self.writeln(escape(self.indexer.generate_index(self.bulletin.toc_footer.strip())))
 
         self.writeln(r'')
 
@@ -594,17 +597,17 @@ class LatexCommon(cavedb.docgen_common.Common):
 
 
     def get_bw_photo_filename(self, photo):
-        if photo.filename:
-            return photo.filename.path
-
-        return photo.secondary_filename.path
-
-
-    def get_color_photo_filename(self, photo):
         if photo.secondary_filename:
             return photo.secondary_filename.path
 
         return photo.filename.path
+
+
+    def get_color_photo_filename(self, photo):
+        if photo.filename:
+            return photo.filename.path
+
+        return photo.secondary_filename.path
 
 
     # Note: You must override this method in a subclass
@@ -892,7 +895,7 @@ class LatexCommon(cavedb.docgen_common.Common):
 
                 self.writeln(r'\parindent 2ex')
 
-                self.writeln(escape(section.section_data))
+                self.writeln(escape(self.indexer.generate_index(section.section_data)))
                 self.writeln(r'')
 
                 self.writeln(r'\parindent 0ex')
@@ -927,7 +930,7 @@ class LatexCommon(cavedb.docgen_common.Common):
                 self.writeln(r'')
                 self.writeln(r'')
 
-            self.write(escape(self.generate_index(para)))
+            self.write(escape(self.indexer.generate_index(para)))
 
         if not first_para:
             if suffix:
@@ -937,90 +940,24 @@ class LatexCommon(cavedb.docgen_common.Common):
         return not first_para
 
 
-    def get_indexed_terms(self):
-        indexed_terms = [], {}
+    def populate_indexed_terms(self):
         if self.bulletin.indexed_terms:
             for search_term in self.bulletin.indexed_terms.split('\n'):
                 search_term = escape(search_term.replace('\r', '').strip())
                 if not search_term:
                     continue
 
-                all_index_terms = search_term.split(':')
-                if len(all_index_terms) == 1:
-                    indexed_terms[0].append(search_term)
-                    indexed_terms[1][search_term] = r'\index{%s}%s' % (search_term, search_term)
-                else:
-                    replacement = ''
-                    for index_term in all_index_terms[1:]:
-                        replacement = r'%s\index{%s}' % (replacement, index_term)
-                    indexed_terms[0].append(all_index_terms[0])
-                    indexed_terms[1][all_index_terms[0]] = '%s%s' % \
-                       (replacement, all_index_terms[0])
+                self.indexer.add_to_index(search_term)
 
         for region in cavedb.models.BulletinRegion.objects.filter(bulletin__id=self.bulletin.id):
             for feature in cavedb.models.Feature.objects.filter(bulletin_region__id=region.id):
                 feature_name = feature.name.strip()
-                indexed_terms[0].append(feature_name)
-                indexed_terms[1][feature_name] = r'\index{%s}%s' % (feature_name, feature_name)
+                self.indexer.add_to_index(feature_name)
 
                 for alias in get_all_feature_alt_names(feature):
-                    indexed_terms[0].append(alias)
-                    indexed_terms[1][alias] = r'\index{%s}%s' % (alias, alias)
+                    self.indexer.add_to_index(alias)
 
-        indexed_terms[0].sort(key=lambda term: len(term), reverse=True)
-
-        return indexed_terms
-
-
-    def clean_index(self, inputstr):
-        # FIXME - ugly hack for Tucker County
-        inputstr = inputstr.replace(r"\caveindex{\caveindex{Great Cave} of \caveindex{Dry Fork} of Cheat River}", \
-                                    r"\caveindex{Great Cave of Dry Fork of Cheat River}")
-        inputstr = inputstr.replace(r"\caveindex{\caveindex{Great Cave} of \caveindex{Dry Fork} of \caveindex{Cheat River}}", \
-                                    r"\caveindex{Great Cave of Dry Fork of Cheat River}")
-
-        flags = re.MULTILINE | re.DOTALL | re.VERBOSE
-        result = re.compile(r'(.*?)(\\caveindex{)(.*?)}(.*)', flags).match(inputstr)
-        if not result:
-            return inputstr
-        elif re.compile(r'^\\caveindex{.*', flags).match(result.group(3)):
-            value = re.sub(r'^\\caveindex{', '', result.group(3))
-            return '%s%s%s%s' % (result.group(1), result.group(2), value, \
-                                 self.clean_index(result.group(4)))
-        elif not re.compile(r'^.*\\caveindex.*$', flags).match(result.group(3)):
-            if re.compile(r'^.*\\caveindex.*$', flags).match(result.group(4)):
-                return '%s%s%s}%s' % (result.group(1), result.group(2), result.group(3), \
-                                      self.clean_index(result.group(4)))
-            else:
-                return inputstr
-        else:
-            value = re.sub(r'^(.*?)\s\\caveindex{(.*)', r'\1 \2', result.group(3))
-            return '%s%s' % (result.group(1),
-                             self.clean_index('%s%s%s' % (result.group(2), value, result.group(4))))
-
-
-    def finalize_index(self, inputstr):
-        flags = re.MULTILINE | re.DOTALL | re.VERBOSE
-        result = re.compile(r'(.*?)\\caveindex{(.*?)}(.*)', flags).match(inputstr)
-        if not result:
-            return inputstr
-
-        return '%s%s%s' % (result.group(1), self.indexed_terms[1][result.group(2)], \
-                           self.finalize_index(result.group(3)))
-
-
-    def generate_index(self, inputstr):
-        # Add terms to the index
-        for term in self.indexed_terms[0]:
-            # This appears to be quicker than doing a single regular expression
-            inputstr = inputstr.replace('%s ' % (term), r'\caveindex{%s} ' % (term))
-            inputstr = inputstr.replace('%s.' % (term), r'\caveindex{%s}.' % (term))
-            inputstr = inputstr.replace('%s,' % (term), r'\caveindex{%s},' % (term))
-            inputstr = inputstr.replace('%s:' % (term), r'\caveindex{%s}:' % (term))
-            inputstr = inputstr.replace('%s)' % (term), r'\caveindex{%s})' % (term))
-            inputstr = inputstr.replace('%s\'' % (term), r'\caveindex{%s}\'' % (term))
-
-        return self.finalize_index(self.clean_index(inputstr))
+        self.indexer.sort_index_terms()
 
 
 # Add a \hbox{} around the cave and entrance names so that they appear on the
