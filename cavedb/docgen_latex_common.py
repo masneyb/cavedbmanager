@@ -37,6 +37,7 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.gis_map_labels = {}
         self.list_of_photos = []
         self.list_of_caves = []
+        self.photos_at_end = None
 
 
     def open(self, all_regions_gis_hash):
@@ -155,6 +156,8 @@ class LatexCommon(cavedb.docgen_common.Common):
 
 
     def begin_region(self, region, gis_region_hash):
+        self.photos_at_end = []
+
         self.__writeln(r'\clearpage')
         self.__writeln(r'\ifthenelse{\isodd{\value{page}}}{}{\hbox{}\newpage}')
 
@@ -172,7 +175,7 @@ class LatexCommon(cavedb.docgen_common.Common):
 
 
     def end_region(self):
-        for photo in self.feature_attrs['photos_at_end']:
+        for photo in self.photos_at_end:
             self.__show_feature_photo(self.feature_attrs['feature'], photo)
 
         self.__writeln(r'\onecolumn')
@@ -388,7 +391,6 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.feature_attrs['feature'] = feature
         self.feature_attrs['entrances'] = []
         self.feature_attrs['photos'] = []
-        self.feature_attrs['photos_at_end'] = []
         self.feature_attrs['refmaps'] = []
         self.feature_attrs['refs'] = []
 
@@ -402,7 +404,7 @@ class LatexCommon(cavedb.docgen_common.Common):
             return
 
         if photo.show_at_end:
-            self.feature_attrs['photos_at_end'].append(photo)
+            self.photos_at_end.append(photo)
         else:
             self.feature_attrs['photos'].append(photo)
 
