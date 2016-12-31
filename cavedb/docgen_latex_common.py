@@ -47,6 +47,13 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.__populate_indexed_terms()
 
         self.__show_document_header()
+
+        #self.__writeln(r'')
+        #self.__writeln(r'% Indexed Terms')
+        #for term in self.indexer.indexed_terms[0]:
+        #    self.__writeln('%% %s\t%s' % (term, self.indexer.indexed_terms[1][term]))
+        #self.__writeln(r'')
+
         self.__show_title_page()
         self.__show_preamble_page()
         self.__show_contributor_page()
@@ -71,7 +78,7 @@ class LatexCommon(cavedb.docgen_common.Common):
             self.__writeln(r'\chapter{Introduction}')
             self.__writeln(r'\begin{multicols}{2}')
             self.__writeln(r'\parindent 2ex')
-            self.__writeln(escape(self.indexer.generate_index(self.bulletin.caves_header.strip())))
+            self.__writeln(self.__index_and_escape(self.bulletin.caves_header))
             self.__writeln(r'\parindent 0ex')
             self.__writeln(r'\end{multicols}')
 
@@ -160,7 +167,7 @@ class LatexCommon(cavedb.docgen_common.Common):
 
         if region.introduction:
             self.__writeln(r'\section*{Introduction} { ' + \
-                         escape(self.indexer.generate_index(region.introduction)) + '}')
+                         self.__index_and_escape(region.introduction) + '}')
             self.__writeln(r'')
 
 
@@ -299,7 +306,7 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.__writeln(r'')
         self.__writeln(r'\clearpage')
         self.__writeln(r'\thispagestyle{empty}')
-        self.__writeln(escape(self.indexer.generate_index(self.bulletin.title_page.strip())))
+        self.__writeln(self.__index_and_escape(self.bulletin.title_page.strip()))
         self.__writeln(r'\newpage')
         self.__writeln(r'')
 
@@ -308,7 +315,7 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.__writeln(r'')
         self.__writeln(r'\clearpage')
         self.__writeln(r'\thispagestyle{empty}')
-        self.__writeln(escape(self.indexer.generate_index(self.bulletin.preamble_page.strip())))
+        self.__writeln(self.__index_and_escape(self.bulletin.preamble_page.strip()))
         self.__writeln(r'\newpage')
         self.__writeln(r'')
 
@@ -316,7 +323,7 @@ class LatexCommon(cavedb.docgen_common.Common):
     def __show_contributor_page(self):
         self.__writeln(r'')
         self.__writeln(r'\clearpage')
-        self.__writeln(escape(self.indexer.generate_index(self.bulletin.contributor_page.strip())))
+        self.__writeln(self.__index_and_escape(self.bulletin.contributor_page.strip()))
         self.__writeln(r'\newpage')
         self.__writeln(r'')
 
@@ -329,7 +336,7 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.__writeln(r'')
 
         if self.bulletin.toc_footer:
-            self.__writeln(escape(self.indexer.generate_index(self.bulletin.toc_footer.strip())))
+            self.__writeln(self.__index_and_escape(self.bulletin.toc_footer.strip()))
 
         self.__writeln(r'')
 
@@ -534,7 +541,7 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.__write_paragraphs('\n\n{ \\bf History:} ', feature.history, None)
 
         if feature.source:
-            self.__write(r' \textit{(' + feature.source + r')}')
+            self.__write(r' \textit{(' + feature.source.strip() + r')}')
 
         self.__writeln(r'')
         self.__writeln(r'')
@@ -639,7 +646,7 @@ class LatexCommon(cavedb.docgen_common.Common):
 
         self.__write(r'\index{' + escape(feature.name) + '}')
         if photo.indexed_terms:
-            for term in photo.indexed_terms.split('\n'):
+            for term in newline_split(photo.indexed_terms):
                 self.__write(r'\index{' + escape(term) + '}')
         self.__writeln(r'')
 
@@ -675,7 +682,8 @@ class LatexCommon(cavedb.docgen_common.Common):
             if entrance.entrance_name:
                 caption = add_caption_hbox(caption, entrance.entrance_name)
 
-        return escape(caption)
+        # FIXME - can this be indexed?
+        return escape(convert_quotes(caption))
 
 
     def __show_references(self, refs):
@@ -829,45 +837,45 @@ class LatexCommon(cavedb.docgen_common.Common):
     def __show_reference(self, ref):
         parts = []
         if ref.author:
-            parts.append(escape(ref.author))
+            parts.append(escape(convert_quotes(ref.author)))
 
         if ref.title:
-            parts.append(escape(ref.title))
+            parts.append(escape(convert_quotes(ref.title)))
 
         if ref.book:
-            parts.append(r'\textnormal{``' + escape(ref.book) + '\'\'}')
+            parts.append(r'\textnormal{``' + escape(convert_quotes(ref.book)) + '\'\'}')
 
         if ref.volume:
-            vnp = r'V' + escape(ref.volume)
+            vnp = r'V' + escape(convert_quotes(ref.volume))
 
             if ref.number:
-                vnp = vnp + r'n' + escape(ref.number)
+                vnp = vnp + r'n' + escape(convert_quotes(ref.number))
 
             if ref.pages:
                 vnp = vnp + r'p'
                 if '-' in ref.pages or ',' in ref.pages:
                     vnp = vnp + r'p'
-                vnp += escape(ref.pages)
+                vnp += escape(convert_quotes(ref.pages))
 
             if vnp:
                 parts.append(vnp)
 
         if ref.url:
-            parts.append(r'URL: ' + escape(ref.url))
+            parts.append(r'URL: ' + escape(convert_quotes(ref.url)))
 
         if ref.extra:
-            parts.append(escape(ref.extra))
+            parts.append(escape(convert_quotes(ref.extra)))
 
         if ref.date:
-            parts.append(escape(ref.date))
+            parts.append(escape(convert_quotes(ref.date)))
         else:
             parts.append('date unknown')
 
         if not ref.volume and ref.pages:
             if '-' in ref.pages or ',' in ref.pages:
-                parts.append('Pages ' + escape(ref.pages))
+                parts.append('Pages ' + escape(convert_quotes(ref.pages)))
             else:
-                parts.append('Page ' + escape(ref.pages))
+                parts.append('Page ' + escape(convert_quotes(ref.pages)))
 
         self.__writeln(r'\textit{' + ', '.join(parts) + r'} \\')
         self.__writeln(r'')
@@ -895,7 +903,7 @@ class LatexCommon(cavedb.docgen_common.Common):
 
                 self.__writeln(r'\parindent 2ex')
 
-                self.__writeln(escape(self.indexer.generate_index(section.section_data)))
+                self.__writeln(self.__index_and_escape(section.section_data))
                 self.__writeln(r'')
 
                 self.__writeln(r'\parindent 0ex')
@@ -915,10 +923,10 @@ class LatexCommon(cavedb.docgen_common.Common):
         if not inputstr:
             return False
 
+        inputstr = convert_quotes(inputstr)
+
         first_para = True
-        for para in inputstr.strip().split('\n'):
-            para = para.replace('\r', '')
-            para = para.replace('\n', '')
+        for para in newline_split(inputstr):
             if not para:
                 continue
 
@@ -942,8 +950,8 @@ class LatexCommon(cavedb.docgen_common.Common):
 
     def __populate_indexed_terms(self):
         if self.bulletin.indexed_terms:
-            for search_term in self.bulletin.indexed_terms.split('\n'):
-                search_term = escape(search_term.replace('\r', '').strip())
+            for search_term in newline_split(self.bulletin.indexed_terms):
+                search_term = escape(search_term)
                 if not search_term:
                     continue
 
@@ -951,13 +959,16 @@ class LatexCommon(cavedb.docgen_common.Common):
 
         for region in cavedb.models.BulletinRegion.objects.filter(bulletin__id=self.bulletin.id):
             for feature in cavedb.models.Feature.objects.filter(bulletin_region__id=region.id):
-                feature_name = feature.name.strip()
-                self.indexer.add_to_index(feature_name)
+                self.indexer.add_to_index(feature.name.strip())
 
                 for alias in get_all_feature_alt_names(feature):
                     self.indexer.add_to_index(alias)
 
         self.indexer.sort_index_terms()
+
+
+    def __index_and_escape(self, inputstr):
+        return escape(convert_quotes(self.indexer.generate_index(inputstr)))
 
 
 # Add a \hbox{} around the cave and entrance names so that they appear on the
@@ -969,14 +980,9 @@ def add_caption_hbox(caption, name):
     return caption.replace(name, r'\hbox{%s}' % (name))
 
 
-def escape(inputstr):
+def convert_quotes(inputstr):
     if not inputstr:
         return ""
-
-    inputstr = inputstr.strip()
-
-    # Escape the # for LaTeX
-    inputstr = inputstr.replace('#', '\\#')
 
     # Use em dashes
     inputstr = inputstr.replace(" - ", " -- ")
@@ -990,6 +996,16 @@ def escape(inputstr):
         inputstr = inputstr.replace("\"", "''", 1)
 
     return inputstr
+
+
+def escape(inputstr):
+    if not inputstr:
+        return ""
+
+    inputstr = inputstr.strip()
+
+    # Escape the # for LaTeX
+    return inputstr.replace('#', '\\#')
 
 
 def get_normalized_date(datestr):
@@ -1024,13 +1040,23 @@ def get_all_feature_alt_names(feature):
 
 
 def comma_split(inputstr):
+    return split_strip(inputstr, ',', [])
+
+
+def newline_split(inputstr):
+    return split_strip(inputstr, '\n', ['r'])
+
+
+def split_strip(inputstr, separator, chars_to_strip):
     ret = []
 
     if not inputstr:
         return ret
 
-    for member in inputstr.split(','):
+    for member in inputstr.split(separator):
         member = member.strip()
+        for char in chars_to_strip:
+            eember = member.replace(char, '')
         if not member:
             continue
 
