@@ -362,6 +362,7 @@ class LatexCommon(cavedb.docgen_common.Common):
 
     def write(self, line):
         line = line.replace('/usr/local/cavedbmanager-data/bulletins/bulletin_1', '.') # TODO AFTER - remove
+        line = line.replace('/usr/local/cavedbmanager-data/bulletins/bulletin_2', '.') # TODO AFTER - remove
         self.file_handle.write(line.replace('\r', ''))
 
 
@@ -407,7 +408,7 @@ class LatexCommon(cavedb.docgen_common.Common):
 
         alt_names = comma_split(feature.alternate_names)
         if len(alt_names) > 0:
-            self.writeln(r'{\large \bfseries (' + ', '.join(alt_names) + r')} \\[2ex]')
+            self.writeln(r'{\large \bfseries (' + escape(', '.join(alt_names)) + r')} \\[2ex]')
 
         self.writeln(r'\end{centering}')
 
@@ -629,10 +630,11 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.writeln(r'\begin{figure' + figure_opts + '}[tp]')
         self.writeln(r'\phantomsection')
 
-        self.writeln(r'\index{' + escape(feature.name) + '}')
-        # TODO AFTER - uncomment
-        #for alias in get_all_feature_alt_names(feature):
-        #    self.writeln(r'\index{' + escape(alias) + '}')
+        self.write(r'\index{' + escape(feature.name) + '}')
+        if photo.indexed_terms:
+            for term in photo.indexed_terms.split('\n'):
+                self.write(r'\index{' + escape(term) + '}')
+        self.writeln(r'')
 
         self.writeln(r'\centering')
 
