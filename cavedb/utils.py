@@ -43,22 +43,25 @@ def send_file(localfile, remotefile):
     return response
 
 
+def get_bulletin_base_dir(bulletin_id):
+    return '%s/bulletins/bulletin_%s' % (settings.MEDIA_ROOT, bulletin_id)
+
+
 def get_buildscript(bulletin_id):
-    return '%s/bulletins/bulletin_%s/dobuild' % (settings.MEDIA_ROOT, bulletin_id)
+    return '%s/dobuild' % (get_bulletin_base_dir(bulletin_id))
 
 
 def get_build_log_filename(bulletin_id):
-    return '%s/bulletins/bulletin_%s/bulletin-build-output.txt' % \
-               (settings.MEDIA_ROOT, bulletin_id)
+    return '%s/bulletin-build-output.txt' % (get_bulletin_base_dir(bulletin_id))
 
 
 def get_output_base_dir(bulletin_id):
-    return '%s/bulletins/bulletin_%s/output' % (settings.MEDIA_ROOT, bulletin_id)
+    return '%s/output' % (get_bulletin_base_dir(bulletin_id))
 
 
 def get_bw_tex_filename(bulletin_id):
-    # FIXME - update name
-    return '%s/bulletin_%s-new.tex' % \
+    # FIXME - update path
+    return '%s/pdf_bw_new/bulletin_%s.tex' % \
                (get_output_base_dir(bulletin_id), bulletin_id)
 
 
