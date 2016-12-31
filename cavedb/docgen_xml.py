@@ -178,9 +178,9 @@ class Xml(cavedb.docgen_common.Common):
         self.xmlfile.write('</gis_layers>\n')
 
 
-    def begin_region(self, region, gis_region_hash, map_name):
-        self.xmlfile.write('<region name="%s" map_name="%s" file_prefix="bulletin_%s_region_%s" show_gis_map="%s" gis_hash="%s">\n' % \
-                           (region.region_name, map_name, self.bulletin.id, region.id,
+    def begin_region(self, region, gis_region_hash):
+        self.xmlfile.write('<region name="%s" file_prefix="bulletin_%s_region_%s" show_gis_map="%s" gis_hash="%s">\n' % \
+                           (region.region_name, self.bulletin.id, region.id,
                             int(region.show_gis_map), gis_region_hash))
         if region.introduction:
             self.xmlfile.write('<introduction>%s</introduction>' % \
@@ -605,7 +605,7 @@ def convert_nl_to_para(inputstr):
         if para == '':
             continue
 
-        ret = '%s<para>%s</para>' % (ret, para)
+        ret = '%s<para>%s</para>' % (ret, para.strip())
 
     return ret
 

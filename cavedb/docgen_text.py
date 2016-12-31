@@ -48,7 +48,7 @@ class Text(cavedb.docgen_common.Common):
         self.write_chapters()
 
 
-    def begin_region(self, region, gis_region_hash, map_name):
+    def begin_region(self, region, gis_region_hash):
         self.textfile.write('%s\n\n' % (region.region_name))
 
         if region.introduction:

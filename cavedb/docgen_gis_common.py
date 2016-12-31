@@ -30,7 +30,7 @@ class GisCommon(cavedb.docgen_common.Common):
         self.overall_extents = init_extents(None, None, all_regions_gis_hash)
 
 
-    def begin_region(self, region, gis_region_hash, map_name):
+    def begin_region(self, region, gis_region_hash):
         if not region.show_gis_map:
             return
 

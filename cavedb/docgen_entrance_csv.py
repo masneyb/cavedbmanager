@@ -19,6 +19,8 @@ import cavedb.utils
 class EntranceCsv(cavedb.docgen_common.Common):
     def __init__(self, basedir, bulletin):
         cavedb.docgen_common.Common.__init__(self, basedir, bulletin)
+        self.csvfile = None
+        self.csvwriter = None
 
 
     def open(self, all_regions_gis_hash):

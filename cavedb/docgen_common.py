@@ -15,7 +15,7 @@
 import os
 import os.path
 
-class Common:
+class Common(object):
     def __init__(self, basedir, bulletin):
         self.basedir = basedir
         self.bulletin = bulletin
@@ -57,7 +57,7 @@ class Common:
         pass
 
 
-    def begin_region(self, region, gis_region_hash, map_name):
+    def begin_region(self, region, gis_region_hash):
         pass
 
 

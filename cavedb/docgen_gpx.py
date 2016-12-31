@@ -19,6 +19,7 @@ import cavedb.utils
 class Gpx(cavedb.docgen_common.Common):
     def __init__(self, basedir, bulletin):
         cavedb.docgen_common.Common.__init__(self, basedir, bulletin)
+        self.gpxfile = None
 
 
     def open(self, all_regions_gis_hash):

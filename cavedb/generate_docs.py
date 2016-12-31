@@ -29,6 +29,7 @@ import cavedb.docgen_entrance_csv
 import cavedb.docgen_gis_maps
 import cavedb.docgen_gpx
 import cavedb.docgen_kml
+import cavedb.docgen_latex_letter_bw
 import cavedb.docgen_mapserver_mapfile
 import cavedb.docgen_mxf
 import cavedb.docgen_shp
@@ -42,6 +43,7 @@ def write_bulletin_files(bulletin, basedir):
                            cavedb.docgen_entrance_csv.EntranceCsv(basedir, bulletin),
                            cavedb.docgen_gpx.Gpx(basedir, bulletin),
                            cavedb.docgen_kml.Kml(basedir, bulletin),
+                           cavedb.docgen_latex_letter_bw.LatexLetterBW(basedir, bulletin),
                            cavedb.docgen_mxf.Mxf(basedir, bulletin),
                            cavedb.docgen_text.Text(basedir, bulletin),
                            cavedb.docgen_todo_txt.TodoTxt(basedir, bulletin),
@@ -64,13 +66,9 @@ def write_bulletin_files(bulletin, basedir):
     write_gis_section(bulletin.id, outputter)
 
     for region in cavedb.models.BulletinRegion.objects.filter(bulletin__id=bulletin.id):
-        map_name = region.map_region_name
-        if not map_name:
-            map_name = region.region_name
-
         gis_region_hash = get_region_gis_hash(region.id)
 
-        outputter.begin_region(region, gis_region_hash, map_name)
+        outputter.begin_region(region, gis_region_hash)
 
         for feature in cavedb.models.Feature.objects.filter(bulletin_region__id=region.id):
             write_feature(feature, outputter)
@@ -140,7 +138,7 @@ def write_gis_section(bulletin_id, outputter):
     outputter.end_gis_layers()
 
 
-class FeatureTodoAnalyzer:
+class FeatureTodoAnalyzer(object):
     def __init__(self, feature):
         self.missing_str = ''
         self.missing_coord = False
@@ -230,7 +228,7 @@ def write_feature(feature, outputter):
     outputter.end_feature()
 
 
-class TransformedCoordinates:
+class TransformedCoordinates(object):
     def __init__(self):
         self.utmzone, self.nad27_utmeast, self.nad27_utmnorth = '', '', ''
         self.wgs84_lat, self.wgs84_lon = '', ''

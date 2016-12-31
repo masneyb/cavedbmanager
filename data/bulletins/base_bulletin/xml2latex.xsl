@@ -718,15 +718,7 @@
   </xsl:if>
 
   <xsl:if test="@book != ''">
-    <xsl:choose>
-      <xsl:when test="@title != ''">
-        <xsl:text>. </xsl:text>
-      </xsl:when>
-      <xsl:when test="@author != ''">
-        <xsl:text>, </xsl:text>
-      </xsl:when>
-    </xsl:choose>
-
+    <xsl:text>, </xsl:text>
     <xsl:text>\textnormal{``</xsl:text>
     <xsl:value-of select="@book"/>
     <xsl:text>''}</xsl:text>
@@ -977,7 +969,7 @@
 <xsl:template match="feature" mode="photos">
   <xsl:apply-templates select="photo[@show_in_pdf='1' and @type != 'lineplot' and not (@type = 'map' and @ref) and @show_at_end='0']">
     <xsl:sort select="@sort_order" data-type="number"/>
-    <xsl:sort select="@type" order="descending"/>
+    <xsl:sort select="@type" order="ascending"/>
   </xsl:apply-templates>
 </xsl:template>
 

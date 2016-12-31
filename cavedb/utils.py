@@ -56,6 +56,12 @@ def get_output_base_dir(bulletin_id):
     return '%s/bulletins/bulletin_%s/output' % (settings.MEDIA_ROOT, bulletin_id)
 
 
+def get_bw_tex_filename(bulletin_id):
+    # FIXME - update name
+    return '%s/bulletin_%s-new.tex' % \
+               (get_output_base_dir(bulletin_id), bulletin_id)
+
+
 def get_pdf_filename(bulletin_id):
     return '%s/pdf_bw/bulletin_%s.pdf' % \
                (get_output_base_dir(bulletin_id), bulletin_id)

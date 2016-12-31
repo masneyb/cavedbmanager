@@ -18,6 +18,7 @@ import cavedb.utils
 class TodoTxt(cavedb.docgen_common.Common):
     def __init__(self, basedir, bulletin):
         cavedb.docgen_common.Common.__init__(self, basedir, bulletin)
+        self.todofile = None
 
 
     def open(self, all_regions_gis_hash):
@@ -28,7 +29,7 @@ class TodoTxt(cavedb.docgen_common.Common):
         self.todofile.write('%s\n\n' % (self.bulletin.bulletin_name))
 
 
-    def begin_region(self, region, gis_region_hash, map_name):
+    def begin_region(self, region, gis_region_hash):
         self.todofile.write('%s\n' % (region.region_name))
 
 

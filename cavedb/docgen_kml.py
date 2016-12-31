@@ -19,6 +19,7 @@ import cavedb.utils
 class Kml(cavedb.docgen_common.Common):
     def __init__(self, basedir, bulletin):
         cavedb.docgen_common.Common.__init__(self, basedir, bulletin)
+        self.kmlfile = None
 
 
     def open(self, all_regions_gis_hash):
@@ -32,7 +33,7 @@ class Kml(cavedb.docgen_common.Common):
         self.kmlfile.write('<name>%s</name>\n' % (self.bulletin.bulletin_name))
 
 
-    def begin_region(self, region, gis_region_hash, map_name):
+    def begin_region(self, region, gis_region_hash):
         self.kmlfile.write('<Folder id="%s">\n' % (region.id))
         self.kmlfile.write('<name>%s</name>\n' % (region.region_name))
 

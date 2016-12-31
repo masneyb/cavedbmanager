@@ -7,7 +7,6 @@
 * Large number of entrances on a single feature will cause a PDF formatting error
 * Automatically generate the survey ID field
 * Add 11 reasons a cave can be significant to WVASS
-* Add paper size to bulletin (letter, legal, a4, etc)
 * Remove bulletin id off of attachment filenames
 * Allow specifying the specific entrance when uploading entrance photos.
 * Allow referencing an attachment on another feature
