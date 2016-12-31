@@ -23,5 +23,9 @@ installdb:
 destroymydb:
 	./manage.py sqlreset cavedb | ./manage.py dbshell
 
+
+pylint:
+	pylint --load-plugins pylint_django --disable=missing-docstring,locally-disabled cavedb/*.py
+
 clean:
 	find . -name "*.pyc" | xargs rm -f
