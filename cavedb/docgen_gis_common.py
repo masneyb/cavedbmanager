@@ -46,6 +46,9 @@ class GisCommon(cavedb.docgen_common.Common):
 
 
     def update_extent_boundary(self, extents, coordinates):
+        if not coordinates.wgs84_lat or not coordinates.wgs84_lon:
+            return
+
         if not extents['minx'] or coordinates.wgs84_lon - self.gis_x_buffer < extents['minx']:
             extents['minx'] = coordinates.wgs84_lon - self.gis_x_buffer
 
