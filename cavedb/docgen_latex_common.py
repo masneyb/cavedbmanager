@@ -175,8 +175,8 @@ class LatexCommon(cavedb.docgen_common.Common):
 
 
     def end_region(self):
-        for photo in self.photos_at_end:
-            self.__show_feature_photo(self.feature_attrs['feature'], photo)
+        for feature, photo in self.photos_at_end:
+            self.__show_feature_photo(feature, photo)
 
         self.__writeln(r'\onecolumn')
 
@@ -404,7 +404,7 @@ class LatexCommon(cavedb.docgen_common.Common):
             return
 
         if photo.show_at_end:
-            self.photos_at_end.append(photo)
+            self.photos_at_end.append((feature, photo))
         else:
             self.feature_attrs['photos'].append(photo)
 
@@ -675,16 +675,15 @@ class LatexCommon(cavedb.docgen_common.Common):
 
 
     def __format_photo_caption(self, feature, caption):
-        caption = add_caption_hbox(caption, feature.name)
+        caption = add_caption_hbox(caption, feature.name.strip())
 
         for alias in get_all_feature_alt_names(feature):
             caption = add_caption_hbox(caption, alias)
 
         for (entrance, coordinates) in self.feature_attrs['entrances']:
-            if entrance.entrance_name:
-                caption = add_caption_hbox(caption, entrance.entrance_name)
+            if entrance.entrance_name and entrance.entrance_name != feature.name:
+                caption = add_caption_hbox(caption, entrance.entrance_name.strip())
 
-        # FIXME - can this be indexed?
         return escape(convert_quotes(caption))
 
 
