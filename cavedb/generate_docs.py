@@ -43,16 +43,19 @@ def write_bulletin_files(bulletin, basedir):
                            cavedb.docgen_entrance_csv.EntranceCsv(basedir, bulletin),
                            cavedb.docgen_gpx.Gpx(basedir, bulletin),
                            cavedb.docgen_kml.Kml(basedir, bulletin),
-                           cavedb.docgen_latex_letter_bw.LatexLetterBW(basedir, bulletin),
                            cavedb.docgen_mxf.Mxf(basedir, bulletin),
                            cavedb.docgen_text.Text(basedir, bulletin),
                            cavedb.docgen_todo_txt.TodoTxt(basedir, bulletin),
                            cavedb.docgen_xml.Xml(basedir, bulletin),
 
-                           # The SHP and mapserver files need to be created before the GisMaps
+                           # The SHP and mapserver files need to be created before the GisMaps.
                            cavedb.docgen_shp.Shp(basedir, bulletin),
                            cavedb.docgen_mapserver_mapfile.MapserverMapfile(basedir, bulletin),
-                           cavedb.docgen_gis_maps.GisMaps(basedir, bulletin)])
+                           cavedb.docgen_gis_maps.GisMaps(basedir, bulletin),
+
+                           # Create the LaTeX PDFs last since they depend on other resources.
+                           cavedb.docgen_latex_letter_bw.LatexLetterBW(basedir, bulletin),
+                           ])
 
     all_regions_gis_hash = get_all_regions_gis_hash(bulletin.id)
 

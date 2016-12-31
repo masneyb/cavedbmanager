@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 import re
 import datetime
 import dateutil.parser
@@ -20,6 +21,7 @@ import cavedb.models
 import cavedb.utils
 import cavedb.docgen_common
 import cavedb.latex_indexer
+from sortedcontainers import SortedSet
 
 # TODO AFTER - look for trailing space at end of strings
 
@@ -38,6 +40,14 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.list_of_photos = []
         self.list_of_caves = []
         self.photos_at_end = None
+        self.entire_bulletin_refs = {}
+
+
+    def generate_buildscript(self):
+        texdir = os.path.dirname(self.filename)
+        bulletin_base_dir = cavedb.utils.get_bulletin_base_dir(self.bulletin.id)
+        latex_cmd = 'pdflatex -output-directory %s %s' % (texdir, self.filename)
+        return 'cd %s\n%s\n%s\n' % (bulletin_base_dir, latex_cmd, latex_cmd)
 
 
     def open(self, all_regions_gis_hash):
@@ -540,6 +550,7 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.__writeln(r'')
 
         self.__show_references(self.feature_attrs['refs'])
+        self.__add_to_refs_map(self.feature_attrs['refs'], self.entire_bulletin_refs)
 
         self.__writeln(r'\index{' + escape(feature.name) + r'|)}')
 
@@ -564,7 +575,7 @@ class LatexCommon(cavedb.docgen_common.Common):
             map_page_ref = r'\pageref{photo' + str(self.feature_attrs['refmaps'][0].map.id) + r'}'
 
         for alias in get_all_feature_alt_names(feature):
-            see_label = alias + r'\begin{description}' + '\n' + \
+            see_label = escape(alias) + r'\begin{description}' + '\n' + \
                         r'\setlength{\parskip}{-2ex plus 0in minus 0in}' + '\n' + \
                         r'\item \textit{see ' + escape(feature.name) + \
                         r'\vspace{-2ex} } \end{description}'
@@ -683,27 +694,46 @@ class LatexCommon(cavedb.docgen_common.Common):
         if len(refs) == 0:
             return
 
-        self.__writeln(r'{ \footnotesize')
-        self.__writeln(r'\leftskip 0.2in')
-        self.__writeln(r'\parindent -0.1in')
+        refs_by_date = {}
+        self.__add_to_refs_map(refs, refs_by_date)
+        self.__show_references_string_dict(refs_by_date)
 
+
+    # Returns a dictionary where the key is the parsed date and the value is
+    # a SortedSet that contains the TEX formatted string.
+    # refs: One of the Reference objects
+    # refs_by_date: A dictionary where the parsed references will go
+    def __add_to_refs_map(self, refs, refs_by_date):
         num_refs = len(refs)
 
-        # Sort the references by date
-        refs_by_date = {}
         for ref in refs:
             parsed_date = get_normalized_date(ref.date) + none_to_empty(ref.volume) + \
                           none_to_empty(ref.number) + none_to_empty(ref.pages) + \
                           none_to_empty(ref.book) + none_to_empty(ref.title)
 
             if parsed_date not in refs_by_date:
-                refs_by_date[parsed_date] = []
+                refs_by_date[parsed_date] = SortedSet([])
 
-            refs_by_date[parsed_date].append(ref)
+            refstr = reference_to_string(ref)
+            refs_by_date[parsed_date].add(refstr)
+
+
+    # Show the references. refs_by_date is the return value from __add_to_refs_map()
+    def __show_references_string_dict(self, refs_by_date):
+        num_refs = 0
+        for refstrs in refs_by_date.values():
+            num_refs = num_refs + len(refstrs)
+
+        if num_refs == 0:
+            return
+
+        self.__writeln(r'{ \footnotesize')
+        self.__writeln(r'\leftskip 0.2in')
+        self.__writeln(r'\parindent -0.1in')
 
         counter = 0
         for parsed_date in sorted(refs_by_date):
-            for ref in refs_by_date[parsed_date]:
+            for refstr in refs_by_date[parsed_date]:
                 counter = counter + 1
 
                 if counter < 3 or counter % 2 == 0 or counter == num_refs:
@@ -712,7 +742,7 @@ class LatexCommon(cavedb.docgen_common.Common):
                 if counter > 1:
                     self.__writeln(r'\vspace{-3.5ex}')
 
-                self.__show_reference(ref)
+                self.__writeln(refstr)
 
         self.__writeln('}')
 
@@ -730,22 +760,7 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.__writeln(r'\it')
         self.__writeln(r'\footnotesize')
 
-        # hidden_in_bibliography = ref.title.startswith('unpublished trip report') or \
-        #                          ref.title.startswith('Tucker County Speleological Survey Files') or \
-        #                          ref.title.startswith('personal communication') or \
-        #                          ref.title.startswith('e-mail') or \
-        #                          ref.title.startswith('letter to') or \
-        #                          ref.title.startswith('Trip Report in NSS Files')
-
-        # FIXME - show all references
-        #  <xsl:for-each select="/regions/all_references/reference[@hidden_in_bibliography='False' and generate-id() = generate-id(key('distinctRefs', concat(@author, @title, @book, @volume, @number, @pages, @url, @date, @extra)))]">
-        # <xsl:sort select="@author"/>
-        # <xsl:sort select="@parsed_date"/>
-        # <xsl:sort select="@volume" data-type="number"/>
-        # <xsl:sort select="@number" data-type="number"/>
-        # <xsl:sort select="@pages" data-type="number"/>
-        # <xsl:sort select="@book"/>
-        # <xsl:sort select="@title"/>
+        self.__show_references_string_dict(self.entire_bulletin_refs)
 
         self.__writeln(r'')
         self.__writeln(r'}')
@@ -827,53 +842,6 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.__writeln(r'\end{center}')
 
 
-    def __show_reference(self, ref):
-        parts = []
-        if ref.author:
-            parts.append(escape(convert_quotes(ref.author)))
-
-        if ref.title:
-            parts.append(escape(convert_quotes(ref.title)))
-
-        if ref.book:
-            parts.append(r'\textnormal{``' + escape(convert_quotes(ref.book)) + '\'\'}')
-
-        if ref.volume:
-            vnp = r'V' + escape(convert_quotes(ref.volume))
-
-            if ref.number:
-                vnp = vnp + r'n' + escape(convert_quotes(ref.number))
-
-            if ref.pages:
-                vnp = vnp + r'p'
-                if '-' in ref.pages or ',' in ref.pages:
-                    vnp = vnp + r'p'
-                vnp += escape(convert_quotes(ref.pages))
-
-            if vnp:
-                parts.append(vnp)
-
-        if ref.url:
-            parts.append(r'URL: ' + escape(convert_quotes(ref.url)))
-
-        if ref.extra:
-            parts.append(escape(convert_quotes(ref.extra)))
-
-        if ref.date:
-            parts.append(escape(convert_quotes(ref.date)))
-        else:
-            parts.append('date unknown')
-
-        if not ref.volume and ref.pages:
-            if '-' in ref.pages or ',' in ref.pages:
-                parts.append('Pages ' + escape(convert_quotes(ref.pages)))
-            else:
-                parts.append('Page ' + escape(convert_quotes(ref.pages)))
-
-        self.__writeln(r'\textit{' + ', '.join(parts) + r'} \\')
-        self.__writeln(r'')
-
-
     def __write_chapters(self, is_appendix):
         for chapter in cavedb.models.BulletinChapter.objects.filter(bulletin__id=self.bulletin.id):
             if chapter.is_appendix != is_appendix:
@@ -907,6 +875,7 @@ class LatexCommon(cavedb.docgen_common.Common):
                     refs.append(ref)
 
                 self.__show_references(refs)
+                self.__add_to_refs_map(refs, self.entire_bulletin_refs)
 
                 if section.num_columns > 1:
                     self.__writeln(r'\end{multicols}')
@@ -1037,7 +1006,7 @@ def comma_split(inputstr):
 
 
 def newline_split(inputstr):
-    return split_strip(inputstr, '\n', ['r'])
+    return split_strip(inputstr, '\n', [ '\r' ])
 
 
 def split_strip(inputstr, separator, chars_to_strip):
@@ -1069,4 +1038,50 @@ def decimal_degrees_to_ddmmss_str(decdegs):
     degs = degs if positive else -degs
 
     return '%.0f$^\\circ$ %02d\' %s"' % (degs, mins, ('%.1f' % (secs)).zfill(4))
+
+
+def reference_to_string(ref):
+    parts = []
+    if ref.author:
+        parts.append(escape(convert_quotes(ref.author)))
+
+    if ref.title:
+        parts.append(escape(convert_quotes(ref.title)))
+
+    if ref.book:
+        parts.append(r'\textnormal{``' + escape(convert_quotes(ref.book)) + '\'\'}')
+
+    if ref.volume:
+        vnp = r'V' + escape(convert_quotes(ref.volume))
+
+        if ref.number:
+            vnp = vnp + r'n' + escape(convert_quotes(ref.number))
+
+        if ref.pages:
+            vnp = vnp + r'p'
+            if '-' in ref.pages or ',' in ref.pages:
+                vnp = vnp + r'p'
+            vnp += escape(convert_quotes(ref.pages))
+
+        if vnp:
+            parts.append(vnp)
+
+    if ref.url:
+        parts.append(r'URL: ' + escape(convert_quotes(ref.url)))
+
+    if ref.extra:
+        parts.append(escape(convert_quotes(ref.extra)))
+
+    if ref.date:
+        parts.append(escape(convert_quotes(ref.date)))
+    else:
+        parts.append('date unknown')
+
+    if not ref.volume and ref.pages:
+        if '-' in ref.pages or ',' in ref.pages:
+            parts.append('Pages ' + escape(convert_quotes(ref.pages)))
+        else:
+            parts.append('Page ' + escape(convert_quotes(ref.pages)))
+
+    return r'\textit{' + ', '.join(parts) + r'} \\' + '\n'
 
