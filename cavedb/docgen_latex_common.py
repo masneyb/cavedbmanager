@@ -170,7 +170,7 @@ class LatexCommon(cavedb.docgen_common.Common):
 
         if region.introduction:
             self.__writeln(r'\section*{Introduction} { ' + \
-                         self.__index_and_escape(region.introduction) + '}')
+                         self.__index_and_escape(region.introduction) + ' }')
             self.__writeln(r'')
 
 
