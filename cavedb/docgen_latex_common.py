@@ -44,7 +44,7 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.file_handle = open(self.filename, 'w')
 
         self.indexer = cavedb.latex_indexer.LatexIndexer()
-        self.populate_indexed_terms()
+        self.__populate_indexed_terms()
 
         self.__show_document_header()
         self.__show_title_page()
@@ -52,56 +52,56 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.__show_contributor_page()
         self.__show_toc()
 
-        self.writeln(r'\newpage')
-        self.writeln(r'\pagenumbering{arabic}')
-        self.writeln(r'')
-        self.writeln(r'% Change the header and footer for the document body')
-        self.writeln(r'\fancyfoot[LO,RE]{\thepage}')
-        self.writeln(r'\fancyfoot[LE,RO]{\textit{' + self.bulletin.bulletin_name + \
+        self.__writeln(r'\newpage')
+        self.__writeln(r'\pagenumbering{arabic}')
+        self.__writeln(r'')
+        self.__writeln(r'% Change the header and footer for the document body')
+        self.__writeln(r'\fancyfoot[LO,RE]{\thepage}')
+        self.__writeln(r'\fancyfoot[LE,RO]{\textit{' + self.bulletin.bulletin_name + \
                      r' \\ \nouppercase\leftmark \nouppercase\rightmark}}')
-        self.writeln(r'')
-        self.writeln(r'\fancypagestyle{plain}{')
-        self.writeln(r'  \fancyfoot[LO,RE]{\thepage}')
-        self.writeln(r'  \fancyfoot[LE,RO]{\textit{' + self.bulletin.bulletin_name + '}}')
-        self.writeln(r'} ')
-        self.writeln(r'')
-        self.writeln(r'')
+        self.__writeln(r'')
+        self.__writeln(r'\fancypagestyle{plain}{')
+        self.__writeln(r'  \fancyfoot[LO,RE]{\thepage}')
+        self.__writeln(r'  \fancyfoot[LE,RO]{\textit{' + self.bulletin.bulletin_name + '}}')
+        self.__writeln(r'} ')
+        self.__writeln(r'')
+        self.__writeln(r'')
 
         if self.bulletin.caves_header:
-            self.writeln(r'\chapter{Introduction}')
-            self.writeln(r'\begin{multicols}{2}')
-            self.writeln(r'\parindent 2ex')
-            self.writeln(escape(self.indexer.generate_index(self.bulletin.caves_header.strip())))
-            self.writeln(r'\parindent 0ex')
-            self.writeln(r'\end{multicols}')
+            self.__writeln(r'\chapter{Introduction}')
+            self.__writeln(r'\begin{multicols}{2}')
+            self.__writeln(r'\parindent 2ex')
+            self.__writeln(escape(self.indexer.generate_index(self.bulletin.caves_header.strip())))
+            self.__writeln(r'\parindent 0ex')
+            self.__writeln(r'\end{multicols}')
 
-        self.writeln(r'\clearpage')
+        self.__writeln(r'\clearpage')
 
-        self.write_chapters(False)
+        self.__write_chapters(False)
 
 
     def close(self):
-        self.writeln(r'\appendix \def\chaptername{Appendix}')
+        self.__writeln(r'\appendix \def\chaptername{Appendix}')
 
-        self.write_chapters(True)
+        self.__write_chapters(True)
 
         self.__show_book_bibliography()
         self.__show_list_of_photos()
         self.__show_list_of_caves()
 
-        self.writeln(r'')
-        self.writeln(r'') # TODO AFTER - remove
-        self.writeln(r'% Change the header and footer for the index')
-        self.writeln(r'\fancyfoot[LO,RE]{\thepage}')
-        self.writeln(r'\fancyfoot[LE,RO]{\textit{' + self.bulletin.bulletin_name + \
+        self.__writeln(r'')
+        self.__writeln(r'') # TODO AFTER - remove
+        self.__writeln(r'% Change the header and footer for the index')
+        self.__writeln(r'\fancyfoot[LO,RE]{\thepage}')
+        self.__writeln(r'\fancyfoot[LE,RO]{\textit{' + self.bulletin.bulletin_name + \
                      r' \\ \nouppercase\leftmark}}')
-        self.writeln(r'')
-        self.writeln(r'\fancypagestyle{plain}{')
-        self.writeln(r'  \fancyfoot[LO,RE]{\thepage}')
-        self.writeln(r'  \fancyfoot[LE,RO]{\textit' + self.bulletin.bulletin_name + r'}}')
-        self.writeln(r'')
-        self.writeln(r'\printindex')
-        self.writeln(r'\end{document}')
+        self.__writeln(r'')
+        self.__writeln(r'\fancypagestyle{plain}{')
+        self.__writeln(r'  \fancyfoot[LO,RE]{\thepage}')
+        self.__writeln(r'  \fancyfoot[LE,RO]{\textit' + self.bulletin.bulletin_name + r'}}')
+        self.__writeln(r'')
+        self.__writeln(r'\printindex')
+        self.__writeln(r'\end{document}')
 
         self.file_handle.close()
 
@@ -116,222 +116,222 @@ class LatexCommon(cavedb.docgen_common.Common):
         if region.show_gis_map and len(map_names) > 0:
             for map_pos, map_name in enumerate(map_names):
                 if map_pos > 0:
-                    self.writeln(r'\vspace*{8ex}')
-                    self.writeln(r'')
+                    self.__writeln(r'\vspace*{8ex}')
+                    self.__writeln(r'')
 
                 image = cavedb.utils.get_region_gis_map(self.bulletin.id, region.id, map_name)
 
-                self.writeln(r'\begin{figure}[htp!]')
-                self.writeln(r'  \centering')
-                self.writeln(r'  \includegraphics[height=0.9\textheight,width=\textwidth,' + \
+                self.__writeln(r'\begin{figure}[htp!]')
+                self.__writeln(r'  \centering')
+                self.__writeln(r'  \includegraphics[height=0.9\textheight,width=\textwidth,' + \
                              r'keepaspectratio=true]{' + image + '}')
-                self.writeln(r'\end{figure}')
-                self.writeln(r'')
+                self.__writeln(r'\end{figure}')
+                self.__writeln(r'')
 
                 if map_pos == 0:
-                    self.writeln(r'\begin{figure}[htp!]')
-                    self.writeln(r'  \centering')
-                    self.writeln(r'  \includegraphics[width=\textwidth,keepaspectratio=true]{' + \
+                    self.__writeln(r'\begin{figure}[htp!]')
+                    self.__writeln(r'  \centering')
+                    self.__writeln(r'  \includegraphics[width=\textwidth,keepaspectratio=true]{' + \
                                  r'../../gis_maps/legend.png}')
-                    self.writeln(r'\end{figure}')
-                    self.writeln(r'')
+                    self.__writeln(r'\end{figure}')
+                    self.__writeln(r'')
 
                 if map_name in self.gis_map_labels:
-                    self.writeln(r'\begin{center} { \footnotesize \textit{' + \
+                    self.__writeln(r'\begin{center} { \footnotesize \textit{' + \
                                  self.gis_map_labels[map_name] + r'}} \end{center}')
-                    self.writeln(r'') # TODO AFTER - remove
-                    self.writeln(r'')
+                    self.__writeln(r'') # TODO AFTER - remove
+                    self.__writeln(r'')
 
-                self.writeln(r'')
-                self.writeln(r'\clearpage')
-                self.writeln(r'')
+                self.__writeln(r'')
+                self.__writeln(r'\clearpage')
+                self.__writeln(r'')
 
 
     def begin_region(self, region, gis_region_hash):
-        self.writeln(r'\clearpage')
-        self.writeln(r'\ifthenelse{\isodd{\value{page}}}{}{\hbox{}\newpage}')
+        self.__writeln(r'\clearpage')
+        self.__writeln(r'\ifthenelse{\isodd{\value{page}}}{}{\hbox{}\newpage}')
 
-        self.writeln(r'\chapter{' + region.region_name + '}')
+        self.__writeln(r'\chapter{' + region.region_name + '}')
 
         self.__show_region_gis_maps(region)
 
-        self.writeln(r'\twocolumn')
-        self.writeln(r'\setlength\parskip{1ex plus 0in minus 0in}')
+        self.__writeln(r'\twocolumn')
+        self.__writeln(r'\setlength\parskip{1ex plus 0in minus 0in}')
 
         if region.introduction:
-            self.writeln(r'\section*{Introduction} { ' + \
+            self.__writeln(r'\section*{Introduction} { ' + \
                          escape(self.indexer.generate_index(region.introduction)) + '}')
-            self.writeln(r'')
+            self.__writeln(r'')
 
 
     def end_region(self):
         for photo in self.feature_attrs['photos_at_end']:
             self.__show_feature_photo(self.feature_attrs['feature'], photo)
 
-        self.writeln(r'\onecolumn')
+        self.__writeln(r'\onecolumn')
 
 
     def __show_document_header(self):
         draftstr = ',draft' if self.draft_mode else ''
 
-        self.writeln(r'\documentclass[10pt,' + self.papersize + ',leqno,twoside,openany' + \
+        self.__writeln(r'\documentclass[10pt,' + self.papersize + ',leqno,twoside,openany' + \
                      draftstr + ']{book}')
-        self.writeln(r'\usepackage{etex}')
-        self.writeln(r'\reserveinserts{200}')
-        self.writeln(r'\usepackage[utf8]{inputenc}')
-        self.writeln(r'\usepackage{amsmath,amssymb,amsfonts} % Typical maths resource packages')
-        self.writeln(r'\usepackage{graphicx}                 % Packages to allow inclusion of graphics')
-        self.writeln(r'\usepackage{multicol}                 % Multiple column support')
-        self.writeln(r'\usepackage{fancyhdr} ')
-        self.writeln(r'\usepackage{longtable} ')
-        self.writeln(r'\usepackage{colortbl} ')
-        self.writeln(r'\usepackage{helvet}')
-        self.writeln(r'\usepackage{tikz}')
-        self.writeln(r'\usepackage{hyphenat}')
-        self.writeln(r'\usepackage{ifthen}')
-        self.writeln(r'\usepackage{makeidx}')
-        self.writeln(r'\usepackage[maxfloats=145]{morefloats}')
-        self.writeln(r'')
-        self.writeln(r'\tikzstyle{mybox} = [draw=black, fill=gray!20, rectangle, ' + \
+        self.__writeln(r'\usepackage{etex}')
+        self.__writeln(r'\reserveinserts{200}')
+        self.__writeln(r'\usepackage[utf8]{inputenc}')
+        self.__writeln(r'\usepackage{amsmath,amssymb,amsfonts} % Typical maths resource packages')
+        self.__writeln(r'\usepackage{graphicx}                 % Packages to allow inclusion of graphics')
+        self.__writeln(r'\usepackage{multicol}                 % Multiple column support')
+        self.__writeln(r'\usepackage{fancyhdr} ')
+        self.__writeln(r'\usepackage{longtable} ')
+        self.__writeln(r'\usepackage{colortbl} ')
+        self.__writeln(r'\usepackage{helvet}')
+        self.__writeln(r'\usepackage{tikz}')
+        self.__writeln(r'\usepackage{hyphenat}')
+        self.__writeln(r'\usepackage{ifthen}')
+        self.__writeln(r'\usepackage{makeidx}')
+        self.__writeln(r'\usepackage[maxfloats=145]{morefloats}')
+        self.__writeln(r'')
+        self.__writeln(r'\tikzstyle{mybox} = [draw=black, fill=gray!20, rectangle, ' + \
                      r'rounded corners, inner sep=5pt, inner ysep=7pt]')
-        self.writeln(r'')
-        self.writeln(r'% Note: always include this package last')
-        self.writeln(r'\usepackage[pdftitle={' + self.bulletin.bulletin_name + '},' + \
+        self.__writeln(r'')
+        self.__writeln(r'% Note: always include this package last')
+        self.__writeln(r'\usepackage[pdftitle={' + self.bulletin.bulletin_name + '},' + \
                      r'pdfauthor={' + self.bulletin.editors + '}, plainpages=false, ' + \
                      r'pdfpagelabels]{hyperref}')
-        self.writeln(r'')
-        self.writeln(r'\sloppy')
-        self.writeln(r'\raggedbottom')
-        self.writeln(r'\raggedcolumns')
-        self.writeln(r'\hbadness=10000')
-        self.writeln(r'\clubpenalty=10000')
-        self.writeln(r'\widowpenalty=10000')
-        self.writeln(r'')
-        self.writeln(r'\renewcommand{\thefigure}{}')
-        self.writeln(r'\renewcommand{\figurename}{}')
-        self.writeln(r'')
-        self.writeln(r'%\renewcommand{\familydefault}{\sfdefault} ')
-        self.writeln(r'')
-        self.writeln(r'\makeatletter')
-        self.writeln(r'')
-        self.writeln(r'\renewcommand{\l@chapter}{\@dottedtocline{1}{1.5em}{2.3em}}')
-        self.writeln(r'')
+        self.__writeln(r'')
+        self.__writeln(r'\sloppy')
+        self.__writeln(r'\raggedbottom')
+        self.__writeln(r'\raggedcolumns')
+        self.__writeln(r'\hbadness=10000')
+        self.__writeln(r'\clubpenalty=10000')
+        self.__writeln(r'\widowpenalty=10000')
+        self.__writeln(r'')
+        self.__writeln(r'\renewcommand{\thefigure}{}')
+        self.__writeln(r'\renewcommand{\figurename}{}')
+        self.__writeln(r'')
+        self.__writeln(r'%\renewcommand{\familydefault}{\sfdefault} ')
+        self.__writeln(r'')
+        self.__writeln(r'\makeatletter')
+        self.__writeln(r'')
+        self.__writeln(r'\renewcommand{\l@chapter}{\@dottedtocline{1}{1.5em}{2.3em}}')
+        self.__writeln(r'')
 
-        self.writeln(r'\renewcommand{\@makechapterhead}[1]{')
-        self.writeln(r'\vspace*{10 pt}')
-        self.writeln(r'{\bfseries\LARGE \begin{centering} \nohyphens{#1} \\ \end{centering} }')
-        self.writeln(r'}')
-        self.writeln(r'\renewcommand{\section}{\@startsection {section}{1}{0pt}')
-        self.writeln(r'  {0ex}')
-        self.writeln(r'  {1px}')
-        self.writeln(r'  {\bf\Large}}')
-        self.writeln(r'')
-        self.writeln(r'\setlength{\abovecaptionskip}{0pt} ')
-        self.writeln(r'\setlength{\belowcaptionskip}{2pt}')
-        self.writeln(r'')
-        self.writeln(r'\long\def\@makecaption#1#2{%')
-        self.writeln(r'   \vskip\abovecaptionskip')
-        self.writeln(r'   \hspace{0.05\linewidth}\begin{minipage}[t]{0.9\linewidth}\centering' + \
+        self.__writeln(r'\renewcommand{\@makechapterhead}[1]{')
+        self.__writeln(r'\vspace*{10 pt}')
+        self.__writeln(r'{\bfseries\LARGE \begin{centering} \nohyphens{#1} \\ \end{centering} }')
+        self.__writeln(r'}')
+        self.__writeln(r'\renewcommand{\section}{\@startsection {section}{1}{0pt}')
+        self.__writeln(r'  {0ex}')
+        self.__writeln(r'  {1px}')
+        self.__writeln(r'  {\bf\Large}}')
+        self.__writeln(r'')
+        self.__writeln(r'\setlength{\abovecaptionskip}{0pt} ')
+        self.__writeln(r'\setlength{\belowcaptionskip}{2pt}')
+        self.__writeln(r'')
+        self.__writeln(r'\long\def\@makecaption#1#2{%')
+        self.__writeln(r'   \vskip\abovecaptionskip')
+        self.__writeln(r'   \hspace{0.05\linewidth}\begin{minipage}[t]{0.9\linewidth}\centering' + \
                      r'\footnotesize#2\par\end{minipage}\hspace{0.05\linewidth}')
-        self.writeln(r'   \vskip\belowcaptionskip}')
-        self.writeln(r'')
-        self.writeln(r'\makeatother')
-        self.writeln(r'')
-        self.writeln(r'\setlength\voffset{0in}')
-        self.writeln(r'\setlength\topmargin{-0.5in}')
-        self.writeln(r'\setlength\headheight{0in}')
-        self.writeln(r'\setlength\headsep{0in}')
-        self.writeln(r'\setlength\topskip{0in}')
-        self.writeln(r'')
-        self.writeln(r'\setlength\hoffset{0in}')
-        self.writeln(r'\setlength\oddsidemargin{-0.25in}')
-        self.writeln(r'\setlength\evensidemargin{-0.25in}')
-        self.writeln(r'\setlength\rightmargin{-0.25in}')
-        self.writeln(r'\setlength\textwidth{7in}')
-        self.writeln(r'\setlength\textheight{9.5in}')
-        self.writeln(r'')
-        self.writeln(r'\setlength\parindent{0.0in}')
-        self.writeln(r'\setlength\parskip{1ex plus 0in minus 0in}')
-        self.writeln(r'\setlength{\topsep}{0in plus 0in minus 0in}')
-        self.writeln(r'')
-        self.writeln(r'\pagestyle{fancy}')
-        self.writeln(r'')
-        self.writeln(r'\renewcommand{\sectionmark}[1]{\markright{ - #1}}')
-        self.writeln(r'\renewcommand{\headrulewidth}{0.0pt}')
-        self.writeln(r'\renewcommand{\footrulewidth}{0.4pt}')
-        self.writeln(r'\fancyhead[LE,RO]{}')
-        self.writeln(r'\fancyhead[LO,RE]{}')
-        self.writeln(r'\fancyfoot[C]{}')
-        self.writeln(r'')
-        self.writeln(r'')
-        self.writeln(r'% This is the header and footer for the preamble pages. It is changed later on')
-        self.writeln(r'% when the document body is shown.')
-        self.writeln(r'')
-        self.writeln(r'\fancyfoot[LE,RO]{\thepage}')
-        self.writeln(r'\fancyfoot[LO,RE]{\textit{' + self.bulletin.bulletin_name + '}}')
-        self.writeln(r'')
-        self.writeln(r'\fancypagestyle{plain}{')
-        self.writeln(r'  \fancyfoot[LE,RO]{\thepage}')
-        self.writeln(r'  \fancyfoot[LO,RE]{\textit{' + self.bulletin.bulletin_name + '}}')
-        self.writeln(r'} ')
-        self.writeln(r'')
-        self.writeln(r'')
-        self.writeln(r'\setcounter{topnumber}{4}')
-        self.writeln(r'\setcounter{dbltopnumber}{2}')
-        self.writeln(r'\setcounter{bottomnumber}{0}')
-        self.writeln(r'\setcounter{totalnumber}{4}')
-        self.writeln(r'')
-        self.writeln(r'\renewcommand{\topfraction}{0.6}')
-        self.writeln(r'\renewcommand{\bottomfraction}{0}')
-        self.writeln(r'\renewcommand{\textfraction}{0.3}')
-        self.writeln(r'\renewcommand{\floatpagefraction}{0.5}')
-        self.writeln(r'\renewcommand{\dbltopfraction}{0.7}')
-        self.writeln(r'\renewcommand{\dblfloatpagefraction}{0.7}')
-        self.writeln(r'')
-        self.writeln(r'\pagenumbering{roman}')
-        self.writeln(r'\makeindex')
-        self.writeln(r'')
-        self.writeln(r'\begin{document}')
+        self.__writeln(r'   \vskip\belowcaptionskip}')
+        self.__writeln(r'')
+        self.__writeln(r'\makeatother')
+        self.__writeln(r'')
+        self.__writeln(r'\setlength\voffset{0in}')
+        self.__writeln(r'\setlength\topmargin{-0.5in}')
+        self.__writeln(r'\setlength\headheight{0in}')
+        self.__writeln(r'\setlength\headsep{0in}')
+        self.__writeln(r'\setlength\topskip{0in}')
+        self.__writeln(r'')
+        self.__writeln(r'\setlength\hoffset{0in}')
+        self.__writeln(r'\setlength\oddsidemargin{-0.25in}')
+        self.__writeln(r'\setlength\evensidemargin{-0.25in}')
+        self.__writeln(r'\setlength\rightmargin{-0.25in}')
+        self.__writeln(r'\setlength\textwidth{7in}')
+        self.__writeln(r'\setlength\textheight{9.5in}')
+        self.__writeln(r'')
+        self.__writeln(r'\setlength\parindent{0.0in}')
+        self.__writeln(r'\setlength\parskip{1ex plus 0in minus 0in}')
+        self.__writeln(r'\setlength{\topsep}{0in plus 0in minus 0in}')
+        self.__writeln(r'')
+        self.__writeln(r'\pagestyle{fancy}')
+        self.__writeln(r'')
+        self.__writeln(r'\renewcommand{\sectionmark}[1]{\markright{ - #1}}')
+        self.__writeln(r'\renewcommand{\headrulewidth}{0.0pt}')
+        self.__writeln(r'\renewcommand{\footrulewidth}{0.4pt}')
+        self.__writeln(r'\fancyhead[LE,RO]{}')
+        self.__writeln(r'\fancyhead[LO,RE]{}')
+        self.__writeln(r'\fancyfoot[C]{}')
+        self.__writeln(r'')
+        self.__writeln(r'')
+        self.__writeln(r'% This is the header and footer for the preamble pages. It is changed later on')
+        self.__writeln(r'% when the document body is shown.')
+        self.__writeln(r'')
+        self.__writeln(r'\fancyfoot[LE,RO]{\thepage}')
+        self.__writeln(r'\fancyfoot[LO,RE]{\textit{' + self.bulletin.bulletin_name + '}}')
+        self.__writeln(r'')
+        self.__writeln(r'\fancypagestyle{plain}{')
+        self.__writeln(r'  \fancyfoot[LE,RO]{\thepage}')
+        self.__writeln(r'  \fancyfoot[LO,RE]{\textit{' + self.bulletin.bulletin_name + '}}')
+        self.__writeln(r'} ')
+        self.__writeln(r'')
+        self.__writeln(r'')
+        self.__writeln(r'\setcounter{topnumber}{4}')
+        self.__writeln(r'\setcounter{dbltopnumber}{2}')
+        self.__writeln(r'\setcounter{bottomnumber}{0}')
+        self.__writeln(r'\setcounter{totalnumber}{4}')
+        self.__writeln(r'')
+        self.__writeln(r'\renewcommand{\topfraction}{0.6}')
+        self.__writeln(r'\renewcommand{\bottomfraction}{0}')
+        self.__writeln(r'\renewcommand{\textfraction}{0.3}')
+        self.__writeln(r'\renewcommand{\floatpagefraction}{0.5}')
+        self.__writeln(r'\renewcommand{\dbltopfraction}{0.7}')
+        self.__writeln(r'\renewcommand{\dblfloatpagefraction}{0.7}')
+        self.__writeln(r'')
+        self.__writeln(r'\pagenumbering{roman}')
+        self.__writeln(r'\makeindex')
+        self.__writeln(r'')
+        self.__writeln(r'\begin{document}')
 
     def __show_title_page(self):
-        self.writeln(r'')
-        self.writeln(r'% ---- Title Page ----')
-        self.writeln(r'')
-        self.writeln(r'\clearpage')
-        self.writeln(r'\thispagestyle{empty}')
-        self.writeln(escape(self.indexer.generate_index(self.bulletin.title_page.strip())))
-        self.writeln(r'\newpage')
-        self.writeln(r'')
+        self.__writeln(r'')
+        self.__writeln(r'% ---- Title Page ----')
+        self.__writeln(r'')
+        self.__writeln(r'\clearpage')
+        self.__writeln(r'\thispagestyle{empty}')
+        self.__writeln(escape(self.indexer.generate_index(self.bulletin.title_page.strip())))
+        self.__writeln(r'\newpage')
+        self.__writeln(r'')
 
 
     def __show_preamble_page(self):
-        self.writeln(r'')
-        self.writeln(r'\clearpage')
-        self.writeln(r'\thispagestyle{empty}')
-        self.writeln(escape(self.indexer.generate_index(self.bulletin.preamble_page.strip())))
-        self.writeln(r'\newpage')
-        self.writeln(r'')
+        self.__writeln(r'')
+        self.__writeln(r'\clearpage')
+        self.__writeln(r'\thispagestyle{empty}')
+        self.__writeln(escape(self.indexer.generate_index(self.bulletin.preamble_page.strip())))
+        self.__writeln(r'\newpage')
+        self.__writeln(r'')
 
 
     def __show_contributor_page(self):
-        self.writeln(r'')
-        self.writeln(r'\clearpage')
-        self.writeln(escape(self.indexer.generate_index(self.bulletin.contributor_page.strip())))
-        self.writeln(r'\newpage')
-        self.writeln(r'')
+        self.__writeln(r'')
+        self.__writeln(r'\clearpage')
+        self.__writeln(escape(self.indexer.generate_index(self.bulletin.contributor_page.strip())))
+        self.__writeln(r'\newpage')
+        self.__writeln(r'')
 
 
     def __show_toc(self):
-        self.writeln(r'')
-        self.writeln(r'\clearpage')
-        self.writeln(r'\tableofcontents')
-        self.writeln(r'\clearpage')
-        self.writeln(r'')
+        self.__writeln(r'')
+        self.__writeln(r'\clearpage')
+        self.__writeln(r'\tableofcontents')
+        self.__writeln(r'\clearpage')
+        self.__writeln(r'')
 
         if self.bulletin.toc_footer:
-            self.writeln(escape(self.indexer.generate_index(self.bulletin.toc_footer.strip())))
+            self.__writeln(escape(self.indexer.generate_index(self.bulletin.toc_footer.strip())))
 
-        self.writeln(r'')
+        self.__writeln(r'')
 
 
     def get_bw_gis_map_names(self):
@@ -364,14 +364,14 @@ class LatexCommon(cavedb.docgen_common.Common):
     def get_gis_map_names(self):
         return None
 
-    def write(self, line):
+    def __write(self, line):
         line = line.replace('/usr/local/cavedbmanager-data/bulletins/bulletin_1', '.') # TODO AFTER - remove
         line = line.replace('/usr/local/cavedbmanager-data/bulletins/bulletin_2', '.') # TODO AFTER - remove
         self.file_handle.write(line.replace('\r', ''))
 
 
-    def writeln(self, line):
-        self.write(line + '\n')
+    def __writeln(self, line):
+        self.__write(line + '\n')
 
 
     def begin_feature(self, feature):
@@ -409,15 +409,15 @@ class LatexCommon(cavedb.docgen_common.Common):
 
 
     def __feature_names(self, feature):
-        self.writeln(r'\begin{centering}')
+        self.__writeln(r'\begin{centering}')
 
-        self.writeln(r'{\Large \bfseries \uppercase{' + escape(feature.name) + r'} } \\*')
+        self.__writeln(r'{\Large \bfseries \uppercase{' + escape(feature.name) + r'} } \\*')
 
         alt_names = comma_split(feature.alternate_names)
         if len(alt_names) > 0:
-            self.writeln(r'{\large \bfseries (' + escape(', '.join(alt_names)) + r')} \\[2ex]')
+            self.__writeln(r'{\large \bfseries (' + escape(', '.join(alt_names)) + r')} \\[2ex]')
 
-        self.writeln(r'\end{centering}')
+        self.__writeln(r'\end{centering}')
 
 
     def __feature_length_and_depth(self, feature):
@@ -431,14 +431,14 @@ class LatexCommon(cavedb.docgen_common.Common):
         else:
             length_str = '{:,} mi'.format(round(feature.length_ft / 5280.0, 1))
 
-        self.write(r'Length: %s%s' % (approx, length_str))
+        self.__write(r'Length: %s%s' % (approx, length_str))
 
         if feature.depth_ft:
             depth_str = '{:,} ft'.format(feature.depth_ft)
 
-            self.write(r' \hfill Depth: %s%s' % (approx, depth_str))
+            self.__write(r' \hfill Depth: %s%s' % (approx, depth_str))
 
-        self.writeln(r' \\*')
+        self.__writeln(r' \\*')
 
 
     def __decimal_degrees_to_ddmmss_str(self, decdegs):
@@ -452,47 +452,47 @@ class LatexCommon(cavedb.docgen_common.Common):
 
     def __show_coordinates(self, entrance, coordinates):
         hemisphere = 'N ' if coordinates.utmzone.utm_north else 'S '
-        self.writeln(r'NAD27 UTM: \hfill ' + str(coordinates.utmzone.utm_zone) + hemisphere + \
+        self.__writeln(r'NAD27 UTM: \hfill ' + str(coordinates.utmzone.utm_zone) + hemisphere + \
                      '%.0f' % (coordinates.nad27_utmnorth) + r'N ' + \
                      '%.0f' % (coordinates.nad27_utmeast) + r'E \\*')
 
-        self.writeln(r'WGS84 Lat/Lon: \hfill ' + \
+        self.__writeln(r'WGS84 Lat/Lon: \hfill ' + \
                      self.__decimal_degrees_to_ddmmss_str(coordinates.wgs84_lat) + r' / ' + \
                      self.__decimal_degrees_to_ddmmss_str(coordinates.wgs84_lon) + r' \\*')
 
         if entrance.elevation_ft:
-            self.write('Elevation: {:,}'.format(entrance.elevation_ft) + '\'')
+            self.__write('Elevation: {:,}'.format(entrance.elevation_ft) + '\'')
         if entrance.quad:
-            self.write(r' \hfill ' + entrance.quad.quad_name + r' Quad')
+            self.__write(r' \hfill ' + entrance.quad.quad_name + r' Quad')
         if entrance.elevation_ft or entrance.quad:
-            self.writeln(r' \\*')
+            self.__writeln(r' \\*')
 
         if entrance.coord_acquision == 'GPS':
-            self.writeln(r'\textit{Coordinates acquired using a GPS receiver.} \\*')
+            self.__writeln(r'\textit{Coordinates acquired using a GPS receiver.} \\*')
         elif entrance.coord_acquision == 'Other Topo Map':
-            self.writeln(r'\textit{Coordinates acquired off of a topo map.} \\*')
+            self.__writeln(r'\textit{Coordinates acquired off of a topo map.} \\*')
         elif entrance.coord_acquision == '7.5 Topo Map':
-            self.writeln(r'\textit{Coordinates acquired off of a 7.5\' topo map.} \\*')
+            self.__writeln(r'\textit{Coordinates acquired off of a 7.5\' topo map.} \\*')
         elif entrance.coord_acquision == 'Google Earth':
-            self.writeln(r'\textit{Coordinates acquired using Google Earth.} \\*')
+            self.__writeln(r'\textit{Coordinates acquired using Google Earth.} \\*')
         elif entrance.coord_acquision == 'Estimate':
-            self.writeln(r'\textit{Coordinates are an estimate.} \\*')
+            self.__writeln(r'\textit{Coordinates are an estimate.} \\*')
         elif entrance.coord_acquision == 'Filled In':
-            self.writeln(r'\textit{Entrance is filled in; coordinates are an estimate.} \\*')
+            self.__writeln(r'\textit{Entrance is filled in; coordinates are an estimate.} \\*')
         else:
             # TODO AFTER - change message
-            #self.writeln(r'\textit{Unknown coordinate acquisition method.} \\*')
-            self.writeln(r'\textit{Coordinates acquired off of a topo map.} \\*')
+            #self.__writeln(r'\textit{Unknown coordinate acquisition method.} \\*')
+            self.__writeln(r'\textit{Coordinates acquired off of a topo map.} \\*')
 
 
     def __show_feature_header(self, feature):
-        self.writeln(r'\vspace{1ex}')
-        self.writeln(r'')
-        self.writeln(r'\begin{tikzpicture}')
-        self.writeln(r'\node [mybox] (box){')
-        self.writeln(r'\begin{minipage}[b]{0.95\columnwidth}')
-        self.writeln(r'\phantomsection')
-        self.writeln(r'\label{feature' + str(feature.id) + r'}')
+        self.__writeln(r'\vspace{1ex}')
+        self.__writeln(r'')
+        self.__writeln(r'\begin{tikzpicture}')
+        self.__writeln(r'\node [mybox] (box){')
+        self.__writeln(r'\begin{minipage}[b]{0.95\columnwidth}')
+        self.__writeln(r'\phantomsection')
+        self.__writeln(r'\label{feature' + str(feature.id) + r'}')
 
         self.__feature_names(feature)
 
@@ -501,47 +501,47 @@ class LatexCommon(cavedb.docgen_common.Common):
         has_coordinates = False
         for counter, (entrance, coordinates) in enumerate(self.feature_attrs['entrances']):
             if counter > 0:
-                self.writeln(r' \\')
+                self.__writeln(r' \\')
 
             if entrance.entrance_name and entrance.entrance_name != feature.name:
-                self.writeln(r'\textit{\textbf{' + escape(entrance.entrance_name) + r'}} \\*')
+                self.__writeln(r'\textit{\textbf{' + escape(entrance.entrance_name) + r'}} \\*')
 
             if coordinates.wgs84_lat:
                 has_coordinates = True
                 self.__show_coordinates(entrance, coordinates)
 
         if not has_coordinates:
-            self.writeln(r'\textit{Coordinates are not available.} \\*')
+            self.__writeln(r'\textit{Coordinates are not available.} \\*')
 
-        self.writeln(r'\vspace{-2ex}')
-        self.writeln(r'\end{minipage}')
-        self.writeln(r'};')
-        self.writeln(r'\index{' + escape(feature.name) + '|(}')
-        self.writeln(r'\end{tikzpicture}')
-        self.writeln(r'\nopagebreak[4]')
+        self.__writeln(r'\vspace{-2ex}')
+        self.__writeln(r'\end{minipage}')
+        self.__writeln(r'};')
+        self.__writeln(r'\index{' + escape(feature.name) + '|(}')
+        self.__writeln(r'\end{tikzpicture}')
+        self.__writeln(r'\nopagebreak[4]')
 
 
     def __show_feature_body(self, feature):
-        self.write_paragraphs('\n{ \\bf ', feature.hazards, ' }\n\n')
+        self.__write_paragraphs('\n{ \\bf ', feature.hazards, ' }\n\n')
 
-        if not self.write_paragraphs(None, feature.description, None):
-            self.writeln('There is currently no description available.\n')
+        if not self.__write_paragraphs(None, feature.description, None):
+            self.__writeln('There is currently no description available.\n')
 
-        self.write_paragraphs('\n\n', feature.geology_hydrology, None)
+        self.__write_paragraphs('\n\n', feature.geology_hydrology, None)
 
-        self.write_paragraphs('\n\n{ \\bf Biology:} ', feature.biology, None)
+        self.__write_paragraphs('\n\n{ \\bf Biology:} ', feature.biology, None)
 
-        self.write_paragraphs('\n\n{ \\bf History:} ', feature.history, None)
+        self.__write_paragraphs('\n\n{ \\bf History:} ', feature.history, None)
 
         if feature.source:
-            self.write(r' \textit{(' + feature.source + r')}')
+            self.__write(r' \textit{(' + feature.source + r')}')
 
-        self.writeln(r'')
-        self.writeln(r'')
+        self.__writeln(r'')
+        self.__writeln(r'')
 
         self.__show_references(self.feature_attrs['refs'])
 
-        self.writeln(r'\index{' + escape(feature.name) + r'|)}')
+        self.__writeln(r'\index{' + escape(feature.name) + r'|)}')
 
 
     def __add_to_caves_index(self, feature):
@@ -617,7 +617,7 @@ class LatexCommon(cavedb.docgen_common.Common):
 
     def __show_feature_photo(self, feature, photo):
         if self.num_in_pdf % 48 == 0:
-            self.writeln(r'\clearpage')
+            self.__writeln(r'\clearpage')
 
         figure_opts = '*' if photo.scale != 'column' else ''
 
@@ -634,29 +634,29 @@ class LatexCommon(cavedb.docgen_common.Common):
         else:
             graphic_opts += r',height=.4\textheight,width=\columnwidth'
 
-        self.writeln(r'\begin{figure' + figure_opts + '}[tp]')
-        self.writeln(r'\phantomsection')
+        self.__writeln(r'\begin{figure' + figure_opts + '}[tp]')
+        self.__writeln(r'\phantomsection')
 
-        self.write(r'\index{' + escape(feature.name) + '}')
+        self.__write(r'\index{' + escape(feature.name) + '}')
         if photo.indexed_terms:
             for term in photo.indexed_terms.split('\n'):
-                self.write(r'\index{' + escape(term) + '}')
-        self.writeln(r'')
+                self.__write(r'\index{' + escape(term) + '}')
+        self.__writeln(r'')
 
-        self.writeln(r'\centering')
+        self.__writeln(r'\centering')
 
         url = self.get_photo_filename(photo)
-        self.writeln(r'  \includegraphics[' + graphic_opts + r']{' + url + r'}')
+        self.__writeln(r'  \includegraphics[' + graphic_opts + r']{' + url + r'}')
 
         if photo.caption:
             # TODO AFTER - add extra space
-            self.writeln(r' \caption{' + self.format_photo_caption(feature, photo.caption) + r'}')
+            self.__writeln(r' \caption{' + self.__format_photo_caption(feature, photo.caption) + r'}')
 
-        self.writeln(r'  \label{photo' + str(photo.id) + r'}')
-        self.writeln(r'\end{figure' + figure_opts + '}')
+        self.__writeln(r'  \label{photo' + str(photo.id) + r'}')
+        self.__writeln(r'\end{figure' + figure_opts + '}')
 
-        self.writeln(r'')
-        self.writeln(r'')
+        self.__writeln(r'')
+        self.__writeln(r'')
 
         if photo.type != 'map':
             self.list_of_photos.append(r'\pageref{photo' + str(photo.id) + r'}  & ' + \
@@ -665,7 +665,7 @@ class LatexCommon(cavedb.docgen_common.Common):
                                        escape(photo.author) + r' \\')
 
 
-    def format_photo_caption(self, feature, caption):
+    def __format_photo_caption(self, feature, caption):
         caption = add_caption_hbox(caption, feature.name)
 
         for alias in get_all_feature_alt_names(feature):
@@ -682,9 +682,9 @@ class LatexCommon(cavedb.docgen_common.Common):
         if len(refs) == 0:
             return
 
-        self.writeln(r'{ \footnotesize')
-        self.writeln(r'\leftskip 0.2in')
-        self.writeln(r'\parindent -0.1in')
+        self.__writeln(r'{ \footnotesize')
+        self.__writeln(r'\leftskip 0.2in')
+        self.__writeln(r'\parindent -0.1in')
 
         num_refs = len(refs)
 
@@ -706,28 +706,28 @@ class LatexCommon(cavedb.docgen_common.Common):
                 counter = counter + 1
 
                 if counter < 3 or counter % 2 == 0 or counter == num_refs:
-                    self.writeln(r'\nopagebreak[4]')
+                    self.__writeln(r'\nopagebreak[4]')
 
                 if counter > 1:
-                    self.writeln(r'\vspace{-3.5ex}')
+                    self.__writeln(r'\vspace{-3.5ex}')
 
                 self.__show_reference(ref)
 
-        self.writeln('}')
+        self.__writeln('}')
 
-        self.writeln(r'')
-        self.writeln(r'')
+        self.__writeln(r'')
+        self.__writeln(r'')
 
 
     def __show_book_bibliography(self):
-        self.writeln(r'\chapter{Bibliography}')
-        self.writeln(r'\begin{multicols}{2}')
-        self.writeln(r'{ ')
-        self.writeln(r'\setlength{\parskip}{-2ex plus 0in minus 0in}')
-        self.writeln(r'\parindent -0.1in')
-        self.writeln(r'\leftskip 0.2in')
-        self.writeln(r'\it')
-        self.writeln(r'\footnotesize')
+        self.__writeln(r'\chapter{Bibliography}')
+        self.__writeln(r'\begin{multicols}{2}')
+        self.__writeln(r'{ ')
+        self.__writeln(r'\setlength{\parskip}{-2ex plus 0in minus 0in}')
+        self.__writeln(r'\parindent -0.1in')
+        self.__writeln(r'\leftskip 0.2in')
+        self.__writeln(r'\it')
+        self.__writeln(r'\footnotesize')
 
         # hidden_in_bibliography = ref.title.startswith('unpublished trip report') or \
         #                          ref.title.startswith('Tucker County Speleological Survey Files') or \
@@ -746,84 +746,84 @@ class LatexCommon(cavedb.docgen_common.Common):
         # <xsl:sort select="@book"/>
         # <xsl:sort select="@title"/>
 
-        self.writeln(r'')
-        self.writeln(r'}')
-        self.writeln(r'\end{multicols}')
+        self.__writeln(r'')
+        self.__writeln(r'}')
+        self.__writeln(r'\end{multicols}')
 
 
     def __show_list_of_photos(self):
-        self.writeln(r'\chapter{List of Photos}')
-        self.writeln(r'\begin{center}')
-        self.writeln(r'\begin{longtable}{|c| p{5cm} | p{5cm} | p{5cm} |}')
-        self.writeln(r'    %This is the header for the first page of the table...')
-        self.writeln(r'    \hline')
-        self.writeln(r'    \rowcolor[rgb]{0.9,0.9,0.9} \centering Page & Cave & People Shown In Photo & Photographer \\')
-        self.writeln(r'    \hline')
-        self.writeln(r'  \endfirsthead')
-        self.writeln(r'')
-        self.writeln(r'    %This is the header for the remaining page(s) of the table...')
-        self.writeln(r'    \hline')
-        self.writeln(r'    \rowcolor[rgb]{0.9,0.9,0.9} \centering Page & Cave & People Shown In Photo & Photographer \\')
-        self.writeln(r'    \hline')
-        self.writeln(r'  \endhead')
-        self.writeln(r'')
-        self.writeln(r'    %This is the footer for all pages except the last page of the table...')
-        self.writeln(r'    \hline')
-        self.writeln(r'  \endfoot')
-        self.writeln(r'')
-        self.writeln(r'    %This is the footer for the last page of the table...')
-        self.writeln(r'    \hline ')
-        self.writeln(r'  \endlastfoot')
+        self.__writeln(r'\chapter{List of Photos}')
+        self.__writeln(r'\begin{center}')
+        self.__writeln(r'\begin{longtable}{|c| p{5cm} | p{5cm} | p{5cm} |}')
+        self.__writeln(r'    %This is the header for the first page of the table...')
+        self.__writeln(r'    \hline')
+        self.__writeln(r'    \rowcolor[rgb]{0.9,0.9,0.9} \centering Page & Cave & People Shown In Photo & Photographer \\')
+        self.__writeln(r'    \hline')
+        self.__writeln(r'  \endfirsthead')
+        self.__writeln(r'')
+        self.__writeln(r'    %This is the header for the remaining page(s) of the table...')
+        self.__writeln(r'    \hline')
+        self.__writeln(r'    \rowcolor[rgb]{0.9,0.9,0.9} \centering Page & Cave & People Shown In Photo & Photographer \\')
+        self.__writeln(r'    \hline')
+        self.__writeln(r'  \endhead')
+        self.__writeln(r'')
+        self.__writeln(r'    %This is the footer for all pages except the last page of the table...')
+        self.__writeln(r'    \hline')
+        self.__writeln(r'  \endfoot')
+        self.__writeln(r'')
+        self.__writeln(r'    %This is the footer for the last page of the table...')
+        self.__writeln(r'    \hline ')
+        self.__writeln(r'  \endlastfoot')
 
         if self.bulletin.photo_index_header:
-            self.writeln(escape(self.bulletin.photo_index_header))
+            self.__writeln(escape(self.bulletin.photo_index_header))
 
         for counter, photo in enumerate(self.list_of_photos):
             if counter % 2 != 0:
-                self.write(r'\rowcolor[rgb]{0.95,0.95,0.95} ')
+                self.__write(r'\rowcolor[rgb]{0.95,0.95,0.95} ')
 
-            self.writeln(photo)
-            self.write('  ') # TODO AFTER - remove
+            self.__writeln(photo)
+            self.__write('  ') # TODO AFTER - remove
 
-        self.writeln(r'\end{longtable}')
-        self.writeln(r'\end{center}')
+        self.__writeln(r'\end{longtable}')
+        self.__writeln(r'\end{center}')
 
 
     def __show_list_of_caves(self):
-        self.writeln(r'\chapter{Index of Caves}')
-        self.writeln(r'\begin{center}')
-        self.writeln(r'\begin{longtable}{| p{5.5cm} |c|c|c|c|c|c|c|}')
-        self.writeln(r'    %This is the header for the first page of the table...')
-        self.writeln(r'    \hline')
-        self.writeln(r'    \rowcolor[rgb]{0.9,0.9,0.9} \centering Name & ID & Type & Length & Depth & Page & Map & Ent. \\')
-        self.writeln(r'    \rowcolor[rgb]{0.9,0.9,0.9} & & & & & & & Photo \\')
-        self.writeln(r'    \hline')
-        self.writeln(r'  \endfirsthead')
-        self.writeln(r'')
-        self.writeln(r'    %This is the header for the remaining page(s) of the table...')
-        self.writeln(r'    \hline')
-        self.writeln(r'    \rowcolor[rgb]{0.9,0.9,0.9} \centering Name & ID & Type & Length & Depth & Page & Map & Ent. \\')
-        self.writeln(r'    \rowcolor[rgb]{0.9,0.9,0.9} & & & & & & & Photo \\')
-        self.writeln(r'    \hline')
-        self.writeln(r'  \endhead')
-        self.writeln(r'')
-        self.writeln(r'    %This is the footer for all pages except the last page of the table...')
-        self.writeln(r'    \hline')
-        self.writeln(r'  \endfoot')
-        self.writeln(r'')
-        self.writeln(r'    %This is the footer for the last page of the table...')
-        self.writeln(r'    \hline')
-        self.writeln(r'  \endlastfoot')
+        self.__writeln(r'\chapter{Index of Caves}')
+        self.__writeln(r'\begin{center}')
+        self.__writeln(r'\begin{longtable}{| p{5.5cm} |c|c|c|c|c|c|c|}')
+        self.__writeln(r'    %This is the header for the first page of the table...')
+        self.__writeln(r'    \hline')
+        self.__writeln(r'    \rowcolor[rgb]{0.9,0.9,0.9} \centering Name & ID & Type & Length & Depth & Page & Map & Ent. \\')
+        self.__writeln(r'    \rowcolor[rgb]{0.9,0.9,0.9} & & & & & & & Photo \\')
+        self.__writeln(r'    \hline')
+        self.__writeln(r'  \endfirsthead')
+        self.__writeln(r'')
+        self.__writeln(r'    %This is the header for the remaining page(s) of the table...')
+        self.__writeln(r'    \hline')
+        self.__writeln(r'    \rowcolor[rgb]{0.9,0.9,0.9} \centering Name & ID & Type & Length & Depth & Page & Map & Ent. \\')
+        self.__writeln(r'    \rowcolor[rgb]{0.9,0.9,0.9} & & & & & & & Photo \\')
+        self.__writeln(r'    \hline')
+        self.__writeln(r'  \endhead')
+        self.__writeln(r'')
+        self.__writeln(r'    %This is the footer for all pages except the last page of the table...')
+        self.__writeln(r'    \hline')
+        self.__writeln(r'  \endfoot')
+        self.__writeln(r'')
+        self.__writeln(r'    %This is the footer for the last page of the table...')
+        self.__writeln(r'    \hline')
+        self.__writeln(r'  \endlastfoot')
 
         self.list_of_caves.sort()
         for counter, cave in enumerate(self.list_of_caves):
             if counter % 2 != 0:
-                self.write(r'\rowcolor[rgb]{0.95,0.95,0.95} ')
+                self.__write(r'\rowcolor[rgb]{0.95,0.95,0.95} ')
 
-            self.writeln(cave)
+            self.__writeln(cave)
 
-        self.writeln(r'\end{longtable}')
-        self.writeln(r'\end{center}')
+        self.__writeln(r'\end{longtable}')
+        self.__writeln(r'\end{center}')
 
 
     def __show_reference(self, ref):
@@ -869,36 +869,36 @@ class LatexCommon(cavedb.docgen_common.Common):
             else:
                 parts.append('Page ' + escape(ref.pages))
 
-        self.writeln(r'\textit{' + ', '.join(parts) + r'} \\')
-        self.writeln(r'')
+        self.__writeln(r'\textit{' + ', '.join(parts) + r'} \\')
+        self.__writeln(r'')
 
 
-    def write_chapters(self, is_appendix):
+    def __write_chapters(self, is_appendix):
         for chapter in cavedb.models.BulletinChapter.objects.filter(bulletin__id=self.bulletin.id):
             if chapter.is_appendix != is_appendix:
                 continue
 
-            self.writeln(r'\chapter{' + escape(chapter.chapter_title) + r'}')
+            self.__writeln(r'\chapter{' + escape(chapter.chapter_title) + r'}')
 
             for section in cavedb.models.BulletinSection.objects \
                .filter(bulletin_chapter__id=chapter.id):
 
                 if section.section_title:
-                    self.writeln(r'\section{' + escape(section.section_title) + r'}')
+                    self.__writeln(r'\section{' + escape(section.section_title) + r'}')
 
                 if section.section_subtitle:
-                    self.writeln(r'{\begin{centering} \small \textit{' + \
+                    self.__writeln(r'{\begin{centering} \small \textit{' + \
                                  escape(section.section_subtitle) + r'} \\* \end{centering} }')
 
                 if section.num_columns > 1:
-                    self.writeln(r'\begin{multicols}{2}')
+                    self.__writeln(r'\begin{multicols}{2}')
 
-                self.writeln(r'\parindent 2ex')
+                self.__writeln(r'\parindent 2ex')
 
-                self.writeln(escape(self.indexer.generate_index(section.section_data)))
-                self.writeln(r'')
+                self.__writeln(escape(self.indexer.generate_index(section.section_data)))
+                self.__writeln(r'')
 
-                self.writeln(r'\parindent 0ex')
+                self.__writeln(r'\parindent 0ex')
 
                 refs = []
                 for ref in cavedb.models.BulletinSectionReference.objects \
@@ -908,10 +908,10 @@ class LatexCommon(cavedb.docgen_common.Common):
                 self.__show_references(refs)
 
                 if section.num_columns > 1:
-                    self.writeln(r'\end{multicols}')
+                    self.__writeln(r'\end{multicols}')
 
 
-    def write_paragraphs(self, prefix, inputstr, suffix):
+    def __write_paragraphs(self, prefix, inputstr, suffix):
         if not inputstr:
             return False
 
@@ -924,23 +924,23 @@ class LatexCommon(cavedb.docgen_common.Common):
 
             if first_para:
                 if prefix:
-                    self.write(prefix)
+                    self.__write(prefix)
                 first_para = False
             else:
-                self.writeln(r'')
-                self.writeln(r'')
+                self.__writeln(r'')
+                self.__writeln(r'')
 
-            self.write(escape(self.indexer.generate_index(para)))
+            self.__write(escape(self.indexer.generate_index(para)))
 
         if not first_para:
             if suffix:
-                self.write(suffix)
+                self.__write(suffix)
 
         # Return whether or not paragraphs were shown.
         return not first_para
 
 
-    def populate_indexed_terms(self):
+    def __populate_indexed_terms(self):
         if self.bulletin.indexed_terms:
             for search_term in self.bulletin.indexed_terms.split('\n'):
                 search_term = escape(search_term.replace('\r', '').strip())
