@@ -450,15 +450,6 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.__writeln(r' \\*')
 
 
-    def __decimal_degrees_to_ddmmss_str(self, decdegs):
-        positive = decdegs >= 0
-        mins, secs = divmod(abs(decdegs) * 3600, 60)
-        degs, mins = divmod(mins, 60)
-        degs = degs if positive else -degs
-
-        return '%.0f$^\\circ$ %02d\' %s"' % (degs, mins, ('%.1f' % (secs)).zfill(4))
-
-
     def __show_coordinates(self, entrance, coordinates):
         hemisphere = 'N ' if coordinates.utmzone.utm_north else 'S '
         self.__writeln(r'NAD27 UTM: \hfill ' + str(coordinates.utmzone.utm_zone) + hemisphere + \
@@ -466,8 +457,8 @@ class LatexCommon(cavedb.docgen_common.Common):
                      '%.0f' % (coordinates.nad27_utmeast) + r'E \\*')
 
         self.__writeln(r'WGS84 Lat/Lon: \hfill ' + \
-                     self.__decimal_degrees_to_ddmmss_str(coordinates.wgs84_lat) + r' / ' + \
-                     self.__decimal_degrees_to_ddmmss_str(coordinates.wgs84_lon) + r' \\*')
+                     decimal_degrees_to_ddmmss_str(coordinates.wgs84_lat) + r' / ' + \
+                     decimal_degrees_to_ddmmss_str(coordinates.wgs84_lon) + r' \\*')
 
         if entrance.elevation_ft:
             self.__write('Elevation: {:,}'.format(entrance.elevation_ft) + '\'')
@@ -659,7 +650,8 @@ class LatexCommon(cavedb.docgen_common.Common):
 
         if photo.caption:
             # TODO AFTER - add extra space
-            self.__writeln(r' \caption{' + self.__format_photo_caption(feature, photo.caption) + r'}')
+            self.__writeln(r' \caption{' + self.__format_photo_caption(feature, photo.caption) + \
+                           r'}')
 
         self.__writeln(r'  \label{photo' + str(photo.id) + r'}')
         self.__writeln(r'\end{figure' + figure_opts + '}')
@@ -1057,7 +1049,7 @@ def split_strip(inputstr, separator, chars_to_strip):
     for member in inputstr.split(separator):
         member = member.strip()
         for char in chars_to_strip:
-            eember = member.replace(char, '')
+            member = member.replace(char, '')
         if not member:
             continue
 
@@ -1068,4 +1060,13 @@ def split_strip(inputstr, separator, chars_to_strip):
 
 def none_to_empty(inputstr):
     return inputstr if inputstr else ''
+
+
+def decimal_degrees_to_ddmmss_str(decdegs):
+    positive = decdegs >= 0
+    mins, secs = divmod(abs(decdegs) * 3600, 60)
+    degs, mins = divmod(mins, 60)
+    degs = degs if positive else -degs
+
+    return '%.0f$^\\circ$ %02d\' %s"' % (degs, mins, ('%.1f' % (secs)).zfill(4))
 
