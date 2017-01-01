@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.http import HttpResponseRedirect
 from . import settings
 
+#pylint: disable=unused-argument
 def forward_to_admin(request):
     return HttpResponseRedirect('/admin/')
 
@@ -24,6 +25,7 @@ admin.site.site_header = settings.ADMIN_SITE_HEADER
 
 admin.autodiscover()
 
+#pylint: disable=line-too-long
 urlpatterns = [
     url(r'^$', forward_to_admin),
     url(r'^admin/', include(admin.site.urls)),

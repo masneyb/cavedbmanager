@@ -63,7 +63,8 @@ class LatexIndexer(object):
         else:
             value = re.sub(r'^(.*?)\s\\caveindex{(.*)', r'\1 \2', result.group(3))
             return '%s%s' % (result.group(1),
-                             self.__clean_index('%s%s%s' % (result.group(2), value, result.group(4))))
+                             self.__clean_index('%s%s%s' % (result.group(2), value, \
+                                                result.group(4))))
 
 
     def __finalize_index(self, inputstr):

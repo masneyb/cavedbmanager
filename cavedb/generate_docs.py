@@ -371,6 +371,8 @@ def close_all_fds():
 
 
 def run_buildscript_wrapper(bulletin_id, basedir):
+    #pylint: disable=protected-access
+
     build_script_wrapper_file = cavedb.utils.get_build_script_wrapper(bulletin_id)
 
     # Rebuild the bulletin
@@ -416,10 +418,7 @@ def generate_bulletin_source(request, bulletin_id):
     if bulletins.count() == 0:
         raise Http404
 
-    bulletin = bulletins[0]
-    basedir = '%s/bulletins/bulletin_%s' % (settings.MEDIA_ROOT, bulletin_id)
-
-    write_bulletin_files(bulletin, basedir)
+    write_bulletin_files(bulletins[0])
 
     return HttpResponseRedirect('%sadmin/cavedb/bulletin/' % (settings.CONTEXT_PATH))
 

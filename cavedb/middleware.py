@@ -30,9 +30,14 @@ def get_valid_bulletins():
     return getattr(THREAD_LOCALS, 'valid_bulletins', [])
 
 class ThreadLocals(object):
+    #pylint: disable=too-few-public-methods
+
     # Middleware that gets various objects from the
     # request object and saves them in thread local storage.
+
     def process_request(self, request):
+        #pylint: disable=no-self-use
+
         THREAD_LOCALS.user = getattr(request, 'user', None)
         THREAD_LOCALS.request_uri = request.META.get('PATH_INFO')
 
