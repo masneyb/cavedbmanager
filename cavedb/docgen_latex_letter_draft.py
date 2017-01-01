@@ -22,9 +22,9 @@ class LatexLetterDraft(cavedb.docgen_latex_common.LatexCommon):
 
 
     def get_gis_map_names(self):
-        return self.get_bw_gis_map_names()
+        return cavedb.docgen_latex_common.get_bw_gis_map_names(self.bulletin)
 
 
     def get_photo_filename(self, photo):
-        return self.get_bw_photo_filename(photo)
+        return cavedb.docgen_latex_common.get_bw_photo_filename(photo)
 

@@ -282,8 +282,8 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.__writeln(r'\fancyfoot[C]{}')
         self.__writeln(r'')
         self.__writeln(r'')
-        self.__writeln(r'% This is the header and footer for the preamble pages. It is changed later on')
-        self.__writeln(r'% when the document body is shown.')
+        self.__writeln(r'% This is the header and footer for the preamble pages. It is changed')
+        self.__writeln(r'% later on when the document body is shown.')
         self.__writeln(r'')
         self.__writeln(r'\fancyfoot[LE,RO]{\thepage}')
         self.__writeln(r'\fancyfoot[LO,RE]{\textit{' + self.bulletin.bulletin_name + '}}')
@@ -350,32 +350,6 @@ class LatexCommon(cavedb.docgen_common.Common):
             self.__writeln(self.__index_and_escape(self.bulletin.toc_footer.strip()))
 
         self.__writeln(r'')
-
-
-    def get_bw_gis_map_names(self):
-        ret = []
-
-        if self.bulletin.bw_map1:
-            ret.append(self.bulletin.bw_map1)
-        if self.bulletin.bw_map2:
-            ret.append(self.bulletin.bw_map2)
-        if self.bulletin.bw_map3:
-            ret.append(self.bulletin.bw_map3)
-
-        return ret
-
-
-    def get_color_gis_map_names(self):
-        ret = []
-
-        if self.bulletin.color_map1:
-            ret.append(self.bulletin.color_map1)
-        if self.bulletin.color_map2:
-            ret.append(self.bulletin.color_map2)
-        if self.bulletin.color_map3:
-            ret.append(self.bulletin.color_map3)
-
-        return ret
 
 
     # Note: You must override this method in a subclass
@@ -600,20 +574,6 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.__add_to_caves_index(feature)
 
 
-    def get_bw_photo_filename(self, photo):
-        if photo.secondary_filename:
-            return photo.secondary_filename.path
-
-        return photo.filename.path
-
-
-    def get_color_photo_filename(self, photo):
-        if photo.filename:
-            return photo.filename.path
-
-        return photo.secondary_filename.path
-
-
     # Note: You must override this method in a subclass
     def get_photo_filename(self, photo):
         return None
@@ -749,17 +709,19 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.__writeln(r'\begin{longtable}{|c| p{5cm} | p{5cm} | p{5cm} |}')
         self.__writeln(r'    %This is the header for the first page of the table...')
         self.__writeln(r'    \hline')
-        self.__writeln(r'    \rowcolor[rgb]{0.9,0.9,0.9} \centering Page & Cave & People Shown In Photo & Photographer \\')
+        self.__writeln(r'    \rowcolor[rgb]{0.9,0.9,0.9} \centering Page & Cave & ' + \
+                       r'People Shown In Photo & Photographer \\')
         self.__writeln(r'    \hline')
         self.__writeln(r'  \endfirsthead')
         self.__writeln(r'')
         self.__writeln(r'    %This is the header for the remaining page(s) of the table...')
         self.__writeln(r'    \hline')
-        self.__writeln(r'    \rowcolor[rgb]{0.9,0.9,0.9} \centering Page & Cave & People Shown In Photo & Photographer \\')
+        self.__writeln(r'    \rowcolor[rgb]{0.9,0.9,0.9} \centering Page & Cave & ' + \
+                       r'People Shown In Photo & Photographer \\')
         self.__writeln(r'    \hline')
         self.__writeln(r'  \endhead')
         self.__writeln(r'')
-        self.__writeln(r'    %This is the footer for all pages except the last page of the table...')
+        self.__writeln(r'    %This is the footer for all pages except the last page of the table.')
         self.__writeln(r'    \hline')
         self.__writeln(r'  \endfoot')
         self.__writeln(r'')
@@ -786,19 +748,21 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.__writeln(r'\begin{longtable}{| p{5.5cm} |c|c|c|c|c|c|c|}')
         self.__writeln(r'    %This is the header for the first page of the table...')
         self.__writeln(r'    \hline')
-        self.__writeln(r'    \rowcolor[rgb]{0.9,0.9,0.9} \centering Name & ID & Type & Length & Depth & Page & Map & Ent. \\')
+        self.__writeln(r'    \rowcolor[rgb]{0.9,0.9,0.9} \centering Name & ID & Type & ' + \
+                       r'Length & Depth & Page & Map & Ent. \\')
         self.__writeln(r'    \rowcolor[rgb]{0.9,0.9,0.9} & & & & & & & Photo \\')
         self.__writeln(r'    \hline')
         self.__writeln(r'  \endfirsthead')
         self.__writeln(r'')
         self.__writeln(r'    %This is the header for the remaining page(s) of the table...')
         self.__writeln(r'    \hline')
-        self.__writeln(r'    \rowcolor[rgb]{0.9,0.9,0.9} \centering Name & ID & Type & Length & Depth & Page & Map & Ent. \\')
+        self.__writeln(r'    \rowcolor[rgb]{0.9,0.9,0.9} \centering Name & ID & Type & ' + \
+                       r'Length & Depth & Page & Map & Ent. \\')
         self.__writeln(r'    \rowcolor[rgb]{0.9,0.9,0.9} & & & & & & & Photo \\')
         self.__writeln(r'    \hline')
         self.__writeln(r'  \endhead')
         self.__writeln(r'')
-        self.__writeln(r'    %This is the footer for all pages except the last page of the table...')
+        self.__writeln(r'    %This is the footer for all pages except the last page of the table.')
         self.__writeln(r'    \hline')
         self.__writeln(r'  \endfoot')
         self.__writeln(r'')
@@ -1006,4 +970,44 @@ def reference_to_string(ref):
             parts.append('Page ' + escape(convert_quotes(ref.pages)))
 
     return r'\textit{' + ', '.join(parts) + r'} \\' + '\n'
+
+
+def get_bw_photo_filename(photo):
+    if photo.secondary_filename:
+        return photo.secondary_filename.path
+
+    return photo.filename.path
+
+
+def get_color_photo_filename(photo):
+    if photo.filename:
+        return photo.filename.path
+
+    return photo.secondary_filename.path
+
+
+def get_bw_gis_map_names(bulletin):
+    ret = []
+
+    if bulletin.bw_map1:
+        ret.append(bulletin.bw_map1)
+    if bulletin.bw_map2:
+        ret.append(bulletin.bw_map2)
+    if bulletin.bw_map3:
+        ret.append(bulletin.bw_map3)
+
+    return ret
+
+
+def get_color_gis_map_names(bulletin):
+    ret = []
+
+    if bulletin.color_map1:
+        ret.append(bulletin.color_map1)
+    if bulletin.color_map2:
+        ret.append(bulletin.color_map2)
+    if bulletin.color_map3:
+        ret.append(bulletin.color_map3)
+
+    return ret
 
