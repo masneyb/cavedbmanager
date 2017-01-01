@@ -21,7 +21,6 @@ import cavedb.models
 import cavedb.utils
 import cavedb.docgen_common
 import cavedb.latex_indexer
-from sortedcontainers import SortedSet
 
 # TODO AFTER - look for trailing space at end of strings
 
@@ -40,7 +39,7 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.list_of_photos = []
         self.list_of_caves = []
         self.photos_at_end = None
-        self.entire_bulletin_refs = {}
+        self.entire_bulletin_refs = set([])
 
 
     def generate_buildscript(self):
@@ -550,7 +549,6 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.__writeln(r'')
 
         self.__show_references(self.feature_attrs['refs'])
-        self.__add_to_refs_map(self.feature_attrs['refs'], self.entire_bulletin_refs)
 
         self.__writeln(r'\index{' + escape(feature.name) + r'|)}')
 
@@ -691,41 +689,24 @@ class LatexCommon(cavedb.docgen_common.Common):
 
 
     def __show_references(self, refs):
-        if len(refs) == 0:
+        num_refs = len(refs)
+        if num_refs == 0:
             return
 
         refs_by_date = {}
-        self.__add_to_refs_map(refs, refs_by_date)
-        self.__show_references_string_dict(refs_by_date)
-
-
-    # Returns a dictionary where the key is the parsed date and the value is
-    # a SortedSet that contains the TEX formatted string.
-    # refs: One of the Reference objects
-    # refs_by_date: A dictionary where the parsed references will go
-    def __add_to_refs_map(self, refs, refs_by_date):
-        num_refs = len(refs)
-
         for ref in refs:
             parsed_date = get_normalized_date(ref.date) + none_to_empty(ref.volume) + \
                           none_to_empty(ref.number) + none_to_empty(ref.pages) + \
                           none_to_empty(ref.book) + none_to_empty(ref.title)
 
             if parsed_date not in refs_by_date:
-                refs_by_date[parsed_date] = SortedSet([])
+                refs_by_date[parsed_date] = []
 
             refstr = reference_to_string(ref)
-            refs_by_date[parsed_date].add(refstr)
+            refs_by_date[parsed_date].append(refstr)
 
-
-    # Show the references. refs_by_date is the return value from __add_to_refs_map()
-    def __show_references_string_dict(self, refs_by_date):
-        num_refs = 0
-        for refstrs in refs_by_date.values():
-            num_refs = num_refs + len(refstrs)
-
-        if num_refs == 0:
-            return
+            # For the global bibliography
+            self.entire_bulletin_refs.add(refstr)
 
         self.__writeln(r'{ \footnotesize')
         self.__writeln(r'\leftskip 0.2in')
@@ -760,7 +741,8 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.__writeln(r'\it')
         self.__writeln(r'\footnotesize')
 
-        self.__show_references_string_dict(self.entire_bulletin_refs)
+        for refstr in sorted(self.entire_bulletin_refs):
+            self.__writeln(refstr)
 
         self.__writeln(r'')
         self.__writeln(r'}')
@@ -875,7 +857,6 @@ class LatexCommon(cavedb.docgen_common.Common):
                     refs.append(ref)
 
                 self.__show_references(refs)
-                self.__add_to_refs_map(refs, self.entire_bulletin_refs)
 
                 if section.num_columns > 1:
                     self.__writeln(r'\end{multicols}')
