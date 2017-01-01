@@ -12,11 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import sys
+from mimetypes import guess_type
 from time import strftime
-from os.path import isfile
+from os.path import isfile, getsize
 from curses.ascii import isalpha
 from django.conf import settings
-from django.http import Http404
+from django.core.servers.basehttp import FileWrapper
+from django.http import HttpResponse, Http404
 import cavedb.models
 import cavedb.utils
 
@@ -149,7 +152,7 @@ def show_feature_gis_lineplot(request, feature_id, filename):
                get_feature_bulletin_id(feature_id), localfile, filename)
 
 
-def do_show_bulletin_attachment(request, bulletin_id, localfile, filename):
+def do_show_bulletin_attachment(request, bulletin_id, localfile, remotefile):
     #pylint: disable=unused-argument
     if not cavedb.utils.is_bulletin_allowed(bulletin_id):
         raise Http404
@@ -157,7 +160,23 @@ def do_show_bulletin_attachment(request, bulletin_id, localfile, filename):
     if not isfile(localfile):
         raise Http404
 
-    return cavedb.utils.send_file(localfile, filename)
+    mimetype = guess_type(localfile)[0]
+    if mimetype is None:
+        mimetype = "application/octet-stream"
+
+    try:
+        wrapper = FileWrapper(file(localfile))
+        response = HttpResponse(wrapper, content_type=mimetype)
+
+        if remotefile and (mimetype is None or not mimetype.startswith('image')):
+            response['Content-Disposition'] = 'attachment; filename=' + remotefile
+
+        response['Content-Length'] = getsize(localfile)
+    except IOError:
+        print >> sys.stderr, 'Cannot find %s\n' % (localfile)
+        raise Http404
+
+    return response
 
 
 def get_bulletin_base_name(bulletin_id):

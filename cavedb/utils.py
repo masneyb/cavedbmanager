@@ -13,35 +13,10 @@
 # limitations under the License.
 
 import math
-import sys
-from mimetypes import guess_type
 from os.path import getsize
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
-from django.core.servers.basehttp import FileWrapper
-from django.http import HttpResponse, Http404
 from cavedb.middleware import get_current_user
-
-def send_file(localfile, remotefile):
-    mimetype = guess_type(localfile)[0]
-    if mimetype is None:
-        mimetype = "application/octet-stream"
-
-    try:
-        wrapper = FileWrapper(file(localfile))
-        response = HttpResponse(wrapper, content_type=mimetype)
-
-        if remotefile and (mimetype is None or not mimetype.startswith('image')):
-            response['Content-Disposition'] = 'attachment; filename=' + remotefile
-
-        response['Content-Length'] = getsize(localfile)
-    except IOError:
-        print >> sys.stderr, 'Cannot find %s\n' % (localfile)
-        raise Http404
-
-
-    return response
-
 
 def get_bulletin_base_dir(bulletin_id):
     return '%s/bulletins/bulletin_%s' % (settings.MEDIA_ROOT, bulletin_id)
