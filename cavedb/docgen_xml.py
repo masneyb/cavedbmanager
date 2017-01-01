@@ -26,7 +26,7 @@ class Xml(cavedb.docgen_common.Common):
     def __init__(self, basedir, bulletin):
         cavedb.docgen_common.Common.__init__(self, basedir, bulletin)
         self.legend_titles = {}
-        self.indexed_terms = None
+        self.all_indexed_terms = None
         self.num_in_pdf = 1
         self.xmlfile = None
 
@@ -41,12 +41,12 @@ class Xml(cavedb.docgen_common.Common):
                            (self.bulletin.bulletin_name, self.bulletin.editors, self.bulletin.id,
                             all_regions_gis_hash))
 
-        self.indexed_terms = self.get_indexed_terms()
+        self.all_indexed_terms = self.get_all_indexed_terms()
 
         self.xmlfile.write('<indexed_terms>\n')
-        for term in self.indexed_terms[0]:
+        for term in self.all_indexed_terms[0]:
             self.xmlfile.write('<term search="%s" index="%s"/>\n' % \
-                               (term, self.indexed_terms[1][term]))
+                               (term, self.all_indexed_terms[1][term]))
         self.xmlfile.write('</indexed_terms>\n')
 
         self.xmlfile.write('<title_page>%s</title_page>\n' % \
@@ -366,8 +366,8 @@ class Xml(cavedb.docgen_common.Common):
         self.xmlfile.close()
 
 
-    def get_indexed_terms(self):
-        indexed_terms = [], {}
+    def get_all_indexed_terms(self):
+        all_indexed_terms = [], {}
         if self.bulletin.indexed_terms:
             for search_term in self.bulletin.indexed_terms.split('\n'):
                 search_term = convert_quotes(search_term.replace('\r', '').strip())
@@ -376,39 +376,39 @@ class Xml(cavedb.docgen_common.Common):
 
                 all_index_terms = search_term.split(':')
                 if len(all_index_terms) == 1:
-                    indexed_terms[0].append(search_term)
-                    indexed_terms[1][search_term] = r'\index{%s}%s' % (search_term, search_term)
+                    all_indexed_terms[0].append(search_term)
+                    all_indexed_terms[1][search_term] = r'\index{%s}%s' % (search_term, search_term)
                 else:
                     replacement = ''
                     for index_term in all_index_terms[1:]:
                         replacement = r'%s\index{%s}' % (replacement, index_term)
-                    indexed_terms[0].append(all_index_terms[0])
-                    indexed_terms[1][all_index_terms[0]] = '%s%s' % \
+                    all_indexed_terms[0].append(all_index_terms[0])
+                    all_indexed_terms[1][all_index_terms[0]] = '%s%s' % \
                        (replacement, all_index_terms[0])
 
         for region in cavedb.models.BulletinRegion.objects.filter(bulletin__id=self.bulletin.id):
             for feature in cavedb.models.Feature.objects.filter(bulletin_region__id=region.id):
                 feature_name = feature.name.strip()
-                indexed_terms[0].append(feature_name)
-                indexed_terms[1][feature_name] = r'\index{%s}%s' % (feature_name, feature_name)
+                all_indexed_terms[0].append(feature_name)
+                all_indexed_terms[1][feature_name] = r'\index{%s}%s' % (feature_name, feature_name)
 
                 if feature.alternate_names:
                     for alias in feature.alternate_names.split(','):
                         alias = alias.strip()
                         if alias:
-                            indexed_terms[0].append(alias)
-                            indexed_terms[1][alias] = r'\index{%s}%s' % (alias, alias)
+                            all_indexed_terms[0].append(alias)
+                            all_indexed_terms[1][alias] = r'\index{%s}%s' % (alias, alias)
 
                 if feature.additional_index_names:
                     for alias in feature.additional_index_names.split(','):
                         alias = alias.strip()
                         if alias:
-                            indexed_terms[0].append(alias)
-                            indexed_terms[1][alias] = r'\index{%s}%s' % (alias, alias)
+                            all_indexed_terms[0].append(alias)
+                            all_indexed_terms[1][alias] = r'\index{%s}%s' % (alias, alias)
 
-        indexed_terms[0].sort(key=lambda term: len(term), reverse=True)
+        all_indexed_terms[0].sort(key=lambda term: len(term), reverse=True)
 
-        return indexed_terms
+        return all_indexed_terms
 
 
     def clean_index(self, inputstr):
@@ -444,13 +444,13 @@ class Xml(cavedb.docgen_common.Common):
         if not result:
             return inputstr
 
-        return '%s%s%s' % (result.group(1), self.indexed_terms[1][result.group(2)], \
+        return '%s%s%s' % (result.group(1), self.all_indexed_terms[1][result.group(2)], \
                            self.finalize_index(result.group(3)))
 
 
     def generate_index(self, inputstr):
         # Add terms to the index
-        for term in self.indexed_terms[0]:
+        for term in self.all_indexed_terms[0]:
             # This appears to be quicker than doing a single regular expression
             inputstr = inputstr.replace('%s ' % (term), r'\caveindex{%s} ' % (term))
             inputstr = inputstr.replace('%s.' % (term), r'\caveindex{%s}.' % (term))

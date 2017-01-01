@@ -203,3 +203,36 @@ def get_file_size(filename):
     return ("%.1f %s" % (size / math.pow(1024, i), ['bytes', 'KB', 'MB', 'GB', 'TB'][int(i)])) \
                .replace('.0 ', ' ')
 
+
+def comma_split(inputstr):
+    return split_strip(inputstr, ',', [])
+
+
+def newline_split(inputstr):
+    return split_strip(inputstr, '\n', ['\r'])
+
+
+def split_strip(inputstr, separator, chars_to_strip):
+    ret = []
+
+    if not inputstr:
+        return ret
+
+    for member in inputstr.split(separator):
+        member = member.strip()
+        for char in chars_to_strip:
+            member = member.replace(char, '')
+        if not member:
+            continue
+
+        ret.append(member)
+
+    return ret
+
+
+def get_all_feature_alt_names(feature):
+    alternate_names = comma_split(feature.alternate_names)
+    additional_index_names = comma_split(feature.additional_index_names)
+
+    return alternate_names + additional_index_names
+

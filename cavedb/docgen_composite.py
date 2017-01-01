@@ -30,6 +30,11 @@ class Composite(cavedb.docgen_common.Common):
             composite.close()
 
 
+    def indexed_terms(self, terms):
+        for composite in self.composites:
+            composite.indexed_terms(terms)
+
+
     def begin_gis_maps(self):
         for composite in self.composites:
             composite.begin_gis_maps()
@@ -63,6 +68,16 @@ class Composite(cavedb.docgen_common.Common):
     def end_gis_layers(self):
         for composite in self.composites:
             composite.end_gis_layers()
+
+
+    def begin_regions(self):
+        for composite in self.composites:
+            composite.begin_regions()
+
+
+    def end_regions(self):
+        for composite in self.composites:
+            composite.end_regions()
 
 
     def begin_region(self, region, gis_region_hash):

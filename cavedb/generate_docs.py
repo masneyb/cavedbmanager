@@ -59,11 +59,13 @@ def write_bulletin_files(bulletin, basedir):
                            cavedb.docgen_latex_letter_draft.LatexLetterDraft(basedir, bulletin),
                            cavedb.docgen_latex_letter_bw.LatexLetterBW(basedir, bulletin),
                            cavedb.docgen_latex_letter_color.LatexLetterColor(basedir, bulletin),
-                           ])
+                          ])
 
     all_regions_gis_hash = get_all_regions_gis_hash(bulletin.id)
 
     outputter.open(all_regions_gis_hash)
+
+    outputter.indexed_terms(get_indexed_terms(bulletin))
 
     outputter.begin_gis_maps()
     for gismap in cavedb.models.GisMap.objects.all():
@@ -71,6 +73,8 @@ def write_bulletin_files(bulletin, basedir):
     outputter.end_gis_maps()
 
     write_gis_section(bulletin.id, outputter)
+
+    outputter.begin_regions()
 
     for region in cavedb.models.BulletinRegion.objects.filter(bulletin__id=bulletin.id):
         gis_region_hash = get_region_gis_hash(region.id)
@@ -81,6 +85,8 @@ def write_bulletin_files(bulletin, basedir):
             write_feature(feature, outputter)
 
         outputter.end_region()
+
+    outputter.end_regions()
 
     outputter.close()
 
@@ -323,6 +329,23 @@ def get_all_regions_gis_hash(bulletin_id):
         md5.update(gis_region_hash)
 
     return md5.hexdigest()
+
+
+def get_indexed_terms(bulletin):
+    indexed_terms = []
+
+    if bulletin.indexed_terms:
+        for search_term in cavedb.utils.newline_split(bulletin.indexed_terms):
+            indexed_terms.append(search_term)
+
+    for region in cavedb.models.BulletinRegion.objects.filter(bulletin__id=bulletin.id):
+        for feature in cavedb.models.Feature.objects.filter(bulletin_region__id=region.id):
+            indexed_terms.append(feature.name.strip())
+
+            for alias in cavedb.utils.get_all_feature_alt_names(feature):
+                indexed_terms.append(alias)
+
+    return indexed_terms
 
 
 def write_makefile(bulletin_id, basedir):

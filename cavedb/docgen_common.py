@@ -29,6 +29,10 @@ class Common(object):
         pass
 
 
+    def indexed_terms(self, terms):
+        pass
+
+
     def begin_gis_maps(self):
         pass
 
@@ -54,6 +58,14 @@ class Common(object):
 
 
     def end_gis_layers(self):
+        pass
+
+
+    def begin_regions(self):
+        pass
+
+
+    def end_regions(self):
         pass
 
 

@@ -54,21 +54,19 @@ class LatexCommon(cavedb.docgen_common.Common):
         return cd_cmd + latex_cmd + makeidx_cmd + latex_cmd
 
 
+    def indexed_terms(self, terms):
+        self.indexer = cavedb.latex_indexer.LatexIndexer(terms)
+        #self.indexer.dump_terms(self.file_handle)
+
+
     def open(self, all_regions_gis_hash):
         cavedb.docgen_common.create_base_directory(self.filename)
         self.file_handle = open(self.filename, 'w')
 
-        self.indexer = cavedb.latex_indexer.LatexIndexer()
-        self.__populate_indexed_terms()
-
         self.__show_document_header()
 
-        #self.__writeln(r'')
-        #self.__writeln(r'% Indexed Terms')
-        #for term in self.indexer.indexed_terms[0]:
-        #    self.__writeln('%% %s\t%s' % (term, self.indexer.indexed_terms[1][term]))
-        #self.__writeln(r'')
 
+    def begin_regions(self):
         self.__show_title_page()
         self.__show_preamble_page()
         self.__show_contributor_page()
@@ -436,7 +434,7 @@ class LatexCommon(cavedb.docgen_common.Common):
 
         self.__writeln(r'{\Large \bfseries \uppercase{' + escape(feature.name) + r'} } \\*')
 
-        alt_names = comma_split(feature.alternate_names)
+        alt_names = cavedb.utils.comma_split(feature.alternate_names)
         if len(alt_names) > 0:
             self.__writeln(r'{\large \bfseries (' + escape(', '.join(alt_names)) + r')} \\[2ex]')
 
@@ -577,7 +575,7 @@ class LatexCommon(cavedb.docgen_common.Common):
         if map_page_ref == '' and len(self.feature_attrs['refmaps']) > 0:
             map_page_ref = r'\pageref{photo' + str(self.feature_attrs['refmaps'][0].map.id) + r'}'
 
-        for alias in get_all_feature_alt_names(feature):
+        for alias in cavedb.utils.get_all_feature_alt_names(feature):
             see_label = escape(alias) + r'\begin{description}' + '\n' + \
                         r'\setlength{\parskip}{-2ex plus 0in minus 0in}' + '\n' + \
                         r'\item \textit{see ' + escape(feature.name) + \
@@ -653,7 +651,7 @@ class LatexCommon(cavedb.docgen_common.Common):
 
         self.__write(r'\index{' + escape(feature.name) + '}')
         if photo.indexed_terms:
-            for term in newline_split(photo.indexed_terms):
+            for term in cavedb.utils.newline_split(photo.indexed_terms):
                 self.__write(r'\index{' + escape(term) + '}')
         self.__writeln(r'')
 
@@ -683,7 +681,7 @@ class LatexCommon(cavedb.docgen_common.Common):
     def __format_photo_caption(self, feature, caption):
         caption = add_caption_hbox(caption, feature.name.strip())
 
-        for alias in get_all_feature_alt_names(feature):
+        for alias in cavedb.utils.get_all_feature_alt_names(feature):
             caption = add_caption_hbox(caption, alias)
 
         for (entrance, coordinates) in self.feature_attrs['entrances']:
@@ -874,7 +872,7 @@ class LatexCommon(cavedb.docgen_common.Common):
         inputstr = convert_quotes(inputstr)
 
         first_para = True
-        for para in newline_split(inputstr):
+        for para in cavedb.utils.newline_split(inputstr):
             if not para:
                 continue
 
@@ -894,25 +892,6 @@ class LatexCommon(cavedb.docgen_common.Common):
 
         # Return whether or not paragraphs were shown.
         return not first_para
-
-
-    def __populate_indexed_terms(self):
-        if self.bulletin.indexed_terms:
-            for search_term in newline_split(self.bulletin.indexed_terms):
-                search_term = escape(search_term)
-                if not search_term:
-                    continue
-
-                self.indexer.add_to_index(search_term)
-
-        for region in cavedb.models.BulletinRegion.objects.filter(bulletin__id=self.bulletin.id):
-            for feature in cavedb.models.Feature.objects.filter(bulletin_region__id=region.id):
-                self.indexer.add_to_index(feature.name.strip())
-
-                for alias in get_all_feature_alt_names(feature):
-                    self.indexer.add_to_index(alias)
-
-        self.indexer.sort_index_terms()
 
 
     def __index_and_escape(self, inputstr):
@@ -978,39 +957,6 @@ def get_normalized_date(datestr):
         return dateutil.parser.parse(datestr, default=defaults).strftime("%Y-%m-%d")
     except ValueError:
         return "0000-00-00"
-
-
-def get_all_feature_alt_names(feature):
-    alternate_names = comma_split(feature.alternate_names)
-    additional_index_names = comma_split(feature.additional_index_names)
-
-    return alternate_names + additional_index_names
-
-
-def comma_split(inputstr):
-    return split_strip(inputstr, ',', [])
-
-
-def newline_split(inputstr):
-    return split_strip(inputstr, '\n', [ '\r' ])
-
-
-def split_strip(inputstr, separator, chars_to_strip):
-    ret = []
-
-    if not inputstr:
-        return ret
-
-    for member in inputstr.split(separator):
-        member = member.strip()
-        for char in chars_to_strip:
-            member = member.replace(char, '')
-        if not member:
-            continue
-
-        ret.append(member)
-
-    return ret
 
 
 def none_to_empty(inputstr):

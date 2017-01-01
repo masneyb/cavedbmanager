@@ -19,30 +19,27 @@
 import re
 
 class LatexIndexer(object):
-    def __init__(self):
-        self.indexed_terms = [], {}
+    def __init__(self, terms):
+        self.__indexed_terms = [], {}
+
+        for term in terms:
+            all_index_terms = term.split(':')
+            if len(all_index_terms) == 1:
+                self.__indexed_terms[0].append(term)
+                self.__indexed_terms[1][term] = r'\index{%s}%s' % (term, term)
+            else:
+                replacement = ''
+                for index_term in all_index_terms[1:]:
+                    replacement = r'%s\index{%s}' % (replacement, index_term)
+
+                self.__indexed_terms[0].append(all_index_terms[0])
+                self.__indexed_terms[1][all_index_terms[0]] = '%s%s' % \
+                    (replacement, all_index_terms[0])
+
+        self.__indexed_terms[0].sort(key=lambda term: len(term), reverse=True)
 
 
-    def add_to_index(self, search_term):
-        all_index_terms = search_term.split(':')
-        if len(all_index_terms) == 1:
-            self.indexed_terms[0].append(search_term)
-            self.indexed_terms[1][search_term] = r'\index{%s}%s' % (search_term, search_term)
-        else:
-            replacement = ''
-            for index_term in all_index_terms[1:]:
-                replacement = r'%s\index{%s}' % (replacement, index_term)
-
-            self.indexed_terms[0].append(all_index_terms[0])
-            self.indexed_terms[1][all_index_terms[0]] = '%s%s' % \
-                (replacement, all_index_terms[0])
-
-
-    def sort_index_terms(self):
-        self.indexed_terms[0].sort(key=lambda term: len(term), reverse=True)
-
-
-    def clean_index(self, inputstr):
+    def __clean_index(self, inputstr):
         # FIXME - ugly hack for Tucker County
         inputstr = inputstr.replace(r"\caveindex{\caveindex{Great Cave} of \caveindex{Dry Fork} of Cheat River}", \
                                     r"\caveindex{Great Cave of Dry Fork of Cheat River}")
@@ -56,32 +53,32 @@ class LatexIndexer(object):
         elif re.compile(r'^\\caveindex{.*', flags).match(result.group(3)):
             value = re.sub(r'^\\caveindex{', '', result.group(3))
             return '%s%s%s%s' % (result.group(1), result.group(2), value, \
-                                 self.clean_index(result.group(4)))
+                                 self.__clean_index(result.group(4)))
         elif not re.compile(r'^.*\\caveindex.*$', flags).match(result.group(3)):
             if re.compile(r'^.*\\caveindex.*$', flags).match(result.group(4)):
                 return '%s%s%s}%s' % (result.group(1), result.group(2), result.group(3), \
-                                      self.clean_index(result.group(4)))
+                                      self.__clean_index(result.group(4)))
             else:
                 return inputstr
         else:
             value = re.sub(r'^(.*?)\s\\caveindex{(.*)', r'\1 \2', result.group(3))
             return '%s%s' % (result.group(1),
-                             self.clean_index('%s%s%s' % (result.group(2), value, result.group(4))))
+                             self.__clean_index('%s%s%s' % (result.group(2), value, result.group(4))))
 
 
-    def finalize_index(self, inputstr):
+    def __finalize_index(self, inputstr):
         flags = re.MULTILINE | re.DOTALL | re.VERBOSE
         result = re.compile(r'(.*?)\\caveindex{(.*?)}(.*)', flags).match(inputstr)
         if not result:
             return inputstr
 
-        return '%s%s%s' % (result.group(1), self.indexed_terms[1][result.group(2)], \
-                           self.finalize_index(result.group(3)))
+        return '%s%s%s' % (result.group(1), self.__indexed_terms[1][result.group(2)], \
+                           self.__finalize_index(result.group(3)))
 
 
     def generate_index(self, inputstr):
         # Add terms to the index
-        for term in self.indexed_terms[0]:
+        for term in self.__indexed_terms[0]:
             # This appears to be quicker than doing a single regular expression
             inputstr = inputstr.replace('%s ' % (term), r'\caveindex{%s} ' % (term))
             inputstr = inputstr.replace('%s.' % (term), r'\caveindex{%s}.' % (term))
@@ -90,5 +87,12 @@ class LatexIndexer(object):
             inputstr = inputstr.replace('%s)' % (term), r'\caveindex{%s})' % (term))
             inputstr = inputstr.replace('%s\'' % (term), r'\caveindex{%s}\'' % (term))
 
-        return self.finalize_index(self.clean_index(inputstr))
+        return self.__finalize_index(self.__clean_index(inputstr))
+
+
+    def dump_terms(self, file_handle):
+        file_handle.write('\n% Indexed Terms\n')
+        for term in self.__indexed_terms[0]:
+            file_handle.write('%% %s\t%s\n' % (term, self.__indexed_terms[1][term]))
+        file_handle.write('\n')
 
