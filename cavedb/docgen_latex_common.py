@@ -115,7 +115,7 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.__writeln(r'')
         self.__writeln(r'\fancypagestyle{plain}{')
         self.__writeln(r'  \fancyfoot[LO,RE]{\thepage}')
-        self.__writeln(r'  \fancyfoot[LE,RO]{\textit' + self.bulletin.bulletin_name + r'}}')
+        self.__writeln(r'  \fancyfoot[LE,RO]{\textit ' + self.bulletin.bulletin_name + r'}}')
         self.__writeln(r'')
         self.__writeln(r'\printindex')
         self.__writeln(r'\end{document}')
