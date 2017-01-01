@@ -1,28 +1,14 @@
-
 help:
-	@echo
-	@echo make run ......... Start testing webserver
-	@echo make installdb ... Build database
-	@echo make destroymydb . Nuke and rebuild database
+	@echo make run ......... Start webserver bound to localhost
+	@echo make runRemote ... Start webserver bound to all network interfaces
+	@echo make pylint ...... Run pylint against the code
 	@echo make clean ....... Delete filesystem build artifacts
-	@echo
 
-# Only bind to the localhost interface
 run:
 	./manage.py runserver 8000
 
-# Bind to all network interfaces
 runRemote:
 	./manage.py runserver 0.0.0.0:8000
-
-installdb:
-	./manage.py migrate auth
-	./manage.py migrate
-	./manage.py createsuperuser
-
-destroymydb:
-	./manage.py sqlreset cavedb | ./manage.py dbshell
-
 
 pylint:
 	pylint --load-plugins pylint_django --disable=missing-docstring,locally-disabled cavedb/*.py

@@ -59,59 +59,23 @@ in the [screenshots](screenshots) directory.
   running Django 1.8.7.
 * Install the [postgis-data-importer](https://github.com/masneyb/postgis-data-importer)
   project to support setting up your GIS layers in a PostgreSQL database.
-  * If you are planning to generate the sample bulletin, see the note about
-    the GIS data in the How to generate the Sample Bulletin section below before
-    you run the `make` command.
+  * If you are planning to generate the sample bulletin, then you only need to include the
+    DEMs and aerial imagery for the Aurora, Lake Lynn and Lead Mine 7.5 minute quads. By
+    default, the import script will download the data for these quads, along with all of
+    the other 7.5 minute quads in West Virginia that are underlain by karst.
 * Install package dependencies:
   * `sudo apt-get install -y python-psycopg2 python-django python-imaging python-dateutil
      python-gdal texlive texlive-latex-extra python2.7 zip mapserver-bin ttf-freefont make`
-* Create an empty PostgreSQL database for the cave data:
-  `createdb cavedb`
 * Update your database settings in _cavedb/settings.py_. Be sure to change
   the SECRET_KEY setting to random data if you are running the server
   on a non-loopback interface.
-* Create the tables in the new database: `make installdb`. It will prompt you
-  to create a Django admin user that you will use to log into the website.
-* Set a user profile for the django user added by the step above:
-  `echo "insert into cavedb_caveuserprofile values (1, 1, true, true, true);" | psql cavedb`
-* Copy base files required for building the documents
-  * `sudo mkdir -p /usr/local/cavedbmanager-data/`
-  * `WHOAMI=$(whoami) && sudo chown "${WHOAMI}":"${WHOAMI}" /usr/local/cavedbmanager-data/`
-  * `cp -dpRv data/* /usr/local/cavedbmanager-data/`
-* Optional: Install sample bulletin data. See the How to generate the Sample
-  Bulletin section below for details.
+* Install the sample data: `./sample-bulletin/populate-sample-bulletin.sh`. Be sure
+  to read the comments in the file and make any appropriate changes.
 * Start the server: `make run`. The server will only listen to the
   loopback interface. Use `make runRemote` to have it bind to
   all network interfaces. The latter is useful if you are testing
   from inside a virtual machine.
-
-
-## How to generate the Sample Bulletin
-
-The sample bulletin included with this repository can be generated with
-the following procedure.
-
-* Install the West Virginia base data. This is for the GIS layers,
-  counties, topo quads, topo quad / county relationships, and UTM zones
-  for the entire state.
-  `cat sample-bulletin/wv-base-data.sql | psql cavedb`.
-* Add the aerial imagery. Be sure to replace the path to your checked out version of the
-  postgis-data-importer project. The 2003.map and 2014.map matches the name column in the
-  cavedb_gisaerialmap table (without the .map extension).
-  * `ln -s /home/$(whoami)/postgis-data-importer/download/us_wv/aerial/USDA-2014/2014.map /usr/local/cavedbmanager-data/gis_maps/`. 
-  * `ln -s /home/$(whoami)/postgis-data-importer/download/us_wv/aerial/SAMB-2003/JPG/2003.map /usr/local/cavedbmanager-data/gis_maps/`
-  * `ln -s /home/$(whoami)/postgis-data-importer/download/us_wv/hillshade/hillshade.map /usr/local/cavedbmanager-data/gis_maps/`
-  * `touch /usr/local/cavedbmanager-data/gis_maps/topo.map`
-* When importing your GIS data, you only need to include the
-  DEMs and aerial imagery for the Aurora, Lake Lynn and Lead Mine
-  7.5 minute quads. By default, the import script will download
-  the data for these quads, along with all of the other 7.5 minute
-  quads in West Virginia that are underlain by karst.
-* Copy sample entrance photos and maps:
-  `cp -dpRv sample-bulletin/feature_attachments/ /usr/local/cavedbmanager-data/`
-* Add sample bulletin data to PostgreSQL:
-  `cat sample-bulletin/sample-bulletin.sql | psql cavedb`
-* Start the server and log into the web interface.
+* Log into the web interface.
   * Click on the Bulletins link on the main page. In the documents column,
     click on the generate link. After a few minutes, refresh the page and
     you should see generated documents if everything went well.

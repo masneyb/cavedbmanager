@@ -1,5 +1,4 @@
 INSERT INTO cavedb_gismap VALUES (1,'topo','Contours generated using gdalcontour against the 3 meter digital elevation model.','http://wvgis.wvu.edu/data/dataset.php?ID=261','','There may be some FROs shown on the maps that are not labeled.');
-INSERT INTO cavedb_gismap VALUES (2,'2003','West Virginia Statewide Addressing and Mapping Board','http://wvgis.wvu.edu/data/otherdocs/wvsamb/SAMB_License_Agreement_Orthophotos.pdf','http://wvgis.wvu.edu/data/dataset.php?ID=254', 'Aerial imagery courtesy of the West Virginia Statewide Addressing and Mapping Board.');
 insert into cavedb_gismap values (3, '2014', 'USDA National Agriculture Imaging Program', 'http://www.fsa.usda.gov/programs-and-services/aerial-photography/imagery-programs/naip-imagery/', 'http://wvgis.wvu.edu/data/dataset.php?ID=461', 'Aerial imagery courtesy of the USDA National Agriculture Imaging Program.');
 insert into cavedb_gismap values (4, 'hillshade', 'Hillshade data generated using gdaldem hillshade against the 3 meter digital elevation model.', 'http://wvgis.wvu.edu/data/dataset.php?ID=261', '', '');
 
@@ -32,7 +31,6 @@ INSERT INTO cavedb_gislayer_maps VALUES (4, 4, 1);
 INSERT INTO cavedb_gislayer_maps VALUES (5, 5, 1);
 
 INSERT INTO cavedb_gislayer_maps VALUES (6, 6, 1);
-INSERT INTO cavedb_gislayer_maps VALUES (7, 6, 2);
 INSERT INTO cavedb_gislayer_maps VALUES (8, 6, 3);
 INSERT INTO cavedb_gislayer_maps VALUES (9, 6, 4);
 
@@ -50,22 +48,18 @@ INSERT INTO cavedb_gislayer_maps VALUES (16, 11, 1);
 INSERT INTO cavedb_gislayer_maps VALUES (17, 11, 4);
 
 INSERT INTO cavedb_gislayer_maps VALUES (18, 12, 1);
-INSERT INTO cavedb_gislayer_maps VALUES (19, 12, 2);
 INSERT INTO cavedb_gislayer_maps VALUES (20, 12, 3);
 INSERT INTO cavedb_gislayer_maps VALUES (21, 12, 4);
 
 INSERT INTO cavedb_gislayer_maps VALUES (22, 13, 1);
-INSERT INTO cavedb_gislayer_maps VALUES (23, 13, 2);
 INSERT INTO cavedb_gislayer_maps VALUES (24, 13, 3);
 INSERT INTO cavedb_gislayer_maps VALUES (25, 13, 4);
 
 INSERT INTO cavedb_gislayer_maps VALUES (26, 14, 1);
-INSERT INTO cavedb_gislayer_maps VALUES (27, 14, 2);
 INSERT INTO cavedb_gislayer_maps VALUES (28, 14, 3);
 INSERT INTO cavedb_gislayer_maps VALUES (29, 14, 4);
 
 INSERT INTO cavedb_gislayer_maps VALUES (30, 15, 1);
-INSERT INTO cavedb_gislayer_maps VALUES (31, 15, 2);
 INSERT INTO cavedb_gislayer_maps VALUES (32, 15, 3);
 INSERT INTO cavedb_gislayer_maps VALUES (33, 15, 4);
 
