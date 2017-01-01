@@ -124,10 +124,6 @@ def get_shp_zip_filename(bulletin_id):
     return '%s/%s.zip' % (get_shp_directory(bulletin_id), LOCATIONS_SHP_LAYER_NAME)
 
 
-def get_xml_filename(bulletin_id):
-    return '%s/bulletin_%s.xml' % (get_output_base_dir(bulletin_id), bulletin_id)
-
-
 def get_dvd_filename(bulletin_id):
     return '%s/dvd.zip' % (get_output_base_dir(bulletin_id))
 

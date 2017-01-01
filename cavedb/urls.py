@@ -48,7 +48,6 @@ urlpatterns = [
     url(r'^cavedb/bulletin/(?P<bulletin_id>\d+)/csv$', 'cavedb.views.show_csv'),
     url(r'^cavedb/bulletin/(?P<bulletin_id>\d+)/mxf$', 'cavedb.views.show_mxf'),
     url(r'^cavedb/bulletin/(?P<bulletin_id>\d+)/shp$', 'cavedb.views.show_shp'),
-    url(r'^cavedb/bulletin/(?P<bulletin_id>\d+)/xml$', 'cavedb.views.show_xml'),
     url(r'^cavedb/bulletin/(?P<bulletin_id>\d+)/dvd$', 'cavedb.views.show_dvd'),
     url(r'^cavedb/bulletin/(?P<bulletin_id>\d+)/log$', 'cavedb.views.show_log'),
 

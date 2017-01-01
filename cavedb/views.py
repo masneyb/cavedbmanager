@@ -83,12 +83,6 @@ def show_shp(request, bulletin_id):
     return do_show_bulletin_attachment(request, bulletin_id, localfile, remotefile)
 
 
-def show_xml(request, bulletin_id):
-    localfile = cavedb.utils.get_xml_filename(bulletin_id)
-    remotefile = get_bulletin_remote_file(bulletin_id, 'xml')
-    return do_show_bulletin_attachment(request, bulletin_id, localfile, remotefile)
-
-
 def show_dvd(request, bulletin_id):
     localfile = cavedb.utils.get_dvd_filename(bulletin_id)
     remotefile = get_bulletin_remote_file(bulletin_id, 'zip')

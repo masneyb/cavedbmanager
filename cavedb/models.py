@@ -151,7 +151,7 @@ class Bulletin(models.Model):
         return self.short_name
 
     def get_bulletin_mod_date(self):
-        filename = cavedb.utils.get_xml_filename(self.id)
+        filename = cavedb.utils.get_build_log_filename(self.id)
 
         try:
             mtime = getmtime(filename)
@@ -221,8 +221,6 @@ class Bulletin(models.Model):
                    (base_url, get_file_size(cavedb.utils.get_shp_zip_filename(self.id))) + \
                    '<a href="%s/dvd">Supplemental DVD (ZIP)</a> [%s]<br/>' % \
                    (base_url, get_file_size(cavedb.utils.get_dvd_filename(self.id))) + \
-                   '<a href="%s/xml">XML</a> [%s]<br/>' % \
-                   (base_url, get_file_size(cavedb.utils.get_xml_filename(self.id))) + \
                    '<a href="%s/log">Build Log</a> [%s]' % \
                    (base_url, get_file_size(cavedb.utils.get_build_log_filename(self.id)))
 
