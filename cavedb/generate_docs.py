@@ -30,6 +30,8 @@ import cavedb.docgen_gis_maps
 import cavedb.docgen_gpx
 import cavedb.docgen_kml
 import cavedb.docgen_latex_letter_bw
+import cavedb.docgen_latex_letter_color
+import cavedb.docgen_latex_letter_draft
 import cavedb.docgen_mapserver_mapfile
 import cavedb.docgen_mxf
 import cavedb.docgen_shp
@@ -54,7 +56,9 @@ def write_bulletin_files(bulletin, basedir):
                            cavedb.docgen_gis_maps.GisMaps(basedir, bulletin),
 
                            # Create the LaTeX PDFs last since they depend on other resources.
+                           cavedb.docgen_latex_letter_draft.LatexLetterDraft(basedir, bulletin),
                            cavedb.docgen_latex_letter_bw.LatexLetterBW(basedir, bulletin),
+                           cavedb.docgen_latex_letter_color.LatexLetterColor(basedir, bulletin),
                            ])
 
     all_regions_gis_hash = get_all_regions_gis_hash(bulletin.id)

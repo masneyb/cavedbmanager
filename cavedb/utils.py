@@ -59,55 +59,55 @@ def get_output_base_dir(bulletin_id):
     return '%s/output' % (get_bulletin_base_dir(bulletin_id))
 
 
+def get_color_tex_filename(bulletin_id):
+    # FIXME - update path
+    return '%s/pdf_color_new/bulletin_%s.tex' % (get_output_base_dir(bulletin_id), bulletin_id)
+
+
 def get_bw_tex_filename(bulletin_id):
     # FIXME - update path
-    return '%s/pdf_bw_new/bulletin_%s.tex' % \
-               (get_output_base_dir(bulletin_id), bulletin_id)
+    return '%s/pdf_bw_new/bulletin_%s.tex' % (get_output_base_dir(bulletin_id), bulletin_id)
+
+
+def get_draft_tex_filename(bulletin_id):
+    # FIXME - update path
+    return '%s/pdf_draft_new/bulletin_%s.tex' % (get_output_base_dir(bulletin_id), bulletin_id)
 
 
 def get_pdf_filename(bulletin_id):
-    return '%s/pdf_bw/bulletin_%s.pdf' % \
-               (get_output_base_dir(bulletin_id), bulletin_id)
+    return '%s/pdf_bw/bulletin_%s.pdf' % (get_output_base_dir(bulletin_id), bulletin_id)
 
 
 def get_color_pdf_filename(bulletin_id):
-    return '%s/pdf_color/bulletin_%s.pdf' % \
-               (get_output_base_dir(bulletin_id), bulletin_id)
+    return '%s/pdf_color/bulletin_%s.pdf' % (get_output_base_dir(bulletin_id), bulletin_id)
 
 
 def get_draft_pdf_filename(bulletin_id):
-    return '%s/pdf_draft/bulletin_%s.pdf' % \
-               (get_output_base_dir(bulletin_id), bulletin_id)
+    return '%s/pdf_draft/bulletin_%s.pdf' % (get_output_base_dir(bulletin_id), bulletin_id)
 
 
 def get_todo_txt_filename(bulletin_id):
-    return '%s/todo/bulletin_%s_todo.txt' % \
-               (get_output_base_dir(bulletin_id), bulletin_id)
+    return '%s/todo/bulletin_%s_todo.txt' % (get_output_base_dir(bulletin_id), bulletin_id)
 
 
 def get_kml_filename(bulletin_id):
-    return '%s/kml/bulletin_%s.kml' % \
-               (get_output_base_dir(bulletin_id), bulletin_id)
+    return '%s/kml/bulletin_%s.kml' % (get_output_base_dir(bulletin_id), bulletin_id)
 
 
 def get_text_filename(bulletin_id):
-    return '%s/text/bulletin_%s.txt' % \
-               (get_output_base_dir(bulletin_id), bulletin_id)
+    return '%s/text/bulletin_%s.txt' % (get_output_base_dir(bulletin_id), bulletin_id)
 
 
 def get_gpx_filename(bulletin_id):
-    return '%s/gpx/bulletin_%s.gpx' % \
-               (get_output_base_dir(bulletin_id), bulletin_id)
+    return '%s/gpx/bulletin_%s.gpx' % (get_output_base_dir(bulletin_id), bulletin_id)
 
 
 def get_csv_filename(bulletin_id):
-    return '%s/csv/bulletin_%s.csv' % \
-               (get_output_base_dir(bulletin_id), bulletin_id)
+    return '%s/csv/bulletin_%s.csv' % (get_output_base_dir(bulletin_id), bulletin_id)
 
 
 def get_mxf_filename(bulletin_id):
-    return '%s/mxf/bulletin_%s.mxf' % \
-               (get_output_base_dir(bulletin_id), bulletin_id)
+    return '%s/mxf/bulletin_%s.mxf' % (get_output_base_dir(bulletin_id), bulletin_id)
 
 
 def get_gis_maps_directory(bulletin_id):
