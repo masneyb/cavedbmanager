@@ -17,8 +17,8 @@ import cavedb.settings
 import cavedb.utils
 
 class MapserverMapfile(cavedb.docgen_common.Common):
-    def __init__(self, basedir, bulletin):
-        cavedb.docgen_common.Common.__init__(self, basedir, bulletin)
+    def __init__(self, bulletin):
+        cavedb.docgen_common.Common.__init__(self, bulletin)
         self.gis_maps = {}
 
 

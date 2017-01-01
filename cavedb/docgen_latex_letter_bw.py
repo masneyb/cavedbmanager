@@ -16,8 +16,8 @@ import cavedb.utils
 import cavedb.docgen_latex_common
 
 class LatexLetterBW(cavedb.docgen_latex_common.LatexCommon):
-    def __init__(self, basedir, bulletin):
-        cavedb.docgen_latex_common.LatexCommon.__init__(self, basedir, bulletin, \
+    def __init__(self, bulletin):
+        cavedb.docgen_latex_common.LatexCommon.__init__(self, bulletin, \
                        cavedb.utils.get_bw_tex_filename(bulletin.id), False, 'letterpaper')
 
 

@@ -16,8 +16,7 @@ import os
 import os.path
 
 class Common(object):
-    def __init__(self, basedir, bulletin):
-        self.basedir = basedir
+    def __init__(self, bulletin):
         self.bulletin = bulletin
 
 

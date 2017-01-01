@@ -38,25 +38,25 @@ import cavedb.docgen_shp
 import cavedb.docgen_text
 import cavedb.docgen_todo_txt
 
-def write_bulletin_files(bulletin, basedir):
-    outputter = Composite(basedir, bulletin,
-                          [cavedb.docgen_dvd.Dvd(basedir, bulletin),
-                           cavedb.docgen_entrance_csv.EntranceCsv(basedir, bulletin),
-                           cavedb.docgen_gpx.Gpx(basedir, bulletin),
-                           cavedb.docgen_kml.Kml(basedir, bulletin),
-                           cavedb.docgen_mxf.Mxf(basedir, bulletin),
-                           cavedb.docgen_text.Text(basedir, bulletin),
-                           cavedb.docgen_todo_txt.TodoTxt(basedir, bulletin),
+def write_bulletin_files(bulletin):
+    outputter = Composite(bulletin,
+                          [cavedb.docgen_dvd.Dvd(bulletin),
+                           cavedb.docgen_entrance_csv.EntranceCsv(bulletin),
+                           cavedb.docgen_gpx.Gpx(bulletin),
+                           cavedb.docgen_kml.Kml(bulletin),
+                           cavedb.docgen_mxf.Mxf(bulletin),
+                           cavedb.docgen_text.Text(bulletin),
+                           cavedb.docgen_todo_txt.TodoTxt(bulletin),
 
                            # The SHP and mapserver files need to be created before the GisMaps.
-                           cavedb.docgen_shp.Shp(basedir, bulletin),
-                           cavedb.docgen_mapserver_mapfile.MapserverMapfile(basedir, bulletin),
-                           cavedb.docgen_gis_maps.GisMaps(basedir, bulletin),
+                           cavedb.docgen_shp.Shp(bulletin),
+                           cavedb.docgen_mapserver_mapfile.MapserverMapfile(bulletin),
+                           cavedb.docgen_gis_maps.GisMaps(bulletin),
 
                            # Create the LaTeX PDFs last since they depend on other resources.
-                           cavedb.docgen_latex_letter_draft.LatexLetterDraft(basedir, bulletin),
-                           cavedb.docgen_latex_letter_bw.LatexLetterBW(basedir, bulletin),
-                           cavedb.docgen_latex_letter_color.LatexLetterColor(basedir, bulletin),
+                           cavedb.docgen_latex_letter_draft.LatexLetterDraft(bulletin),
+                           cavedb.docgen_latex_letter_bw.LatexLetterBW(bulletin),
+                           cavedb.docgen_latex_letter_color.LatexLetterColor(bulletin),
                           ])
 
     all_regions_gis_hash = get_all_regions_gis_hash(bulletin.id)
@@ -401,7 +401,7 @@ def generate_bulletin(request, bulletin_id):
     bulletin = bulletins[0]
     basedir = '%s/bulletins/bulletin_%s' % (settings.MEDIA_ROOT, bulletin_id)
 
-    write_bulletin_files(bulletin, basedir)
+    write_bulletin_files(bulletin)
     run_buildscript_wrapper(bulletin_id, basedir)
 
     return HttpResponseRedirect('%sadmin/cavedb/bulletin/' % (settings.CONTEXT_PATH))

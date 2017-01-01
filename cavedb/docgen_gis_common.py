@@ -17,8 +17,8 @@ import cavedb.settings
 import cavedb.utils
 
 class GisCommon(cavedb.docgen_common.Common):
-    def __init__(self, basedir, bulletin, gis_x_buffer=0.005, gis_y_buffer=0.005):
-        cavedb.docgen_common.Common.__init__(self, basedir, bulletin)
+    def __init__(self, bulletin, gis_x_buffer=0.005, gis_y_buffer=0.005):
+        cavedb.docgen_common.Common.__init__(self, bulletin)
         self.gis_x_buffer = gis_x_buffer
         self.gis_y_buffer = gis_y_buffer
 

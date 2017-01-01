@@ -17,8 +17,8 @@ import cavedb.utils
 import cavedb.docgen_common
 
 class Text(cavedb.docgen_common.Common):
-    def __init__(self, basedir, bulletin):
-        cavedb.docgen_common.Common.__init__(self, basedir, bulletin)
+    def __init__(self, bulletin):
+        cavedb.docgen_common.Common.__init__(self, bulletin)
         self.textfile = None
 
 

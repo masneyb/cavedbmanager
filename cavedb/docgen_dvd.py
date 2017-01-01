@@ -19,8 +19,8 @@ import cavedb.models
 import cavedb.settings
 
 class Dvd(cavedb.docgen_common.Common):
-    def __init__(self, basedir, bulletin):
-        cavedb.docgen_common.Common.__init__(self, basedir, bulletin)
+    def __init__(self, bulletin):
+        cavedb.docgen_common.Common.__init__(self, bulletin)
         self.files = {}
 
         # Tuple contains (Directory Name, File Suffix)

@@ -18,9 +18,8 @@ import cavedb.settings
 import cavedb.utils
 
 class GisMaps(cavedb.docgen_gis_common.GisCommon):
-    def __init__(self, basedir, bulletin, gis_x_buffer=0.005, gis_y_buffer=0.005):
-        cavedb.docgen_gis_common.GisCommon.__init__(self, basedir, bulletin, gis_x_buffer, \
-                                                    gis_y_buffer)
+    def __init__(self, bulletin, gis_x_buffer=0.005, gis_y_buffer=0.005):
+        cavedb.docgen_gis_common.GisCommon.__init__(self, bulletin, gis_x_buffer, gis_y_buffer)
         self.gismaps = []
 
 

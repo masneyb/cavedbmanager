@@ -23,8 +23,8 @@ import cavedb.docgen_common
 import cavedb.latex_indexer
 
 class LatexCommon(cavedb.docgen_common.Common):
-    def __init__(self, basedir, bulletin, filename, draft_mode, papersize):
-        cavedb.docgen_common.Common.__init__(self, basedir, bulletin)
+    def __init__(self, bulletin, filename, draft_mode, papersize):
+        cavedb.docgen_common.Common.__init__(self, bulletin)
         self.filename = filename
         self.file_handle = None
         self.draft_mode = draft_mode
