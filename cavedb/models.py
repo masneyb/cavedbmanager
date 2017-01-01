@@ -168,8 +168,7 @@ class Bulletin(models.Model):
         return strftime("%Y-%m-%d %H:%M:%S", mtime)
 
     def is_document_build_in_process(self):
-        lockfile = '%s/bulletins/bulletin_%s/build-in-progress.lock' % \
-                       (settings.MEDIA_ROOT, self.id)
+        lockfile = cavedb.utils.get_build_lock_file(self.id)
         return isfile(lockfile)
 
     def generate_doc_links(self):
