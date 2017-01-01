@@ -37,7 +37,6 @@ import cavedb.docgen_mxf
 import cavedb.docgen_shp
 import cavedb.docgen_text
 import cavedb.docgen_todo_txt
-import cavedb.docgen_xml
 
 def write_bulletin_files(bulletin, basedir):
     outputter = Composite(basedir, bulletin,
@@ -48,7 +47,6 @@ def write_bulletin_files(bulletin, basedir):
                            cavedb.docgen_mxf.Mxf(basedir, bulletin),
                            cavedb.docgen_text.Text(basedir, bulletin),
                            cavedb.docgen_todo_txt.TodoTxt(basedir, bulletin),
-                           cavedb.docgen_xml.Xml(basedir, bulletin),
 
                            # The SHP and mapserver files need to be created before the GisMaps.
                            cavedb.docgen_shp.Shp(basedir, bulletin),
@@ -90,17 +88,29 @@ def write_bulletin_files(bulletin, basedir):
 
     outputter.close()
 
-    buildscriptfile = cavedb.utils.get_buildscript(bulletin.id)
-    buildscriptdir = os.path.dirname(buildscriptfile)
+    # Write two different build scripts. The first is a wrapper for the second
+    # script. The first one is not run with -e so that the lockfile is properly
+    # cleaned up. The second script is ran with -e so that the script will fail
+    # if any commands fail. The web interface checks for the presence of this
+    # lockfile to see if the bulletin documents are currently being generated.
 
-    buildscript = outputter.generate_buildscript()
-    buildscript += "cd %s\n" % (buildscriptdir) + \
-                   "make\n"
+    build_script_wrapper_file = cavedb.utils.get_build_script_wrapper(bulletin.id)
+    build_lock_file = cavedb.utils.get_build_lock_file(bulletin.id)
+    build_script_file = cavedb.utils.get_build_script(bulletin.id)
 
-    with open(buildscriptfile, 'w') as output:
+    with open(build_script_wrapper_file, 'w') as output:
+        output.write('#!/bin/bash\n')
+        output.write('touch %s\n' % (build_lock_file))
+        output.write('%s\n' % (build_script_file))
+        output.write('rm -f %s\n' % (build_lock_file))
+    os.chmod(build_script_wrapper_file, 0755)
+
+    build_script = outputter.generate_buildscript()
+
+    with open(build_script_file, 'w') as output:
         output.write('#!/bin/bash -ev\n')
-        output.write(buildscript)
-    os.chmod(buildscriptfile, 0755)
+        output.write(build_script)
+    os.chmod(build_script_file, 0755)
 
 
 def add_gis_lineplot(lineplot, gisdir, lineplot_type, outputter):
@@ -348,19 +358,6 @@ def get_indexed_terms(bulletin):
     return indexed_terms
 
 
-def write_makefile(bulletin_id, basedir):
-    filename = '%s/Makefile' % (basedir)
-    makefile = open(filename, 'w')
-
-    makefile.write('DOCPREFIX=bulletin_%s\n' % (bulletin_id))
-    makefile.write('DOC_BASE_DIR=$(shell pwd)\n')
-    makefile.write('OUTPUTDIR=$(DOC_BASE_DIR)/output\n')
-    makefile.write('TEMPLATE_BASE_DIR=$(DOC_BASE_DIR)/../base_bulletin\n')
-    makefile.write('include $(TEMPLATE_BASE_DIR)/Makefile.include\n')
-
-    makefile.close()
-
-
 def close_all_fds():
     maxfd = resource.getrlimit(resource.RLIMIT_NOFILE)[1]
     if maxfd == resource.RLIM_INFINITY:
@@ -373,23 +370,9 @@ def close_all_fds():
             pass
 
 
-def write_buildscript(basedir):
-    filename = '%s/build' % (basedir)
-    buildscriptfile = open(filename, 'w')
+def run_buildscript_wrapper(bulletin_id, basedir):
+    build_script_wrapper_file = cavedb.utils.get_build_script_wrapper(bulletin_id)
 
-    # This lockfile is checked by the web interface to see if a build is
-    # in progress.
-
-    buildscriptfile.write('#!/bin/bash\n')
-    buildscriptfile.write('touch build-in-progress.lock\n')
-    buildscriptfile.write('./dobuild\n')
-    buildscriptfile.write('rm -f build-in-progress.lock\n')
-
-    buildscriptfile.close()
-    os.chmod(filename, 0755)
-
-
-def run_buildscript(basedir):
     # Rebuild the bulletin
     pid1 = os.fork()
     if pid1 == 0:
@@ -399,7 +382,7 @@ def run_buildscript(basedir):
         pid2 = os.fork()
         if pid2 == 0:
             os.chdir(basedir)
-            status = os.system('./build > bulletin-build-output.txt 2>&1')
+            status = os.system('%s > bulletin-build-output.txt 2>&1' % (build_script_wrapper_file))
 
             os._exit(status)
         else:
@@ -419,9 +402,7 @@ def generate_bulletin(request, bulletin_id):
     basedir = '%s/bulletins/bulletin_%s' % (settings.MEDIA_ROOT, bulletin_id)
 
     write_bulletin_files(bulletin, basedir)
-    write_makefile(bulletin_id, basedir)
-    write_buildscript(basedir)
-    run_buildscript(basedir)
+    run_buildscript_wrapper(bulletin_id, basedir)
 
     return HttpResponseRedirect('%sadmin/cavedb/bulletin/' % (settings.CONTEXT_PATH))
 
@@ -439,7 +420,6 @@ def generate_bulletin_source(request, bulletin_id):
     basedir = '%s/bulletins/bulletin_%s' % (settings.MEDIA_ROOT, bulletin_id)
 
     write_bulletin_files(bulletin, basedir)
-    write_makefile(bulletin_id, basedir)
 
     return HttpResponseRedirect('%sadmin/cavedb/bulletin/' % (settings.CONTEXT_PATH))
 

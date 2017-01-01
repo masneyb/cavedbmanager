@@ -43,18 +43,15 @@ def get_output_base_dir(bulletin_id):
 
 
 def get_color_tex_filename(bulletin_id):
-    # FIXME - update path
-    return '%s/pdf_color_new/bulletin_%s.tex' % (get_output_base_dir(bulletin_id), bulletin_id)
+    return '%s/pdf_color/bulletin_%s.tex' % (get_output_base_dir(bulletin_id), bulletin_id)
 
 
 def get_bw_tex_filename(bulletin_id):
-    # FIXME - update path
-    return '%s/pdf_bw_new/bulletin_%s.tex' % (get_output_base_dir(bulletin_id), bulletin_id)
+    return '%s/pdf_bw/bulletin_%s.tex' % (get_output_base_dir(bulletin_id), bulletin_id)
 
 
 def get_draft_tex_filename(bulletin_id):
-    # FIXME - update path
-    return '%s/pdf_draft_new/bulletin_%s.tex' % (get_output_base_dir(bulletin_id), bulletin_id)
+    return '%s/pdf_draft/bulletin_%s.tex' % (get_output_base_dir(bulletin_id), bulletin_id)
 
 
 def get_pdf_filename(bulletin_id):

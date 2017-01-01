@@ -63,7 +63,7 @@ in the [screenshots](screenshots) directory.
     the GIS data in the How to generate the Sample Bulletin section below before
     you run the `make` command.
 * Install package dependencies:
-  * `sudo apt-get install -y python-psycopg2 python-django python-imaging python-dateutil python-gdal texlive texlive-latex-extra python2.7 libxml2-utils xsltproc zip mapserver-bin ttf-freefont make`
+  * `sudo apt-get install -y python-psycopg2 python-django python-imaging python-dateutil python-gdal texlive texlive-latex-extra python2.7 zip mapserver-bin ttf-freefont make`
 * Create an empty PostgreSQL database for the cave data:
   `createdb cavedb`
 * Update your database settings in _cavedb/settings.py_. Be sure to change
