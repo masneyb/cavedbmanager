@@ -43,10 +43,15 @@ class LatexCommon(cavedb.docgen_common.Common):
 
 
     def generate_buildscript(self):
-        texdir = os.path.dirname(self.filename)
+        tex_dir = os.path.dirname(self.filename)
         bulletin_base_dir = cavedb.utils.get_bulletin_base_dir(self.bulletin.id)
-        latex_cmd = 'pdflatex -output-directory %s %s' % (texdir, self.filename)
-        return 'cd %s\n%s\n%s\n' % (bulletin_base_dir, latex_cmd, latex_cmd)
+        idx_file = self.filename.replace('.tex', '.idx')
+
+        cd_cmd = 'cd %s\n' % (bulletin_base_dir)
+        latex_cmd = 'pdflatex -output-directory %s %s\n' % (tex_dir, self.filename)
+        makeidx_cmd = 'openout_any=a makeindex %s\n' % (idx_file)
+
+        return cd_cmd + latex_cmd + makeidx_cmd + latex_cmd
 
 
     def open(self, all_regions_gis_hash):
