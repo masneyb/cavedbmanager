@@ -55,13 +55,15 @@ class Dvd(cavedb.docgen_common.Common):
         output_base_dir = cavedb.utils.get_output_base_dir(self.bulletin.id)
         dvd_tmp_dir = '%s/dvd' % (output_base_dir)
 
-        readme_file = '%s/README.txt' % (cavedb.utils.get_output_base_dir(self.bulletin.id))
-        with open(readme_file, 'w') as output:
-            output.write(self.bulletin.dvd_readme)
-
         ret = 'rm -rf "%s/"\n' % (dvd_tmp_dir)
         ret += 'mkdir -p "%s"\n' % (dvd_tmp_dir)
-        ret += 'mv "%s" "%s/"\n' % (readme_file, dvd_tmp_dir)
+
+        if self.bulletin.dvd_readme:
+            readme_file = '%s/README.txt' % (cavedb.utils.get_output_base_dir(self.bulletin.id))
+            with open(readme_file, 'w') as output:
+                output.write(self.bulletin.dvd_readme)
+
+            ret += 'mv "%s" "%s/"\n' % (readme_file, dvd_tmp_dir)
 
         for photo_type in self.files.keys():
             dvd_dir = '%s/%s' % (dvd_tmp_dir, self.phototypes[photo_type][0])
