@@ -3,7 +3,6 @@
 * Only allow JPG, PNG and PDFs on feature photos
 * Add units field to length and depth on web interface
 * Dimension too large error: feature_attachments/9422/photos/McFerrin.jpg, feature_attachments/9760/photos/Rimstone_Falls.jpg
-* Move away from XML/XSLT. This has gotten out of hand.
 * Large number of entrances on a single feature will cause a PDF formatting error
 * Automatically generate the survey ID field
 * Add 11 reasons a cave can be significant to WVASS
