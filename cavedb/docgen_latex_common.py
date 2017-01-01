@@ -22,8 +22,6 @@ import cavedb.utils
 import cavedb.docgen_common
 import cavedb.latex_indexer
 
-# TODO AFTER - look for trailing space at end of strings
-
 class LatexCommon(cavedb.docgen_common.Common):
     def __init__(self, basedir, bulletin, filename, draft_mode, papersize):
         cavedb.docgen_common.Common.__init__(self, basedir, bulletin)
@@ -83,7 +81,7 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.__writeln(r'\fancypagestyle{plain}{')
         self.__writeln(r'  \fancyfoot[LO,RE]{\thepage}')
         self.__writeln(r'  \fancyfoot[LE,RO]{\textit{' + self.bulletin.bulletin_name + '}}')
-        self.__writeln(r'} ')
+        self.__writeln(r'}')
         self.__writeln(r'')
         self.__writeln(r'')
 
@@ -110,7 +108,6 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.__show_list_of_caves()
 
         self.__writeln(r'')
-        self.__writeln(r'') # TODO AFTER - remove
         self.__writeln(r'% Change the header and footer for the index')
         self.__writeln(r'\fancyfoot[LO,RE]{\thepage}')
         self.__writeln(r'\fancyfoot[LE,RO]{\textit{' + self.bulletin.bulletin_name + \
@@ -159,7 +156,6 @@ class LatexCommon(cavedb.docgen_common.Common):
                 if map_name in self.gis_map_labels:
                     self.__writeln(r'\begin{center} { \footnotesize \textit{' + \
                                  self.gis_map_labels[map_name] + r'}} \end{center}')
-                    self.__writeln(r'') # TODO AFTER - remove
                     self.__writeln(r'')
 
                 self.__writeln(r'')
@@ -201,12 +197,12 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.__writeln(r'\usepackage{etex}')
         self.__writeln(r'\reserveinserts{200}')
         self.__writeln(r'\usepackage[utf8]{inputenc}')
-        self.__writeln(r'\usepackage{amsmath,amssymb,amsfonts} % Typical maths resource packages')
-        self.__writeln(r'\usepackage{graphicx}                 % Packages to allow inclusion of graphics')
-        self.__writeln(r'\usepackage{multicol}                 % Multiple column support')
-        self.__writeln(r'\usepackage{fancyhdr} ')
-        self.__writeln(r'\usepackage{longtable} ')
-        self.__writeln(r'\usepackage{colortbl} ')
+        self.__writeln(r'\usepackage{amsmath,amssymb,amsfonts}')
+        self.__writeln(r'\usepackage{graphicx}')
+        self.__writeln(r'\usepackage{multicol}')
+        self.__writeln(r'\usepackage{fancyhdr}')
+        self.__writeln(r'\usepackage{longtable}')
+        self.__writeln(r'\usepackage{colortbl}')
         self.__writeln(r'\usepackage{helvet}')
         self.__writeln(r'\usepackage{tikz}')
         self.__writeln(r'\usepackage{hyphenat}')
@@ -232,7 +228,7 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.__writeln(r'\renewcommand{\thefigure}{}')
         self.__writeln(r'\renewcommand{\figurename}{}')
         self.__writeln(r'')
-        self.__writeln(r'%\renewcommand{\familydefault}{\sfdefault} ')
+        self.__writeln(r'%\renewcommand{\familydefault}{\sfdefault}')
         self.__writeln(r'')
         self.__writeln(r'\makeatletter')
         self.__writeln(r'')
@@ -248,7 +244,7 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.__writeln(r'  {1px}')
         self.__writeln(r'  {\bf\Large}}')
         self.__writeln(r'')
-        self.__writeln(r'\setlength{\abovecaptionskip}{0pt} ')
+        self.__writeln(r'\setlength{\abovecaptionskip}{0pt}')
         self.__writeln(r'\setlength{\belowcaptionskip}{2pt}')
         self.__writeln(r'')
         self.__writeln(r'\long\def\@makecaption#1#2{%')
@@ -295,7 +291,7 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.__writeln(r'\fancypagestyle{plain}{')
         self.__writeln(r'  \fancyfoot[LE,RO]{\thepage}')
         self.__writeln(r'  \fancyfoot[LO,RE]{\textit{' + self.bulletin.bulletin_name + '}}')
-        self.__writeln(r'} ')
+        self.__writeln(r'}')
         self.__writeln(r'')
         self.__writeln(r'')
         self.__writeln(r'\setcounter{topnumber}{4}')
@@ -387,8 +383,6 @@ class LatexCommon(cavedb.docgen_common.Common):
         return None
 
     def __write(self, line):
-        line = line.replace('/usr/local/cavedbmanager-data/bulletins/bulletin_1', '.') # TODO AFTER - remove
-        line = line.replace('/usr/local/cavedbmanager-data/bulletins/bulletin_2', '.') # TODO AFTER - remove
         self.file_handle.write(line.replace('\r', ''))
 
 
@@ -492,9 +486,7 @@ class LatexCommon(cavedb.docgen_common.Common):
         elif entrance.coord_acquision == 'Filled In':
             self.__writeln(r'\textit{Entrance is filled in; coordinates are an estimate.} \\*')
         else:
-            # TODO AFTER - change message
-            #self.__writeln(r'\textit{Unknown coordinate acquisition method.} \\*')
-            self.__writeln(r'\textit{Coordinates acquired off of a topo map.} \\*')
+            self.__writeln(r'\textit{Unknown coordinate acquisition method.} \\*')
 
 
     def __show_feature_header(self, feature):
@@ -658,14 +650,13 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.__writeln(r'\centering')
 
         url = self.get_photo_filename(photo)
-        self.__writeln(r'  \includegraphics[' + graphic_opts + r']{' + url + r'}')
+        self.__writeln(r'\includegraphics[' + graphic_opts + r']{' + url + r'}')
 
         if photo.caption:
-            # TODO AFTER - add extra space
-            self.__writeln(r' \caption{' + self.__format_photo_caption(feature, photo.caption) + \
+            self.__writeln(r'\caption{' + self.__format_photo_caption(feature, photo.caption) + \
                            r'}')
 
-        self.__writeln(r'  \label{photo' + str(photo.id) + r'}')
+        self.__writeln(r'\label{photo' + str(photo.id) + r'}')
         self.__writeln(r'\end{figure' + figure_opts + '}')
 
         self.__writeln(r'')
@@ -737,7 +728,7 @@ class LatexCommon(cavedb.docgen_common.Common):
     def __show_book_bibliography(self):
         self.__writeln(r'\chapter{Bibliography}')
         self.__writeln(r'\begin{multicols}{2}')
-        self.__writeln(r'{ ')
+        self.__writeln(r'{')
         self.__writeln(r'\setlength{\parskip}{-2ex plus 0in minus 0in}')
         self.__writeln(r'\parindent -0.1in')
         self.__writeln(r'\leftskip 0.2in')
@@ -784,7 +775,6 @@ class LatexCommon(cavedb.docgen_common.Common):
                 self.__write(r'\rowcolor[rgb]{0.95,0.95,0.95} ')
 
             self.__writeln(photo)
-            self.__write('  ') # TODO AFTER - remove
 
         self.__writeln(r'\end{longtable}')
         self.__writeln(r'\end{center}')
