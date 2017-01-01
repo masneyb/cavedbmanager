@@ -97,11 +97,12 @@ def write_bulletin_files(bulletin):
     build_script_wrapper_file = cavedb.utils.get_build_script_wrapper(bulletin.id)
     build_lock_file = cavedb.utils.get_build_lock_file(bulletin.id)
     build_script_file = cavedb.utils.get_build_script(bulletin.id)
+    build_log_file = cavedb.utils.get_build_log_filename(bulletin.id)
 
     with open(build_script_wrapper_file, 'w') as output:
         output.write('#!/bin/bash\n')
         output.write('touch %s\n' % (build_lock_file))
-        output.write('%s\n' % (build_script_file))
+        output.write('%s > %s 2>&1\n' % (build_script_file, build_log_file))
         output.write('rm -f %s\n' % (build_lock_file))
     os.chmod(build_script_wrapper_file, 0755)
 
@@ -384,7 +385,7 @@ def run_buildscript_wrapper(bulletin_id, basedir):
         pid2 = os.fork()
         if pid2 == 0:
             os.chdir(basedir)
-            status = os.system('%s > bulletin-build-output.txt 2>&1' % (build_script_wrapper_file))
+            status = os.system('%s' % (build_script_wrapper_file))
 
             os._exit(status)
         else:
