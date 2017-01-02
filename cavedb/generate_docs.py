@@ -326,6 +326,8 @@ def get_nad27(in_srs, utmzone, xcoord, ycoord):
 
 
 def get_region_gis_hash(region_id):
+    has_entrances = False
+
     md5hash = hashlib.md5()
     for feature in cavedb.models.Feature.objects.filter(bulletin_region__id=region_id):
         for entrance in cavedb.models.FeatureEntrance.objects.filter(feature=feature.id):
@@ -333,7 +335,10 @@ def get_region_gis_hash(region_id):
                 continue
 
             coordinates = transform_coordinate(entrance)
+            if not coordinates.wgs84_lat or not coordinates.wgs84_lon:
+                continue
 
+            has_entrances = True
             entranceinfo = '%s,%s,%s,%s,%s,%s,%s,%s,%s' % \
                            (feature.name, feature.feature_type, feature.is_significant, \
                             entrance.entrance_name, coordinates.utmzone, \
@@ -341,16 +346,20 @@ def get_region_gis_hash(region_id):
                             coordinates.wgs84_lat, coordinates.wgs84_lon)
             md5hash.update(entranceinfo)
 
-    return md5hash.hexdigest()
+    return md5hash.hexdigest() if has_entrances else None
 
 
 def get_all_regions_gis_hash(bulletin_id):
+    has_entrances = False
+
     md5 = hashlib.md5()
     for region in cavedb.models.BulletinRegion.objects.filter(bulletin__id=bulletin_id):
         gis_region_hash = get_region_gis_hash(region.id)
-        md5.update(gis_region_hash)
+        if gis_region_hash:
+            md5.update(gis_region_hash)
+            has_entrances = True
 
-    return md5.hexdigest()
+    return md5.hexdigest() if has_entrances else None
 
 
 def get_indexed_terms(bulletin):

@@ -168,7 +168,8 @@ class LatexCommon(cavedb.docgen_common.Common):
 
         self.__writeln(r'\chapter{' + region.region_name + '}')
 
-        self.__show_region_gis_maps(region)
+        if gis_region_hash:
+            self.__show_region_gis_maps(region)
 
         self.__writeln(r'\twocolumn')
         self.__writeln(r'\setlength\parskip{1ex plus 0in minus 0in}')
