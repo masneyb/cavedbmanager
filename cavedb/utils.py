@@ -14,8 +14,10 @@
 
 import math
 from os.path import getsize
-from django.contrib.auth.models import AnonymousUser
-from cavedb.middleware import get_current_user
+import re
+import datetime
+import dateutil.parser
+import dateutil.relativedelta
 import cavedb.settings
 
 def get_bulletin_base_dir(bulletin_id):
@@ -128,45 +130,6 @@ def get_dvd_filename(bulletin_id):
     return '%s/dvd.zip' % (get_output_base_dir(bulletin_id))
 
 
-def is_bulletin_generation_allowed(bulletin_id):
-    if isinstance(get_current_user(), AnonymousUser):
-        return False
-
-    profile = get_current_user().caveuserprofile
-    return profile.can_generate_docs and \
-               profile.bulletins.get_queryset().filter(id=bulletin_id).count() > 0
-
-
-def is_bulletin_docs_allowed(bulletin_id):
-    if isinstance(get_current_user(), AnonymousUser):
-        return False
-
-    profile = get_current_user().caveuserprofile
-    return profile.can_download_docs and \
-               profile.bulletins.get_queryset().filter(id=bulletin_id).count() > 0
-
-
-def is_bulletin_gis_maps_allowed(bulletin_id):
-    if isinstance(get_current_user(), AnonymousUser):
-        return False
-
-    profile = get_current_user().caveuserprofile
-    return profile.can_download_gis_maps and \
-               profile.bulletins.get_queryset().filter(id=bulletin_id).count() > 0
-
-
-def is_bulletin_allowed(bulletin_id):
-    if isinstance(get_current_user(), AnonymousUser):
-        return False
-
-    return get_current_user() \
-               .caveuserprofile \
-               .bulletins \
-               .get_queryset() \
-               .filter(id=bulletin_id) \
-               .count() > 0
-
-
 def get_file_size(filename):
     try:
         size = getsize(filename)
@@ -211,4 +174,28 @@ def get_all_feature_alt_names(feature):
     additional_index_names = comma_split(feature.additional_index_names)
 
     return alternate_names + additional_index_names
+
+
+def get_normalized_date(datestr):
+    # Parse different date formats including:
+    # Sep 21, 1997, Fall/Winter 1997, Fall 1997, etc.
+
+    if not datestr:
+        return "0000-00-00"
+
+    pattern = re.compile(r'/[\w\d]+')
+    datestr = pattern.sub('', datestr)
+
+    datestr = datestr.replace("Spring", "April")
+    datestr = datestr.replace("Summer", "July")
+    datestr = datestr.replace("Fall", "October")
+    datestr = datestr.replace("Winter", "January")
+
+    try:
+        defaults = datetime.datetime.now() + \
+                   dateutil.relativedelta.relativedelta(month=1, day=1, hour=0, minute=0, \
+                                                        second=0, microsecond=0)
+        return dateutil.parser.parse(datestr, default=defaults).strftime("%Y-%m-%d")
+    except ValueError:
+        return "0000-00-00"
 

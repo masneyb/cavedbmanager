@@ -17,10 +17,11 @@ from mimetypes import guess_type
 from time import strftime
 from os.path import isfile, getsize
 from curses.ascii import isalpha
-from cavedb import settings
 from django.core.servers.basehttp import FileWrapper
 from django.http import HttpResponse, Http404
+from cavedb import settings
 import cavedb.models
+import cavedb.perms
 import cavedb.utils
 
 def show_pdf(request, bulletin_id):
@@ -148,7 +149,7 @@ def show_feature_gis_lineplot(request, feature_id, filename):
 
 def do_show_bulletin_attachment(request, bulletin_id, localfile, remotefile):
     #pylint: disable=unused-argument
-    if not cavedb.utils.is_bulletin_allowed(bulletin_id):
+    if not cavedb.perms.is_bulletin_allowed(bulletin_id):
         raise Http404
 
     if not isfile(localfile):

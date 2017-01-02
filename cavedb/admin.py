@@ -23,7 +23,7 @@ from django.db import models
 from django import forms
 from django.contrib.auth.models import User
 import cavedb.models
-import cavedb.utils
+import cavedb.perms
 import cavedb.middleware
 
 class CavedbCharFormField(forms.CharField):
@@ -175,7 +175,7 @@ class BulletinAdmin(CavedbModelAdmin, admin.ModelAdmin):
         if not obj:
             return super(BulletinAdmin, self).has_change_permission(request, obj)
 
-        return cavedb.utils.is_bulletin_allowed(obj.id)
+        return cavedb.perms.is_bulletin_allowed(obj.id)
 
     def has_delete_permission(self, request, obj=None):
         return self.has_change_permission(request, obj)
@@ -272,7 +272,7 @@ class FeatureAdmin(CavedbModelAdmin, admin.ModelAdmin):
         if not obj:
             return super(FeatureAdmin, self).has_change_permission(request, obj)
 
-        return cavedb.utils.is_bulletin_allowed(obj.bulletin_region.bulletin.id)
+        return cavedb.perms.is_bulletin_allowed(obj.bulletin_region.bulletin.id)
 
     def has_delete_permission(self, request, obj=None):
         return self.has_change_permission(request, obj)

@@ -19,10 +19,7 @@ import resource
 import subprocess
 from zipfile import ZipFile
 import osgeo.osr
-import cavedb.settings
 from django.http import HttpResponseRedirect, Http404
-import cavedb.models
-import cavedb.utils
 from cavedb.docgen_composite import Composite
 import cavedb.docgen_dvd
 import cavedb.docgen_entrance_csv
@@ -37,6 +34,10 @@ import cavedb.docgen_mxf
 import cavedb.docgen_shp
 import cavedb.docgen_text
 import cavedb.docgen_todo_txt
+import cavedb.models
+import cavedb.perms
+import cavedb.settings
+import cavedb.utils
 
 def write_bulletin_files(bulletin):
     outputter = Composite(bulletin,
@@ -395,7 +396,7 @@ def run_buildscript_wrapper(bulletin_id, basedir):
 
 def generate_bulletin(request, bulletin_id):
     #pylint: disable=unused-argument
-    if not cavedb.utils.is_bulletin_generation_allowed(bulletin_id):
+    if not cavedb.perms.is_bulletin_generation_allowed(bulletin_id):
         raise Http404
 
     bulletins = cavedb.models.Bulletin.objects.filter(id=bulletin_id)
@@ -413,7 +414,7 @@ def generate_bulletin(request, bulletin_id):
 
 def generate_bulletin_source(request, bulletin_id):
     #pylint: disable=unused-argument
-    if not cavedb.utils.is_bulletin_generation_allowed(bulletin_id):
+    if not cavedb.perms.is_bulletin_generation_allowed(bulletin_id):
         raise Http404
 
     bulletins = cavedb.models.Bulletin.objects.filter(id=bulletin_id)
@@ -426,7 +427,7 @@ def generate_bulletin_source(request, bulletin_id):
 
 def generate_all_bulletin_sources(request):
     for bulletin in cavedb.models.Bulletin.objects.all():
-        if not cavedb.utils.is_bulletin_generation_allowed(bulletin.id):
+        if not cavedb.perms.is_bulletin_generation_allowed(bulletin.id):
             continue
 
         generate_bulletin_source(request, bulletin.id)

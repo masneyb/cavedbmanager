@@ -16,10 +16,11 @@ from os.path import isfile, getmtime
 import os
 import re
 from time import strftime, localtime
-from cavedb import settings
 from django.contrib.auth.models import User
 from django.db import models
 from cavedb.middleware import get_request_uri, get_valid_bulletins
+import cavedb.perms
+from cavedb import settings
 from cavedb.utils import get_file_size
 import cavedb.utils
 
@@ -172,7 +173,7 @@ class Bulletin(models.Model):
         return isfile(lockfile)
 
     def generate_doc_links(self):
-        if not cavedb.utils.is_bulletin_docs_allowed(self.id):
+        if not cavedb.perms.is_bulletin_docs_allowed(self.id):
             return ''
 
         base_url = '%sbulletin/%s' % (settings.MEDIA_URL, self.id)
@@ -185,13 +186,13 @@ class Bulletin(models.Model):
 
         mtime = self.get_bulletin_mod_date_str()
         if mtime is None:
-            if not cavedb.utils.is_bulletin_generation_allowed(self.id):
+            if not cavedb.perms.is_bulletin_generation_allowed(self.id):
                 return ''
             else:
                 return 'This bulletin has not been generated yet. ' + \
                        'You can <a href="%s">generate</a> one now.' % (regen_url)
         else:
-            if cavedb.utils.is_bulletin_generation_allowed(self.id):
+            if cavedb.perms.is_bulletin_generation_allowed(self.id):
                 gen_txt = 'You can <a href="%s">generate</a> another one with the latest data.' % \
                           (regen_url)
             else:
@@ -230,7 +231,7 @@ class Bulletin(models.Model):
 
 
     def show_maps(self):
-        if not cavedb.utils.is_bulletin_gis_maps_allowed(self.id):
+        if not cavedb.perms.is_bulletin_gis_maps_allowed(self.id):
             return ''
 
         regionstr = ''

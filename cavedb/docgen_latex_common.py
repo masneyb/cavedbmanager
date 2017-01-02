@@ -13,10 +13,6 @@
 # limitations under the License.
 
 import os
-import re
-import datetime
-import dateutil.parser
-import dateutil.relativedelta
 import cavedb.models
 import cavedb.utils
 import cavedb.docgen_common
@@ -649,7 +645,7 @@ class LatexCommon(cavedb.docgen_common.Common):
 
         refs_by_date = {}
         for ref in refs:
-            parsed_date = get_normalized_date(ref.date) + none_to_empty(ref.volume) + \
+            parsed_date = cavedb.utils.get_normalized_date(ref.date) + none_to_empty(ref.volume) + \
                           none_to_empty(ref.number) + none_to_empty(ref.pages) + \
                           none_to_empty(ref.book) + none_to_empty(ref.title)
 
@@ -887,30 +883,6 @@ def escape(inputstr):
 
     # Escape the # for LaTeX
     return inputstr.replace('#', '\\#')
-
-
-def get_normalized_date(datestr):
-    # Parse different date formats including:
-    # Sep 21, 1997, Fall/Winter 1997, Fall 1997, etc.
-
-    if not datestr:
-        return "0000-00-00"
-
-    pattern = re.compile(r'/[\w\d]+')
-    datestr = pattern.sub('', datestr)
-
-    datestr = datestr.replace("Spring", "April")
-    datestr = datestr.replace("Summer", "July")
-    datestr = datestr.replace("Fall", "October")
-    datestr = datestr.replace("Winter", "January")
-
-    try:
-        defaults = datetime.datetime.now() + \
-                   dateutil.relativedelta.relativedelta(month=1, day=1, hour=0, minute=0, \
-                                                        second=0, microsecond=0)
-        return dateutil.parser.parse(datestr, default=defaults).strftime("%Y-%m-%d")
-    except ValueError:
-        return "0000-00-00"
 
 
 def none_to_empty(inputstr):
