@@ -17,7 +17,7 @@ import cavedb.models
 import cavedb.utils
 import cavedb.docgen_common
 import cavedb.docgen_gis_maps
-import cavedb.latex_indexer
+import cavedb.indexer_latex
 
 class LatexCommon(cavedb.docgen_common.Common):
     def __init__(self, bulletin, filename, draft_mode, papersize):
@@ -50,7 +50,7 @@ class LatexCommon(cavedb.docgen_common.Common):
 
 
     def indexed_terms(self, terms):
-        self.indexer = cavedb.latex_indexer.LatexIndexer(terms)
+        self.indexer = cavedb.indexer_latex.IndexerLatex(terms)
         #self.indexer.dump_terms(self.file_handle)
 
 

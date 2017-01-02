@@ -13,14 +13,14 @@
 # limitations under the License.
 
 import unittest
-import cavedb.latex_indexer
+import cavedb.indexer_latex
 
-class TestLatexIndexer(unittest.TestCase):
+class TestIndexerLatex(unittest.TestCase):
     def test_indexer(self):
         terms = ['Great Cave', 'Dry Fork', 'Cheat River', 'Great Cave of Dry Fork of Cheat River', \
                  'Monongahela River',
                  'Laurel and Backbone mountains:Laurel Mountain:Backbone Mountain']
-        indexer = cavedb.latex_indexer.LatexIndexer(terms)
+        indexer = cavedb.indexer_latex.IndexerLatex(terms)
         indexed = indexer.generate_index('The stream in the Great Cave of Dry Fork of Cheat ' + \
                                          'River empties out into the Dry Fork, which is a ' + \
                                          'tributuary of the Cheat River.\n' + \

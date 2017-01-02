@@ -25,9 +25,8 @@
 
 import hashlib
 
-class LatexIndexer(object):
+class IndexerCommon(object):
     def __init__(self, terms):
-
         self.__sorted_terms = []
         self.__term_to_digest = {}
         self.__digest_to_index = {}
@@ -42,6 +41,11 @@ class LatexIndexer(object):
         self.__sorted_terms.sort(key=lambda term: len(term), reverse=True)
 
 
+    def wrap_term(self, index_term):
+        #pylint: disable=no-self-use
+        return index_term
+
+
     def __add_term(self, search_term, index_terms):
         self.__sorted_terms.append(search_term)
 
@@ -50,7 +54,8 @@ class LatexIndexer(object):
 
         indexstr = ''
         for index_term in index_terms:
-            indexstr = r'%s\index{%s}' % (indexstr, index_term)
+            indexstr = '%s%s' % (indexstr, self.wrap_term(index_term))
+
         self.__digest_to_index[search_term_digest] = '%s%s' % (indexstr, search_term)
 
 
@@ -67,14 +72,3 @@ class LatexIndexer(object):
             inputstr = inputstr.replace(digest, replacement)
 
         return inputstr
-
-
-    def dump_terms(self, file_handle):
-        file_handle.write('\n% Indexed Terms\n')
-        for term in self.__sorted_terms:
-            digest = self.__term_to_digest[term]
-            replacement = self.__digest_to_index[digest]
-
-            file_handle.write('%% %s\t%s\t%s\n' % (term, digest, replacement))
-        file_handle.write('\n')
-
