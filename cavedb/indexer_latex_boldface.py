@@ -23,11 +23,11 @@
 #
 # See tests/test_latex_indexer.py for an example.
 
-import cavedb.indexer_common
+import cavedb.indexer_latex
 
-class IndexerLatex(cavedb.indexer_common.IndexerCommon):
+class IndexerLatexBoldface(cavedb.indexer_latex.IndexerLatex):
     def __init__(self, terms):
-        cavedb.indexer_common.IndexerCommon.__init__(self, terms)
+        cavedb.indexer_latex.IndexerLatex.__init__(self, terms)
 
 
     def get_index_str(self, search_term, index_terms):
@@ -37,15 +37,4 @@ class IndexerLatex(cavedb.indexer_common.IndexerCommon):
         for index_term in index_terms:
             indexstr = r'%s\index{%s}' % (indexstr, index_term)
 
-        return r'%s%s' % (indexstr, search_term)
-
-
-    def dump_terms(self, file_handle):
-        file_handle.write('\n% Indexed Terms\n')
-        for term in self.__sorted_terms:
-            digest = self.__term_to_digest[term]
-            replacement = self.__digest_to_index[digest]
-
-            file_handle.write('%% %s\t%s\t%s\n' % (term, digest, replacement))
-        file_handle.write('\n')
-
+        return r'%s\textbf{%s}' % (indexstr, search_term)

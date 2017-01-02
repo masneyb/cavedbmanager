@@ -41,9 +41,9 @@ class IndexerCommon(object):
         self.__sorted_terms.sort(key=lambda term: len(term), reverse=True)
 
 
-    def wrap_term(self, index_term):
-        #pylint: disable=no-self-use
-        return index_term
+    def get_index_str(self, search_term, index_terms):
+        #pylint: disable=no-self-use,unused-argument
+        return search_term
 
 
     def __add_term(self, search_term, index_terms):
@@ -51,12 +51,7 @@ class IndexerCommon(object):
 
         search_term_digest = hashlib.md5(search_term).hexdigest()
         self.__term_to_digest[search_term] = search_term_digest
-
-        indexstr = ''
-        for index_term in index_terms:
-            indexstr = '%s%s' % (indexstr, self.wrap_term(index_term))
-
-        self.__digest_to_index[search_term_digest] = '%s%s' % (indexstr, search_term)
+        self.__digest_to_index[search_term_digest] = self.get_index_str(search_term, index_terms)
 
 
     def generate_index(self, inputstr):
