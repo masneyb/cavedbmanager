@@ -15,7 +15,6 @@
 import os
 import cavedb.docgen_common
 import cavedb.utils
-import cavedb.models
 import cavedb.settings
 
 class Dvd(cavedb.docgen_common.Common):

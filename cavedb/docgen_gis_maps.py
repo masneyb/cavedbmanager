@@ -14,7 +14,6 @@
 
 import os
 import cavedb.docgen_gis_common
-import cavedb.settings
 import cavedb.utils
 
 class GisMaps(cavedb.docgen_gis_common.GisCommon):

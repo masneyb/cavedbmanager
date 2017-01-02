@@ -13,8 +13,6 @@
 # limitations under the License.
 
 import cavedb.docgen_common
-import cavedb.settings
-import cavedb.utils
 
 class GisCommon(cavedb.docgen_common.Common):
     def __init__(self, bulletin, gis_x_buffer=0.005, gis_y_buffer=0.005):
