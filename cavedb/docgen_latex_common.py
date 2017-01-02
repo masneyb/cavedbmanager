@@ -51,7 +51,6 @@ class LatexCommon(cavedb.docgen_common.Common):
 
     def indexed_terms(self, terms):
         self.indexer = cavedb.indexer_latex.IndexerLatex(terms)
-        #self.indexer.dump_terms(self.file_handle)
 
 
     def open(self, all_regions_gis_hash):
