@@ -16,6 +16,7 @@ import os
 import cavedb.models
 import cavedb.utils
 import cavedb.docgen_common
+import cavedb.docgen_gis_maps
 import cavedb.latex_indexer
 
 class LatexCommon(cavedb.docgen_common.Common):
@@ -132,7 +133,8 @@ class LatexCommon(cavedb.docgen_common.Common):
                     self.__writeln(r'\vspace*{8ex}')
                     self.__writeln(r'')
 
-                image = cavedb.utils.get_region_gis_map(self.bulletin.id, region.id, map_name)
+                image = cavedb.docgen_gis_maps.get_region_gis_map(self.bulletin.id, region.id, \
+                                                                  map_name)
 
                 self.__writeln(r'\begin{figure}[htp!]')
                 self.__writeln(r'  \centering')
@@ -350,6 +352,7 @@ class LatexCommon(cavedb.docgen_common.Common):
 
     # Note: You must override this method in a subclass
     def get_gis_map_names(self):
+        #pylint disable=no-self-use
         return None
 
     def __write(self, line):
@@ -572,6 +575,7 @@ class LatexCommon(cavedb.docgen_common.Common):
 
     # Note: You must override this method in a subclass
     def get_photo_filename(self, photo):
+        #pylint disable=no-self-use
         return None
 
 

@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import cavedb.docgen_common
+import cavedb.docgen_gis_common
 import cavedb.settings
 import cavedb.utils
 
@@ -23,15 +24,17 @@ class MapserverMapfile(cavedb.docgen_common.Common):
 
 
     def gis_map(self, gismap):
+        shpdir = cavedb.docgen_gis_common.get_shp_directory(self.bulletin.id)
+
         gis_options = {}
         gis_options['basename'] = gismap.name
-        gis_options['path'] = cavedb.utils.get_mapserver_mapfile(self.bulletin.id, gismap.name)
+        gis_options['path'] = cavedb.docgen_gis_common.get_mapserver_mapfile(self.bulletin.id, \
+                                                                             gismap.name)
         gis_options['locations_shp'] = '%s/%s' % \
-                                       (cavedb.utils.get_shp_directory(self.bulletin.id), \
-                                        cavedb.utils.LOCATIONS_SHP_LAYER_NAME)
+                                       (shpdir, cavedb.docgen_gis_common.LOCATIONS_SHP_LAYER_NAME)
         gis_options['extents_shp'] = '%s/%s' % \
-                                     (cavedb.utils.get_shp_directory(self.bulletin.id), \
-                                      cavedb.utils.REGION_EXTENTS_SHP_LAYER_NAME)
+                                     (shpdir, \
+                                      cavedb.docgen_gis_common.REGION_EXTENTS_SHP_LAYER_NAME)
 
         cavedb.docgen_common.create_base_directory(gis_options['path'])
 
@@ -58,7 +61,7 @@ class MapserverMapfile(cavedb.docgen_common.Common):
             write_mapserver_footer(gis_options)
             gis_options['fd'].close()
 
-        fonts_list = cavedb.utils.get_mapserver_fonts_list(self.bulletin.id)
+        fonts_list = get_mapserver_fonts_list(self.bulletin.id)
         with open(fonts_list, "w") as output:
             output.write(cavedb.settings.GIS_FONTS_LIST)
 
@@ -240,7 +243,7 @@ def write_mapserver_footer(gis_options):
     mapfile = gis_options['fd']
 
     mapfile.write('  LAYER\n')
-    mapfile.write('    NAME %s\n' % (cavedb.utils.LOCATIONS_SHP_LAYER_NAME))
+    mapfile.write('    NAME %s\n' % (cavedb.docgen_gis_common.LOCATIONS_SHP_LAYER_NAME))
     mapfile.write('    DATA %s\n' % (gis_options['locations_shp']))
     mapfile.write('    STATUS ON\n')
     mapfile.write('    TYPE POINT\n')
@@ -346,7 +349,7 @@ def write_mapserver_footer(gis_options):
     mapfile.write('    END\n')
     mapfile.write('  END\n')
     mapfile.write('  LAYER\n')
-    mapfile.write('    NAME %s\n' % (cavedb.utils.REGION_EXTENTS_SHP_LAYER_NAME))
+    mapfile.write('    NAME %s\n' % (cavedb.docgen_gis_common.REGION_EXTENTS_SHP_LAYER_NAME))
     mapfile.write('    DATA %s\n' % (gis_options['extents_shp']))
     mapfile.write('    STATUS  ON\n')
     mapfile.write('    TYPE  POLYGON\n')
@@ -434,3 +437,6 @@ def write_mapserver_footer(gis_options):
     mapfile.write('  END\n')
     mapfile.write('END\n')
 
+
+def get_mapserver_fonts_list(bulletin_id):
+    return '%s/fonts.list' % (cavedb.docgen_gis_common.get_gis_maps_directory(bulletin_id))

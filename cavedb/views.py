@@ -20,72 +20,84 @@ from curses.ascii import isalpha
 from django.core.servers.basehttp import FileWrapper
 from django.http import HttpResponse, Http404
 from cavedb import settings
+import cavedb.docgen_dvd
+import cavedb.docgen_entrance_csv
+import cavedb.docgen_gis_maps
+import cavedb.docgen_gpx
+import cavedb.docgen_kml
+import cavedb.docgen_latex_letter_bw
+import cavedb.docgen_latex_letter_color
+import cavedb.docgen_latex_letter_draft
+import cavedb.docgen_mxf
+import cavedb.docgen_shp
+import cavedb.docgen_text
+import cavedb.docgen_todo_txt
 import cavedb.models
 import cavedb.perms
 import cavedb.utils
 
 def show_pdf(request, bulletin_id):
-    localfile = cavedb.utils.get_pdf_filename(bulletin_id)
+    localfile = cavedb.docgen_latex_letter_bw.get_pdf_filename(bulletin_id)
     remotefile = get_bulletin_remote_file(bulletin_id, 'pdf')
     return do_show_bulletin_attachment(request, bulletin_id, localfile, remotefile)
 
 
 def show_color_pdf(request, bulletin_id):
-    localfile = cavedb.utils.get_color_pdf_filename(bulletin_id)
+    localfile = cavedb.docgen_latex_letter_color.get_color_pdf_filename(bulletin_id)
     remotefile = '%s_color.pdf' % (get_bulletin_base_name(bulletin_id))
     return do_show_bulletin_attachment(request, bulletin_id, localfile, remotefile)
 
 
 def show_draft_pdf(request, bulletin_id):
-    localfile = cavedb.utils.get_draft_pdf_filename(bulletin_id)
+    localfile = cavedb.docgen_latex_letter_draft.get_draft_pdf_filename(bulletin_id)
     remotefile = '%s_draft.pdf' % (get_bulletin_base_name(bulletin_id))
     return do_show_bulletin_attachment(request, bulletin_id, localfile, remotefile)
 
 
 def show_todo_txt(request, bulletin_id):
-    localfile = cavedb.utils.get_todo_txt_filename(bulletin_id)
+    localfile = cavedb.docgen_todo_txt.get_todo_txt_filename(bulletin_id)
     remotefile = '%s_todo.txt' % (get_bulletin_base_name(bulletin_id))
     return do_show_bulletin_attachment(request, bulletin_id, localfile, remotefile)
 
 
 def show_kml(request, bulletin_id):
-    localfile = cavedb.utils.get_kml_filename(bulletin_id)
+    localfile = cavedb.docgen_kml.get_kml_filename(bulletin_id)
     remotefile = get_bulletin_remote_file(bulletin_id, 'kml')
     return do_show_bulletin_attachment(request, bulletin_id, localfile, remotefile)
 
 
 def show_text(request, bulletin_id):
-    localfile = cavedb.utils.get_text_filename(bulletin_id)
+    localfile = cavedb.docgen_text.get_text_filename(bulletin_id)
     remotefile = get_bulletin_remote_file(bulletin_id, 'txt')
     return do_show_bulletin_attachment(request, bulletin_id, localfile, remotefile)
 
 
 def show_gpx(request, bulletin_id):
-    localfile = cavedb.utils.get_gpx_filename(bulletin_id)
+    localfile = cavedb.docgen_gpx.get_gpx_filename(bulletin_id)
     remotefile = get_bulletin_remote_file(bulletin_id, 'gpx')
     return do_show_bulletin_attachment(request, bulletin_id, localfile, remotefile)
 
 
 def show_csv(request, bulletin_id):
-    localfile = cavedb.utils.get_csv_filename(bulletin_id)
+    localfile = cavedb.docgen_entrance_csv.get_csv_filename(bulletin_id)
     remotefile = get_bulletin_remote_file(bulletin_id, 'csv')
     return do_show_bulletin_attachment(request, bulletin_id, localfile, remotefile)
 
 
 def show_mxf(request, bulletin_id):
-    localfile = cavedb.utils.get_mxf_filename(bulletin_id)
+    localfile = cavedb.docgen_mxf.get_mxf_filename(bulletin_id)
     remotefile = get_bulletin_remote_file(bulletin_id, 'mxf')
     return do_show_bulletin_attachment(request, bulletin_id, localfile, remotefile)
 
 
 def show_shp(request, bulletin_id):
-    localfile = cavedb.utils.get_shp_zip_filename(bulletin_id)
+    localfile = cavedb.docgen_shp.get_shp_zip_filename(bulletin_id)
     remotefile = '%s_shp_files.zip' % (get_bulletin_base_name(bulletin_id))
     return do_show_bulletin_attachment(request, bulletin_id, localfile, remotefile)
 
 
 def show_dvd(request, bulletin_id):
-    localfile = cavedb.utils.get_dvd_filename(bulletin_id)
+    localfile = cavedb.docgen_dvd.get_dvd_filename(bulletin_id)
     remotefile = get_bulletin_remote_file(bulletin_id, 'zip')
     return do_show_bulletin_attachment(request, bulletin_id, localfile, remotefile)
 
@@ -97,7 +109,7 @@ def show_log(request, bulletin_id):
 
 
 def show_region_gis_map(request, bulletin_id, region_id, map_name):
-    localfile = cavedb.utils.get_region_gis_map(bulletin_id, region_id, map_name)
+    localfile = cavedb.docgen_gis_maps.get_region_gis_map(bulletin_id, region_id, map_name)
     return do_show_bulletin_attachment(request, bulletin_id, localfile, None)
 
 

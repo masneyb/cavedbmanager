@@ -23,7 +23,7 @@ class Text(cavedb.docgen_common.Common):
 
 
     def open(self, all_regions_gis_hash):
-        filename = cavedb.utils.get_text_filename(self.bulletin.id)
+        filename = get_text_filename(self.bulletin.id)
         cavedb.docgen_common.create_base_directory(filename)
         self.textfile = open(filename, 'w')
 
@@ -123,5 +123,8 @@ class Text(cavedb.docgen_common.Common):
 
 
     def create_html_download_urls(self):
-        return self.create_url('/text', 'Text (TXT)', \
-                               cavedb.utils.get_text_filename(self.bulletin.id))
+        return self.create_url('/text', 'Text (TXT)', get_text_filename(self.bulletin.id))
+
+
+def get_text_filename(bulletin_id):
+    return '%s/text/bulletin_%s.txt' % (cavedb.utils.get_output_base_dir(bulletin_id), bulletin_id)

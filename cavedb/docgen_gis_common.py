@@ -71,3 +71,18 @@ def init_extents(region_id, name, gishash):
     ret['maxy'] = None
     return ret
 
+
+LOCATIONS_SHP_LAYER_NAME = 'karst_feature_locations'
+REGION_EXTENTS_SHP_LAYER_NAME = 'region_extents'
+
+
+def get_shp_directory(bulletin_id):
+    return '%s/shp' % (cavedb.utils.get_output_base_dir(bulletin_id))
+
+
+def get_gis_maps_directory(bulletin_id):
+    return '%s/gis_maps' % (cavedb.utils.get_output_base_dir(bulletin_id))
+
+
+def get_mapserver_mapfile(bulletin_id, map_name):
+    return '%s/%s.map' % (get_gis_maps_directory(bulletin_id), map_name)

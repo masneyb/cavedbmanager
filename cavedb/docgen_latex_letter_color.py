@@ -18,7 +18,7 @@ import cavedb.docgen_latex_common
 class LatexLetterColor(cavedb.docgen_latex_common.LatexCommon):
     def __init__(self, bulletin):
         cavedb.docgen_latex_common.LatexCommon.__init__(self, bulletin, \
-                       cavedb.utils.get_color_tex_filename(bulletin.id), False, 'letterpaper')
+                       get_color_tex_filename(bulletin.id), False, 'letterpaper')
 
 
     def get_gis_map_names(self):
@@ -31,4 +31,14 @@ class LatexLetterColor(cavedb.docgen_latex_common.LatexCommon):
 
     def create_html_download_urls(self):
         return self.create_url('/color_pdf', 'PDF (Color)', \
-                               cavedb.utils.get_color_pdf_filename(self.bulletin.id))
+                               get_color_pdf_filename(self.bulletin.id))
+
+
+def get_color_tex_filename(bulletin_id):
+    return '%s/pdf_color/bulletin_%s.tex' % \
+           (cavedb.utils.get_output_base_dir(bulletin_id), bulletin_id)
+
+
+def get_color_pdf_filename(bulletin_id):
+    return '%s/pdf_color/bulletin_%s.pdf' % \
+           (cavedb.utils.get_output_base_dir(bulletin_id), bulletin_id)

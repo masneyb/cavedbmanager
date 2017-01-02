@@ -18,7 +18,7 @@ import cavedb.docgen_latex_common
 class LatexLetterDraft(cavedb.docgen_latex_common.LatexCommon):
     def __init__(self, bulletin):
         cavedb.docgen_latex_common.LatexCommon.__init__(self, bulletin, \
-                       cavedb.utils.get_draft_tex_filename(bulletin.id), True, 'letterpaper')
+                       get_draft_tex_filename(bulletin.id), True, 'letterpaper')
 
 
     def get_gis_map_names(self):
@@ -31,4 +31,14 @@ class LatexLetterDraft(cavedb.docgen_latex_common.LatexCommon):
 
     def create_html_download_urls(self):
         return self.create_url('/draft_pdf', 'Draft PDF (No Images)', \
-                               cavedb.utils.get_draft_pdf_filename(self.bulletin.id))
+                               get_draft_pdf_filename(self.bulletin.id))
+
+
+def get_draft_tex_filename(bulletin_id):
+    return '%s/pdf_draft/bulletin_%s.tex' % \
+           (cavedb.utils.get_output_base_dir(bulletin_id), bulletin_id)
+
+
+def get_draft_pdf_filename(bulletin_id):
+    return '%s/pdf_draft/bulletin_%s.pdf' % \
+           (cavedb.utils.get_output_base_dir(bulletin_id), bulletin_id)

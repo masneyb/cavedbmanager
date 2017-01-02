@@ -87,7 +87,7 @@ class Dvd(cavedb.docgen_common.Common):
 
                     ret += 'ln "%s" "%s"\n' % (photo_meta['src'], destfile)
 
-        dvd_zip_file = cavedb.utils.get_dvd_filename(self.bulletin.id)
+        dvd_zip_file = get_dvd_filename(self.bulletin.id)
         ret += 'cd %s\n' % (output_base_dir)
         ret += 'zip -r "%s" "%s"\n' % (dvd_zip_file, os.path.basename(dvd_tmp_dir))
         ret += 'rm -rf "%s/"\n' % (dvd_tmp_dir)
@@ -96,5 +96,8 @@ class Dvd(cavedb.docgen_common.Common):
 
 
     def create_html_download_urls(self):
-        return self.create_url('/dvd', 'Supplemental DVD (ZIP)', \
-                               cavedb.utils.get_dvd_filename(self.bulletin.id))
+        return self.create_url('/dvd', 'Supplemental DVD (ZIP)', get_dvd_filename(self.bulletin.id))
+
+
+def get_dvd_filename(bulletin_id):
+    return '%s/dvd.zip' % (cavedb.utils.get_output_base_dir(bulletin_id))

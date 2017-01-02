@@ -22,7 +22,7 @@ class TodoTxt(cavedb.docgen_common.Common):
 
 
     def open(self, all_regions_gis_hash):
-        filename = cavedb.utils.get_todo_txt_filename(self.bulletin.id)
+        filename = get_todo_txt_filename(self.bulletin.id)
         cavedb.docgen_common.create_base_directory(filename)
         self.todofile = open(filename, 'w')
 
@@ -46,5 +46,9 @@ class TodoTxt(cavedb.docgen_common.Common):
 
 
     def create_html_download_urls(self):
-        return self.create_url('/todo', 'TODO (TXT)', \
-                               cavedb.utils.get_todo_txt_filename(self.bulletin.id))
+        return self.create_url('/todo', 'TODO (TXT)', get_todo_txt_filename(self.bulletin.id))
+
+
+def get_todo_txt_filename(bulletin_id):
+    return '%s/todo/bulletin_%s_todo.txt' % \
+           (cavedb.utils.get_output_base_dir(bulletin_id), bulletin_id)

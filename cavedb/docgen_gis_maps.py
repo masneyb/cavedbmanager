@@ -30,12 +30,13 @@ class GisMaps(cavedb.docgen_gis_common.GisCommon):
         buildscr = ''
 
         for gismap in self.gismaps:
-            mapfile = cavedb.utils.get_mapserver_mapfile(self.bulletin.id, gismap)
-            localfile = cavedb.utils.get_all_regions_gis_map(self.bulletin.id, gismap)
+            mapfile = cavedb.docgen_gis_common.get_mapserver_mapfile(self.bulletin.id, \
+                                                                     gismap)
+            localfile = get_all_regions_gis_map(self.bulletin.id, gismap)
             buildscr += create_map(mapfile, localfile, self.overall_extents)
 
             for extents in self.region_extents.values():
-                localfile = cavedb.utils.get_region_gis_map(self.bulletin.id, extents['id'], gismap)
+                localfile = get_region_gis_map(self.bulletin.id, extents['id'], gismap)
                 buildscr += create_map(mapfile, localfile, extents)
 
             buildscr += '\n'
@@ -72,3 +73,13 @@ def get_existing_hashcode(outfile, hashcode_file):
 
     return None
 
+
+def get_all_regions_gis_map(bulletin_id, map_name):
+    return '%s/bulletin_%s_gis_%s_map.jpg' % \
+           (cavedb.docgen_gis_common.get_gis_maps_directory(bulletin_id), bulletin_id, map_name)
+
+
+def get_region_gis_map(bulletin_id, region_id, map_name):
+    return '%s/bulletin_%s_region_%s_gis_%s_map.jpg' % \
+           (cavedb.docgen_gis_common.get_gis_maps_directory(bulletin_id), bulletin_id, region_id, \
+                                                            map_name)
