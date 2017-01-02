@@ -313,7 +313,7 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.__writeln(r'')
         self.__writeln(r'\clearpage')
         self.__writeln(r'\thispagestyle{empty}')
-        self.__writeln(self.__index_and_escape(self.bulletin.title_page.strip()))
+        self.__writeln(self.__index_and_escape(self.bulletin.title_page))
         self.__writeln(r'\newpage')
         self.__writeln(r'')
 
@@ -322,7 +322,7 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.__writeln(r'')
         self.__writeln(r'\clearpage')
         self.__writeln(r'\thispagestyle{empty}')
-        self.__writeln(self.__index_and_escape(self.bulletin.preamble_page.strip()))
+        self.__writeln(self.__index_and_escape(self.bulletin.preamble_page))
         self.__writeln(r'\newpage')
         self.__writeln(r'')
 
@@ -330,7 +330,7 @@ class LatexCommon(cavedb.docgen_common.Common):
     def __show_contributor_page(self):
         self.__writeln(r'')
         self.__writeln(r'\clearpage')
-        self.__writeln(self.__index_and_escape(self.bulletin.contributor_page.strip()))
+        self.__writeln(self.__index_and_escape(self.bulletin.contributor_page))
         self.__writeln(r'\newpage')
         self.__writeln(r'')
 
@@ -343,7 +343,7 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.__writeln(r'')
 
         if self.bulletin.toc_footer:
-            self.__writeln(self.__index_and_escape(self.bulletin.toc_footer.strip()))
+            self.__writeln(self.__index_and_escape(self.bulletin.toc_footer))
 
         self.__writeln(r'')
 
@@ -845,7 +845,10 @@ class LatexCommon(cavedb.docgen_common.Common):
 
 
     def __index_and_escape(self, inputstr):
-        return escape(convert_quotes(self.indexer.generate_index(inputstr)))
+        if not inputstr:
+            return ""
+
+        return escape(convert_quotes(self.indexer.generate_index(inputstr.strip())))
 
 
 # Add a \hbox{} around the cave and entrance names so that they appear on the
