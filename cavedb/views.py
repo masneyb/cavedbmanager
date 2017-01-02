@@ -67,7 +67,7 @@ def show_gpx(request, bulletin_id):
 
 
 def show_csv(request, bulletin_id):
-    localfile = cavedb.utils.get_gpx_filename(bulletin_id)
+    localfile = cavedb.utils.get_csv_filename(bulletin_id)
     remotefile = get_bulletin_remote_file(bulletin_id, 'csv')
     return do_show_bulletin_attachment(request, bulletin_id, localfile, remotefile)
 
