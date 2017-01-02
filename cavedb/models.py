@@ -233,6 +233,8 @@ class Bulletin(models.Model):
 # Restrict the list of choices to items that are underneath the current bulletin
 class BulletinChoice(models.ForeignKey):
     def formfield(self, **kwargs):
+        #pylint: disable=protected-access
+
         # The bulletin_id appears to be only available on the form. Since that
         # information is not available here, retrieve the bulletin_id from the
         # URL.
@@ -269,6 +271,8 @@ class BulletinRegion(models.Model):
 # Only show the user the regions that they are allowed to see.
 class RegionChoice(models.ForeignKey):
     def formfield(self, **kwargs):
+        #pylint: disable=protected-access
+
         return super(RegionChoice, self).formfield(queryset=self.rel.to._default_manager \
                    .complex_filter({'bulletin__id__in': get_valid_bulletins()}))
 
@@ -371,6 +375,7 @@ class BulletinAttachment(models.Model):
     mod_date = models.DateTimeField("Modification Date", auto_now=True, editable=False, null=True)
 
     def __unicode__(self):
+        #pylint: disable=no-member
         return self.attachment.path
 
     class Meta:
@@ -406,6 +411,7 @@ class TopoQuad(models.Model):
         return self.quad_name
 
     def show_counties(self):
+        #pylint: disable=no-member
         counties = []
 
         for county in self.county.get_queryset():
@@ -459,6 +465,7 @@ class FeaturePhoto(models.Model):
     mod_date = models.DateTimeField("Modification Date", auto_now=True, editable=False, null=True)
 
     def __unicode__(self):
+        #pylint: disable=no-member
         if self.caption:
             return u'%s - %s' % (self.filename.path, self.caption)
         else:
@@ -512,6 +519,7 @@ class FeatureAttachment(models.Model):
     mod_date = models.DateTimeField("Modification Date", auto_now=True, editable=False, null=True)
 
     def __unicode__(self):
+        #pylint: disable=no-member
         return self.attachment.path
 
     attachmentTypeDict = {}
@@ -519,6 +527,7 @@ class FeatureAttachment(models.Model):
         attachmentTypeDict[ATTACHMENT_TYPE_CHOICES[i][0]] = i
 
     def get_attachment_type_descr(self):
+        #pylint: disable=no-member
         return self.ATTACHMENT_TYPE_CHOICES[self.attachmentTypeDict[self.type]][1]
 
     class Meta:

@@ -110,10 +110,12 @@ class Common(object):
 
 
     def generate_buildscript(self):
+        #pylint: disable=no-self-use
         return None
 
 
     def create_html_download_urls(self):
+        #pylint: disable=no-self-use
         return None
 
 

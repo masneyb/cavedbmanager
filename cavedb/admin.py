@@ -96,6 +96,7 @@ class CavedbLatLonFormField(forms.DecimalField):
 
 class CavedbModelAdmin(BaseModelAdmin):
     def __init__(self, model, admin_site):
+        #pylint: disable=too-many-function-args
         super(CavedbModelAdmin, self).__init__(model, admin_site)
 
     def formfield_for_dbfield(self, db_field, **kwargs):

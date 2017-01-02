@@ -352,7 +352,7 @@ class LatexCommon(cavedb.docgen_common.Common):
 
     # Note: You must override this method in a subclass
     def get_gis_map_names(self):
-        #pylint disable=no-self-use
+        #pylint: disable=no-self-use
         return None
 
     def __write(self, line):
@@ -575,7 +575,7 @@ class LatexCommon(cavedb.docgen_common.Common):
 
     # Note: You must override this method in a subclass
     def get_photo_filename(self, photo):
-        #pylint disable=no-self-use
+        #pylint: disable=no-self-use
         return None
 
 
