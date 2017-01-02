@@ -5,10 +5,11 @@ survey. It eliminates the need for the manual duplication of data, which will
 help to save time and minimize errors. The system dynamically generates
 various types of files based on the data that you upload to the database:
 
-* GIS files: SHP, KML (Google Earth), GPX, Maptech, and images generated using
-  Mapserver with your cave locations and cave lineplots overlayed onto them.
+* GIS files: SHP, KML (Google Earth), GPX, MXF (Maptech), and images generated
+  using Mapserver with your cave locations and cave lineplots overlayed onto
+  them.
 * A PDF that is suitable for publication.
-* ZIP file whose contents include selects photos, maps, and references. All of
+* ZIP file whose contents include select photos, maps, and references. All of
   the filenames are standardized to a common naming convention. The contents of
   this ZIP file can be written to a CD or DVD and included with the book.
 * To-do list
@@ -18,8 +19,8 @@ This significantly reduces the hassle of formatting the book and allows the user
 to concentrate on the collection of data.
 
 This project is currently used by the West Virginia Speleological Survey
-to manage the cave data within the state. The web interface is only
-available to its members.
+to manage over 5,000 cave and karst features within the state. The web interface
+is only available to its members.
 
 
 ## Sample Bulletin
@@ -70,7 +71,7 @@ in the [screenshots](screenshots) directory.
   the SECRET_KEY setting to random data if you are running the server
   on a non-loopback interface.
 * Install the sample data: `./sample-bulletin/populate-sample-bulletin.sh`. Be sure
-  to read the comments in the file and make any appropriate changes.
+  to read the comments in the file and make any appropriate changes before running.
 * Start the server: `make run`. The server will only listen to the
   loopback interface. Use `make runRemote` to have it bind to
   all network interfaces. The latter is useful if you are testing
