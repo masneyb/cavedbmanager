@@ -1,9 +1,9 @@
-* Don't allow negative rotation
 * lat-long conversion from dd mm ss does not work
+* Large number of entrances on a single feature will cause a PDF formatting error
+* Dimension too large error: feature_attachments/9422/photos/McFerrin.jpg, feature_attachments/9760/photos/Rimstone_Falls.jpg
+* Don't allow negative rotation
 * Only allow JPG, PNG and PDFs on feature photos
 * Add units field to length and depth on web interface
-* Dimension too large error: feature_attachments/9422/photos/McFerrin.jpg, feature_attachments/9760/photos/Rimstone_Falls.jpg
-* Large number of entrances on a single feature will cause a PDF formatting error
 * Automatically generate the survey ID field
 * Add 11 reasons a cave can be significant to WVASS
 * Remove bulletin id off of attachment filenames
