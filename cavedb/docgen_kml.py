@@ -69,3 +69,7 @@ class Kml(cavedb.docgen_common.Common):
         self.kmlfile.write('</kml>\n')
         self.kmlfile.close()
 
+
+    def create_html_download_urls(self):
+        return self.create_url('/kml', 'Google Earth (KML)', \
+                               cavedb.utils.get_kml_filename(self.bulletin.id))

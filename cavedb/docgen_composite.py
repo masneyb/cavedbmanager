@@ -142,3 +142,12 @@ class Composite(cavedb.docgen_common.Common):
 
         return ret
 
+
+    def create_html_download_urls(self):
+        ret = ''
+        for composite in self.composites:
+            composite_ret = composite.create_html_download_urls()
+            if composite_ret:
+                ret = composite_ret + ret
+
+        return ret

@@ -14,6 +14,7 @@
 
 import os
 import os.path
+import cavedb.settings
 
 class Common(object):
     def __init__(self, bulletin):
@@ -110,6 +111,18 @@ class Common(object):
 
     def generate_buildscript(self):
         return None
+
+
+    def create_html_download_urls(self):
+        return None
+
+
+    def create_url(self, prefix, description, localfile):
+        url = '%sbulletin/%s%s' % (cavedb.settings.MEDIA_URL, self.bulletin.id, prefix)
+        return '<a href="%s">%s</a> [%s]<br/>\n' % \
+                   (url, description, cavedb.utils.get_file_size(localfile))
+
+
 
 
 def create_directory(outdir):

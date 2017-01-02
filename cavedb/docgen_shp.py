@@ -106,6 +106,10 @@ class Shp(cavedb.docgen_gis_common.GisCommon):
         return self.buildscript
 
 
+    def create_html_download_urls(self):
+        return self.create_url('/shp', 'Shapefile (SHP)', self.shp_zip_file)
+
+
 def create_epsg_4326_prjfile(prjfile):
     with open(prjfile, 'w') as output:
         output.write('GEOGCS["WGS 84",' + \

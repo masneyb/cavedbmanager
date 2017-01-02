@@ -28,3 +28,7 @@ class LatexLetterBW(cavedb.docgen_latex_common.LatexCommon):
     def get_photo_filename(self, photo):
         return cavedb.docgen_latex_common.get_bw_photo_filename(photo)
 
+
+    def create_html_download_urls(self):
+        return self.create_url('/pdf', 'PDF (B/W)', \
+                               cavedb.utils.get_pdf_filename(self.bulletin.id))

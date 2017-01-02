@@ -40,3 +40,8 @@ class Mxf(cavedb.docgen_common.Common):
                             self.number, entrance.elevation_ft))
 
         self.number = self.number + 1
+
+
+    def create_html_download_urls(self):
+        return self.create_url('/mxf', 'Maptech (MXF)', \
+                               cavedb.utils.get_mxf_filename(self.bulletin.id))

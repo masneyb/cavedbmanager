@@ -121,3 +121,7 @@ class Text(cavedb.docgen_common.Common):
                             (ref.author, ref.title, ref.book, ref.volume, ref.number, ref.pages, \
                              ref.url, ref.date, ref.extra))
 
+
+    def create_html_download_urls(self):
+        return self.create_url('/text', 'Text (TXT)', \
+                               cavedb.utils.get_text_filename(self.bulletin.id))

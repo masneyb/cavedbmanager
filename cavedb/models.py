@@ -12,16 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from os.path import isfile, getmtime
 import os
 import re
-from time import strftime, localtime
+import time
 from django.contrib.auth.models import User
 from django.db import models
 from cavedb.middleware import get_request_uri, get_valid_bulletins
 import cavedb.perms
-from cavedb import settings
-from cavedb.utils import get_file_size
+import cavedb.settings
 import cavedb.utils
 
 DATUM_CHOICES = (
@@ -155,34 +153,34 @@ class Bulletin(models.Model):
         filename = cavedb.utils.get_build_log_filename(self.id)
 
         try:
-            mtime = getmtime(filename)
+            mtime = os.path.getmtime(filename)
         except os.error:
             return None
 
-        return localtime(mtime)
+        return time.localtime(mtime)
 
     def get_bulletin_mod_date_str(self):
         mtime = self.get_bulletin_mod_date()
         if mtime is None:
             return None
 
-        return strftime("%Y-%m-%d %H:%M:%S", mtime)
+        return time.strftime("%Y-%m-%d %H:%M:%S", mtime)
 
     def is_document_build_in_process(self):
         lockfile = cavedb.utils.get_build_lock_file(self.id)
-        return isfile(lockfile)
+        return os.path.isfile(lockfile)
 
     def generate_doc_links(self):
         if not cavedb.perms.is_bulletin_docs_allowed(self.id):
             return ''
 
-        base_url = '%sbulletin/%s' % (settings.MEDIA_URL, self.id)
+        base_url = '%sbulletin/%s' % (cavedb.settings.MEDIA_URL, self.id)
         if self.is_document_build_in_process():
             return 'Documents are currently being regenerated. ' + \
                    'Please check back in about 10 minutes. ' + \
                    'It will take longer if some of the GIS maps need to be regenerated.'
 
-        regen_url = '%sbulletin/%s/generate' % (settings.MEDIA_URL, self.id)
+        regen_url = '%sbulletin/%s/generate' % (cavedb.settings.MEDIA_URL, self.id)
 
         mtime = self.get_bulletin_mod_date_str()
         if mtime is None:
@@ -200,30 +198,10 @@ class Bulletin(models.Model):
 
             return 'The documents were generated on %s. %s<br/><br/>\n' % \
                    (mtime, gen_txt) + \
-                   '<a href="%s/pdf">PDF (B/W)</a> [%s]<br/>' % \
-                   (base_url, get_file_size(cavedb.utils.get_pdf_filename(self.id))) + \
-                   '<a href="%s/color_pdf">PDF (Color)</a> [%s]<br/>' % \
-                   (base_url, get_file_size(cavedb.utils.get_color_pdf_filename(self.id))) + \
-                   '<a href="%s/draft_pdf">Draft PDF (No images)</a> [%s]<br/>' % \
-                   (base_url, get_file_size(cavedb.utils.get_draft_pdf_filename(self.id))) + \
-                   '<a href="%s/todo">TODO TXT</a> [%s]<br/>' % \
-                   (base_url, get_file_size(cavedb.utils.get_todo_txt_filename(self.id))) + \
-                   '<a href="%s/mxf">Maptech File (MXF)</a> [%s]<br/>' % \
-                   (base_url, get_file_size(cavedb.utils.get_mxf_filename(self.id))) + \
-                   '<a href="%s/csv">Spreadsheet (CSV)</a> [%s]<br/>' % \
-                   (base_url, get_file_size(cavedb.utils.get_csv_filename(self.id))) + \
-                   '<a href="%s/kml">Google Earth (KML)</a> [%s]<br/>' % \
-                   (base_url, get_file_size(cavedb.utils.get_kml_filename(self.id))) + \
-                   '<a href="%s/text">Text (TXT)</a> [%s]<br/>' % \
-                   (base_url, get_file_size(cavedb.utils.get_text_filename(self.id))) + \
-                   '<a href="%s/gpx">GPS Unit (GPX)</a> [%s]<br/>' % \
-                   (base_url, get_file_size(cavedb.utils.get_gpx_filename(self.id))) + \
-                   '<a href="%s/shp">Shapefile (SHP)</a> [%s]<br/>' % \
-                   (base_url, get_file_size(cavedb.utils.get_shp_zip_filename(self.id))) + \
-                   '<a href="%s/dvd">Supplemental DVD (ZIP)</a> [%s]<br/>' % \
-                   (base_url, get_file_size(cavedb.utils.get_dvd_filename(self.id))) + \
+                   cavedb.generate_docs.get_bulletin_download_links(self) + \
                    '<a href="%s/log">Build Log</a> [%s]' % \
-                   (base_url, get_file_size(cavedb.utils.get_build_log_filename(self.id)))
+                   (base_url, \
+                    cavedb.utils.get_file_size(cavedb.utils.get_build_log_filename(self.id)))
 
 
     generate_doc_links.short_description = 'Documents'
@@ -238,8 +216,8 @@ class Bulletin(models.Model):
         for region in BulletinRegion.objects.filter(bulletin__id=self.id):
             for gismap in GisMap.objects.all():
                 regionstr += '<a href="%sbulletin/%s/region/%s/map/%s">%s %s</a><br/>\n' % \
-                               (settings.MEDIA_URL, self.id, region.id, gismap.name, gismap.name, \
-                                region.region_name)
+                               (cavedb.settings.MEDIA_URL, self.id, region.id, gismap.name, \
+                                gismap.name, region.region_name)
             regionstr += '<br/>\n'
 
         return regionstr

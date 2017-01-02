@@ -54,3 +54,7 @@ class Gpx(cavedb.docgen_common.Common):
         self.gpxfile.write('</gpx>\n')
         self.gpxfile.close()
 
+
+    def create_html_download_urls(self):
+        return self.create_url('/gpx', 'GPS Unit (GPX)', \
+                               cavedb.utils.get_gpx_filename(self.bulletin.id))

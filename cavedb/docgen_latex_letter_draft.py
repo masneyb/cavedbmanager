@@ -28,3 +28,7 @@ class LatexLetterDraft(cavedb.docgen_latex_common.LatexCommon):
     def get_photo_filename(self, photo):
         return cavedb.docgen_latex_common.get_bw_photo_filename(photo)
 
+
+    def create_html_download_urls(self):
+        return self.create_url('/draft_pdf', 'Draft PDF (No Images)', \
+                               cavedb.utils.get_draft_pdf_filename(self.bulletin.id))

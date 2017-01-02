@@ -94,3 +94,7 @@ class Dvd(cavedb.docgen_common.Common):
 
         return ret
 
+
+    def create_html_download_urls(self):
+        return self.create_url('/dvd', 'Supplemental DVD (ZIP)', \
+                               cavedb.utils.get_dvd_filename(self.bulletin.id))

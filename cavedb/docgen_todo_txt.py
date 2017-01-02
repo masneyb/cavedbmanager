@@ -44,3 +44,7 @@ class TodoTxt(cavedb.docgen_common.Common):
     def close(self):
         self.todofile.close()
 
+
+    def create_html_download_urls(self):
+        return self.create_url('/todo', 'TODO (TXT)', \
+                               cavedb.utils.get_todo_txt_filename(self.bulletin.id))

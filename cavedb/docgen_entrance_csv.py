@@ -66,3 +66,7 @@ class EntranceCsv(cavedb.docgen_common.Common):
     def close(self):
         self.csvfile.close()
 
+
+    def create_html_download_urls(self):
+        return self.create_url('/csv', 'Spreadsheet (CSV)', \
+                               cavedb.utils.get_csv_filename(self.bulletin.id))

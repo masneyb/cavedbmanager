@@ -28,3 +28,7 @@ class LatexLetterColor(cavedb.docgen_latex_common.LatexCommon):
     def get_photo_filename(self, photo):
         return cavedb.docgen_latex_common.get_color_photo_filename(photo)
 
+
+    def create_html_download_urls(self):
+        return self.create_url('/color_pdf', 'PDF (Color)', \
+                               cavedb.utils.get_color_pdf_filename(self.bulletin.id))
