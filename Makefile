@@ -13,5 +13,8 @@ runRemote:
 pylint:
 	pylint --load-plugins pylint_django --disable=missing-docstring,locally-disabled cavedb/*.py
 
+test:
+	python -m unittest discover
+
 clean:
 	find . -name "*.pyc" | xargs rm -f
