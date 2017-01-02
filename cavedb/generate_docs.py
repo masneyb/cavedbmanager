@@ -19,7 +19,7 @@ import resource
 import subprocess
 from zipfile import ZipFile
 import osgeo.osr
-from django.conf import settings
+import cavedb.settings
 from django.http import HttpResponseRedirect, Http404
 import cavedb.models
 import cavedb.utils
@@ -115,7 +115,7 @@ def write_bulletin_files(bulletin):
 
 
 def add_gis_lineplot(lineplot, gisdir, lineplot_type, outputter):
-    zipfile_name = '%s/%s' % (settings.MEDIA_ROOT, lineplot.attach_zip)
+    zipfile_name = '%s/%s' % (cavedb.settings.MEDIA_ROOT, lineplot.attach_zip)
 
     if not os.path.isdir(gisdir):
         os.makedirs(gisdir)
@@ -148,7 +148,7 @@ def write_gis_section(bulletin_id, outputter):
     # Expand cave and surface lineplots
     for lineplot in cavedb.models.BulletinGisLineplot.objects.filter(bulletin__id=bulletin_id):
         gisdir = '%s/bulletins/bulletin_%s/output/lineplots/bulletin_lineplot_%s' % \
-                 (settings.MEDIA_ROOT, lineplot.bulletin.id, lineplot.id)
+                 (cavedb.settings.MEDIA_ROOT, lineplot.bulletin.id, lineplot.id)
         add_gis_lineplot(lineplot, gisdir, 'surface', outputter)
 
 
@@ -156,7 +156,8 @@ def write_gis_section(bulletin_id, outputter):
        .filter(feature__bulletin_region__bulletin__id=bulletin_id):
 
         gisdir = '%s/bulletins/bulletin_%s/output/lineplots/feature_lineplot_%s' % \
-                 (settings.MEDIA_ROOT, lineplot.feature.bulletin_region.bulletin.id, lineplot.id)
+                 (cavedb.settings.MEDIA_ROOT, lineplot.feature.bulletin_region.bulletin.id, \
+                  lineplot.id)
         add_gis_lineplot(lineplot, gisdir, 'underground', outputter)
 
     outputter.end_gis_layers()
@@ -402,12 +403,12 @@ def generate_bulletin(request, bulletin_id):
         raise Http404
 
     bulletin = bulletins[0]
-    basedir = '%s/bulletins/bulletin_%s' % (settings.MEDIA_ROOT, bulletin_id)
+    basedir = '%s/bulletins/bulletin_%s' % (cavedb.settings.MEDIA_ROOT, bulletin_id)
 
     write_bulletin_files(bulletin)
     run_buildscript_wrapper(bulletin_id, basedir)
 
-    return HttpResponseRedirect('%sadmin/cavedb/bulletin/' % (settings.CONTEXT_PATH))
+    return HttpResponseRedirect('%sadmin/cavedb/bulletin/' % (cavedb.settings.CONTEXT_PATH))
 
 
 def generate_bulletin_source(request, bulletin_id):
@@ -421,7 +422,7 @@ def generate_bulletin_source(request, bulletin_id):
 
     write_bulletin_files(bulletins[0])
 
-    return HttpResponseRedirect('%sadmin/cavedb/bulletin/' % (settings.CONTEXT_PATH))
+    return HttpResponseRedirect('%sadmin/cavedb/bulletin/' % (cavedb.settings.CONTEXT_PATH))
 
 def generate_all_bulletin_sources(request):
     for bulletin in cavedb.models.Bulletin.objects.all():
@@ -430,5 +431,5 @@ def generate_all_bulletin_sources(request):
 
         generate_bulletin_source(request, bulletin.id)
 
-    return HttpResponseRedirect('%sadmin/cavedb/bulletin/' % (settings.CONTEXT_PATH))
+    return HttpResponseRedirect('%sadmin/cavedb/bulletin/' % (cavedb.settings.CONTEXT_PATH))
 

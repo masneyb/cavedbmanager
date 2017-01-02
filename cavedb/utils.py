@@ -14,12 +14,12 @@
 
 import math
 from os.path import getsize
-from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from cavedb.middleware import get_current_user
+import cavedb.settings
 
 def get_bulletin_base_dir(bulletin_id):
-    return '%s/bulletins/bulletin_%s' % (settings.MEDIA_ROOT, bulletin_id)
+    return '%s/bulletins/bulletin_%s' % (cavedb.settings.MEDIA_ROOT, bulletin_id)
 
 
 def get_build_script(bulletin_id):

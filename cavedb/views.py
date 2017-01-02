@@ -17,7 +17,7 @@ from mimetypes import guess_type
 from time import strftime
 from os.path import isfile, getsize
 from curses.ascii import isalpha
-from django.conf import settings
+from cavedb import settings
 from django.core.servers.basehttp import FileWrapper
 from django.http import HttpResponse, Http404
 import cavedb.models

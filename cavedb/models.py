@@ -16,7 +16,7 @@ from os.path import isfile, getmtime
 import os
 import re
 from time import strftime, localtime
-from django.conf import settings
+from cavedb import settings
 from django.contrib.auth.models import User
 from django.db import models
 from cavedb.middleware import get_request_uri, get_valid_bulletins
