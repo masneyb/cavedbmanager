@@ -48,50 +48,11 @@ class CavedbCharFormField(forms.CharField):
 
 class CavedbLatLonFormField(forms.DecimalField):
     def clean(self, value):
-        if value is None:
-            return None
-
-        # Check for a Lat/Lon in decimal degrees
-        dec_degree = re.compile(r'^\-*\d{2}\.\d+$')
-        if dec_degree.match(value):
-            return value
-
-        # Check for dd mm ss, with an optional negative sign at the beginning
-        ddmmss = re.compile(r'^(\-*)(\d{2})\s+(\d{2})\s+(\d{2}(\.\d+)*)$')
-        ddmmss_groups = ddmmss.match(value)
-
-        if ddmmss_groups:
-            degrees = ddmmss_groups.group(2)
-            mins = ddmmss_groups.group(3)
-            secs = ddmmss_groups.group(4)
-
-            newvalue = float(degrees) + (float(mins) / 60) + (float(secs) / 3600)
-            if ddmmss_groups.group(1) == '-':
-                newvalue = newvalue * -1
-
-            # FIXME - log old value to database
-            print >> sys.stderr, 'Notice: Converted coordinate %s to %s\n' % (value, newvalue)
-            return str(newvalue)
-
-
-        # Check for dd mm.ss, with an optional negative sign at the beginning
-        ddmm = re.compile(r'^(\-*)(\d{2})\s+(\d{2}(\.\d+)*)$')
-        ddmm_groups = ddmm.match(value)
-
-        if ddmm_groups:
-            degrees = ddmm_groups.group(2)
-            mins = ddmm_groups.group(3)
-
-            newvalue = float(degrees) + (float(mins) / 60)
-            if ddmm_groups.group(1) == '-':
-                newvalue = newvalue * -1
-
-            # FIXME - log old value to database
-            print >> sys.stderr, 'Notice: Converted coordinate %s to %s\n' % (value, newvalue)
-            return str(newvalue)
-
-        raise forms.ValidationError('Invalid coordinate. Supported values are ' + \
-                                    'dd mm ss[.frac sec], dd mm.[ss] and dd.[decimal degrees]')
+        try:
+            return cavedb.utils.convert_lat_lon_to_decimal(value)
+        except:
+            raise forms.ValidationError('Invalid coordinate. Supported values are ' + \
+                                        'dd mm ss[.frac sec], dd mm.[ss] and dd.[decimal degrees]')
 
 
 class CavedbModelAdmin(BaseModelAdmin):

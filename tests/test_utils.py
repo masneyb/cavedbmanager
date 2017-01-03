@@ -22,5 +22,26 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(cavedb.utils.get_normalized_date('Fall 1997'), '1997-10-01')
         self.assertEqual(cavedb.utils.get_normalized_date('Fall/Winter 1997'), '1997-10-01')
 
+
+    def test_convert_lat_lon_to_decimal(self):
+        self.assertEqual(cavedb.utils.convert_lat_lon_to_decimal('39.123456'), '39.123456')
+        self.assertEqual(cavedb.utils.convert_lat_lon_to_decimal('-39.123456'), '-39.123456')
+
+        self.assertEqual(cavedb.utils.convert_lat_lon_to_decimal('39 11 22'), '39.1894444444')
+        self.assertEqual(cavedb.utils.convert_lat_lon_to_decimal('-39 11 22'), '-39.1894444444')
+
+        self.assertEqual(cavedb.utils.convert_lat_lon_to_decimal('39 11 22.4'), '39.1895555556')
+        self.assertEqual(cavedb.utils.convert_lat_lon_to_decimal('-39 11 22.4'), '-39.1895555556')
+
+        self.assertEqual(cavedb.utils.convert_lat_lon_to_decimal('39 11.34567'), '39.1890945')
+        self.assertEqual(cavedb.utils.convert_lat_lon_to_decimal('-39 11.34567'), '-39.1890945')
+
+        self.assertEqual(cavedb.utils.convert_lat_lon_to_decimal(''), None)
+        self.assertEqual(cavedb.utils.convert_lat_lon_to_decimal(None), None)
+
+        self.assertRaises(SyntaxError, cavedb.utils.convert_lat_lon_to_decimal, '39.123a')
+        self.assertRaises(SyntaxError, cavedb.utils.convert_lat_lon_to_decimal, 'invalid')
+
+
 if __name__ == '__main__':
     unittest.main()
