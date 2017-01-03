@@ -66,7 +66,8 @@ in the [screenshots](screenshots) directory.
     the other 7.5 minute quads in West Virginia that are underlain by karst.
 * Install package dependencies:
   * `sudo apt-get install -y python-psycopg2 python-django python-imaging python-dateutil
-     python-gdal texlive texlive-latex-extra python2.7 zip mapserver-bin ttf-freefont make`
+     python-gdal python-pylint-django texlive texlive-latex-extra python2.7 zip mapserver-bin
+     ttf-freefont make`
 * Update your database settings in _cavedb/settings.py_. Be sure to change
   the SECRET_KEY setting to random data if you are running the server
   on a non-loopback interface.
