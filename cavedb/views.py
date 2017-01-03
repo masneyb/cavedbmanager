@@ -108,6 +108,11 @@ def show_log(request, bulletin_id):
     return do_show_bulletin_attachment(request, bulletin_id, localfile, remotefile)
 
 
+def show_all_regions_gis_map(request, bulletin_id, map_name):
+    localfile = cavedb.docgen_gis_maps.get_all_regions_gis_map(bulletin_id, map_name)
+    return do_show_bulletin_attachment(request, bulletin_id, localfile, None)
+
+
 def show_region_gis_map(request, bulletin_id, region_id, map_name):
     localfile = cavedb.docgen_gis_maps.get_region_gis_map(bulletin_id, region_id, map_name)
     return do_show_bulletin_attachment(request, bulletin_id, localfile, None)

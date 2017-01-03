@@ -35,6 +35,8 @@ urlpatterns = [
     url(r'^cavedb/bulletin/all/generate_source$',
         'cavedb.generate_docs.generate_all_bulletin_sources'),
 
+    url(r'^cavedb/bulletin/(?P<bulletin_id>\d+)/map/(?P<map_name>[\w\d\._-]+)$',
+        'cavedb.views.show_all_regions_gis_map'),
     url(r'^cavedb/bulletin/(?P<bulletin_id>\d+)/region/(?P<region_id>\d+)/map/(?P<map_name>[\w\d\._-]+)$',
         'cavedb.views.show_region_gis_map'),
 

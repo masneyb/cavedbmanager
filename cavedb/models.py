@@ -48,6 +48,7 @@ class GisMap(models.Model):
     website_url = models.CharField(max_length=255, null=True, blank=True)
     license_url = models.CharField(max_length=255, null=True, blank=True)
     map_label = models.CharField(max_length=255, null=True, blank=True)
+    show_all_regions_map = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.name
@@ -212,15 +213,29 @@ class Bulletin(models.Model):
         if not cavedb.perms.is_bulletin_gis_maps_allowed(self.id):
             return ''
 
-        regionstr = ''
-        for region in BulletinRegion.objects.filter(bulletin__id=self.id):
-            for gismap in GisMap.objects.all():
-                regionstr += '<a href="%sbulletin/%s/region/%s/map/%s">%s %s</a><br/>\n' % \
-                               (cavedb.settings.MEDIA_URL, self.id, region.id, gismap.name, \
-                                gismap.name, region.region_name)
-            regionstr += '<br/>\n'
+        baseurl = '%sbulletin/%s' % (cavedb.settings.MEDIA_URL, self.id)
+        gismaps = GisMap.objects.all()
 
-        return regionstr
+        ret = ''
+
+        for gismap in gismaps:
+            if not gismap.show_all_regions_map:
+                continue
+
+            ret += '<a href="%s/map/%s">%s All Regions</a><br/>\n' % \
+                   (baseurl, gismap.name, gismap.name)
+
+        ret += '<br/>\n'
+
+        for region in BulletinRegion.objects.filter(bulletin__id=self.id):
+            for gismap in gismaps:
+                ret += '<a href="%s/region/%s/map/%s">%s %s</a><br/>\n' % \
+                               (baseurl, region.id, gismap.name, gismap.name, region.region_name)
+
+            ret += '<br/>\n'
+
+        return ret
+
 
     show_maps.short_description = "GIS Maps"
     show_maps.allow_tags = True

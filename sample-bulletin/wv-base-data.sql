@@ -1,6 +1,6 @@
-INSERT INTO cavedb_gismap VALUES (1,'topo','Contours generated using gdalcontour against the 3 meter digital elevation model.','http://wvgis.wvu.edu/data/dataset.php?ID=261','','There may be some FROs shown on the maps that are not labeled.');
-insert into cavedb_gismap values (3, '2014', 'USDA National Agriculture Imaging Program', 'http://www.fsa.usda.gov/programs-and-services/aerial-photography/imagery-programs/naip-imagery/', 'http://wvgis.wvu.edu/data/dataset.php?ID=461', 'Aerial imagery courtesy of the USDA National Agriculture Imaging Program.');
-insert into cavedb_gismap values (4, 'hillshade', 'Hillshade data generated using gdaldem hillshade against the 3 meter digital elevation model.', 'http://wvgis.wvu.edu/data/dataset.php?ID=261', '', '');
+INSERT INTO cavedb_gismap VALUES (1,'topo','Contours generated using gdalcontour against the 3 meter digital elevation model.','http://wvgis.wvu.edu/data/dataset.php?ID=261','','There may be some FROs shown on the maps that are not labeled.', True);
+insert into cavedb_gismap values (3, '2014', 'USDA National Agriculture Imaging Program', 'http://www.fsa.usda.gov/programs-and-services/aerial-photography/imagery-programs/naip-imagery/', 'http://wvgis.wvu.edu/data/dataset.php?ID=461', 'Aerial imagery courtesy of the USDA National Agriculture Imaging Program.', False);
+insert into cavedb_gismap values (4, 'hillshade', 'Hillshade data generated using gdaldem hillshade against the 3 meter digital elevation model.', 'http://wvgis.wvu.edu/data/dataset.php?ID=261', '', '', False);
 
 alter sequence cavedb_gismap_id_seq restart with 5;
 
