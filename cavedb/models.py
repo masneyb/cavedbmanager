@@ -597,14 +597,8 @@ class FeatureEntrance(models.Model):
                                   'coordinate that you have so that the original coordinate is ' +
                                   'not lost.')
     utmnorth = models.IntegerField('UTM Northing', blank=True, null=True)
-    latitude = LatLonField(blank=True, null=True, decimal_places=9, max_digits=13, \
-                           help_text='You can specify the latitude and longitude in one of the ' +
-                           'following formats: dd mm ss[.frac secs], dd mm.frac mins or dd.frac ' +
-                           'degrees. The coordinate will be automatically converted to the ' +
-                           'format dd.frac degrees.')
-    longitude = LatLonField(blank=True, null=True, decimal_places=9, max_digits=13, \
-                            help_text='Make sure that you remember to put a negative sign at the ' +
-                            'beginning if the cave is in the western hemisphere.')
+    latitude = LatLonField(blank=True, null=True, decimal_places=9, max_digits=13)
+    longitude = LatLonField(blank=True, null=True, decimal_places=9, max_digits=13)
     access_enum = models.CharField("Access", max_length=64, choices=ACCESS_CHOICES, blank=True, \
                                    null=True, db_index=True)
     publish_location = models.BooleanField(null=False, default=True)

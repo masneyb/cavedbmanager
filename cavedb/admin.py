@@ -46,7 +46,14 @@ class CavedbCharFormField(forms.CharField):
             raise forms.ValidationError('All data must be in ASCII format')
 
 
-class CavedbLatLonFormField(forms.DecimalField):
+class CavedbLatLonFormField(forms.CharField):
+    def __init__(self, *args, **kwargs):
+        super(CavedbLatLonFormField, self).__init__( \
+                 help_text='You can specify the latitude and longitude in one of the ' + \
+                           'following formats: dd mm ss[.frac secs], dd mm.frac mins or dd.frac ' + \
+                           'degrees. The coordinate will be automatically converted to the ' + \
+                           'format dd.frac degrees.')
+
     def clean(self, value):
         try:
             return cavedb.utils.convert_lat_lon_to_decimal(value)

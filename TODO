@@ -1,4 +1,3 @@
-* lat-long conversion from dd mm ss does not work
 * Large number of entrances on a single feature will cause a PDF formatting error
 * Dimension too large error: feature_attachments/9422/photos/McFerrin.jpg, feature_attachments/9760/photos/Rimstone_Falls.jpg
 * Don't allow negative rotation
