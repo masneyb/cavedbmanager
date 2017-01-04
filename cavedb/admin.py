@@ -14,8 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import re
-import sys
 from django.contrib.admin.options import BaseModelAdmin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib import admin
