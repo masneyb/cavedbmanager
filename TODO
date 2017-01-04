@@ -1,5 +1,4 @@
 * Large number of entrances on a single feature will cause a PDF formatting error
-* Dimension too large error: feature_attachments/9422/photos/McFerrin.jpg, feature_attachments/9760/photos/Rimstone_Falls.jpg
 * Only allow JPG, PNG and PDFs on feature photos
 * Add units field to length and depth on web interface
 * Automatically generate the survey ID field
