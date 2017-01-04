@@ -577,7 +577,7 @@ class LatexCommon(cavedb.docgen_common.Common):
 
     # Note: You must override this method in a subclass
     def get_photo_filename(self, photo):
-        #pylint: disable=no-self-use
+        #pylint: disable=no-self-use,unused-argument
         return None
 
 
@@ -637,7 +637,7 @@ class LatexCommon(cavedb.docgen_common.Common):
         for alias in cavedb.utils.get_all_feature_alt_names(feature):
             caption = add_caption_hbox(caption, alias)
 
-        for (entrance, coordinates) in self.feature_attrs['entrances']:
+        for (entrance, _) in self.feature_attrs['entrances']:
             if entrance.entrance_name and entrance.entrance_name != feature.name:
                 caption = add_caption_hbox(caption, entrance.entrance_name.strip())
 
