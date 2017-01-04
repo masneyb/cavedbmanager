@@ -223,6 +223,8 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.__writeln(r'\clubpenalty=10000')
         self.__writeln(r'\widowpenalty=10000')
         self.__writeln(r'')
+        self.__writeln(r'\maxdeadcycles=1000')
+        self.__writeln(r'')
         self.__writeln(r'\renewcommand{\thefigure}{}')
         self.__writeln(r'\renewcommand{\figurename}{}')
         self.__writeln(r'')
