@@ -457,6 +457,10 @@ class FeaturePhoto(models.Model):
         ('column', 'Column'), ('halfpage', '1/2 Page'), ('fullpage', 'Full Page'),
     )
 
+    ROTATE_CHOICES = (
+        (0, 0), (90, 90),
+    )
+
     feature = models.ForeignKey('Feature')
     filename = models.FileField('Primary Photo (color if you have it)', \
                                 upload_to=feature_photo_upload_to)
@@ -470,7 +474,8 @@ class FeaturePhoto(models.Model):
     show_in_pdf = models.BooleanField('Show in PDF', null=False, default=True)
     include_on_dvd = models.BooleanField('Include on DVD', null=False, default=True)
     show_at_end = models.BooleanField('Show at End', null=False, default=False)
-    rotate_degrees = models.IntegerField('Rotate X degrees in PDF', default=0)
+    rotate_degrees = models.IntegerField('Rotate X degrees in PDF', default=0, \
+                                         choices=ROTATE_CHOICES)
     scale = models.CharField('Size in PDF', max_length=64, choices=PHOTO_SCALE_CHOICES, \
                              default='column')
     sort_order = models.IntegerField(default=1)
