@@ -29,13 +29,14 @@ class EntranceCsv(cavedb.docgen_common.Common):
         self.csvfile = open(filename, 'w')
         self.csvwriter = csv.writer(self.csvfile, delimiter=',')
 
-        self.csvwriter.writerow(['internal_id', 'locid', 'survey_prefix', 'survey_suffix',
-                                 'survey_id', 'name', 'alternate_names', 'type', 'coord_acquision',
-                                 'wgs84_lon', 'wgs84_lat', 'nad27_utmzone', 'nad27_utmeast',
-                                 'nad27_utmnorth', 'elevation', 'region', 'county', 'quad',
-                                 'length', 'depth', 'length_based_on', 'significant',
-                                 'access enum', 'access descr', 'todo enum', 'todo descr',
-                                 'source', 'gislbl_pri'])
+        self.csvwriter.writerow(['internal_id', 'locid', 'survey_id', 'name', 'alternate_names',
+                                 'type', 'coord_acquision', 'wgs84_lon', 'wgs84_lat',
+                                 'nad27_utmzone', 'nad27_utmeast', 'nad27_utmnorth', 'elevation',
+                                 'region', 'county', 'quad', 'length', 'depth', 'length_based_on',
+                                 'significant', 'access enum', 'access descr', 'todo enum',
+                                 'todo descr', 'source', 'description', 'history',
+                                 'internal_history', 'biology', 'geology_hydrology', 'hazards',
+                                 'gislbl_pri'])
 
 
     def feature_entrance(self, feature, entrance, coordinates):
@@ -48,8 +49,7 @@ class EntranceCsv(cavedb.docgen_common.Common):
         else:
             gislbl_pri = 8
 
-        self.csvwriter.writerow([feature.id, entrance.id, feature.survey_county.survey_short_name,
-                                 feature.survey_id,
+        self.csvwriter.writerow([feature.id, entrance.id,
                                  feature.survey_county.survey_short_name + feature.survey_id,
                                  name, feature.alternate_names, feature.feature_type,
                                  entrance.coord_acquision, coordinates.wgs84_lon,
@@ -60,7 +60,10 @@ class EntranceCsv(cavedb.docgen_common.Common):
                                  entrance.quad.quad_name if entrance.quad else '',
                                  feature.length_ft, feature.depth_ft, feature.length_based_on,
                                  feature.is_significant, feature.access_enum, feature.access_descr,
-                                 feature.todo_enum, feature.todo_descr, feature.source, gislbl_pri])
+                                 feature.todo_enum, feature.todo_descr, feature.source,
+                                 feature.description, feature.history, feature.internal_history,
+                                 feature.biology, feature.geology_hydrology,
+                                 feature.hazards, gislbl_pri])
 
 
     def close(self):
