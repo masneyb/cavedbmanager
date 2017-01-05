@@ -21,6 +21,8 @@ class Dvd(cavedb.docgen_common.Common):
     def __init__(self, bulletin):
         cavedb.docgen_common.Common.__init__(self, bulletin)
         self.files = {}
+        self.files['include_on_dvd'] = {}
+        self.files['exclude_from_dvd'] = {}
 
         # Tuple contains (Directory Name, File Suffix)
         self.phototypes = {}
@@ -30,24 +32,41 @@ class Dvd(cavedb.docgen_common.Common):
         self.phototypes['surface_picture'] = ('Surface Photos', 'Surface Photo')
         self.phototypes['drawing'] = ('Drawings', 'Drawing')
         self.phototypes['other'] = ('Others', 'Other')
+        self.phototypes['attachment'] = ('Attachments', 'Attachment')
 
 
     def feature_photo(self, feature, photo):
         if not photo.include_on_dvd:
             return
 
-        if photo.type not in self.files:
-            self.files[photo.type] = {}
-
-        if feature.name not in self.files[photo.type]:
-            self.files[photo.type][feature.name] = []
-
         meta = {}
         meta['src'] = '%s/%s' % (cavedb.settings.MEDIA_ROOT, photo.filename)
         if photo.author:
             meta['author'] = photo.author
 
-        self.files[photo.type][feature.name].append(meta)
+        toplevel_dir = 'include_on_dvd' if photo.include_on_dvd else 'exclude_from_dvd'
+        self.__add_meta(toplevel_dir, photo.type, feature.name, meta)
+
+
+    def feature_attachment(self, feature, attachment):
+        meta = {}
+        meta['src'] = '%s/%s' % (cavedb.settings.MEDIA_ROOT, attachment.attachment)
+        if attachment.author:
+            meta['author'] = attachment.author
+        if attachment.user_visible_file_suffix:
+            meta['user_visible_file_suffix'] = attachment.user_visible_file_suffix
+
+        self.__add_meta('exclude_from_dvd', 'attachment', feature.name, meta)
+
+
+    def __add_meta(self, toplevel_dir, photo_type, feature_name, meta):
+        if photo_type not in self.files[toplevel_dir]:
+            self.files[toplevel_dir][photo_type] = {}
+
+        if feature_name not in self.files[toplevel_dir][photo_type]:
+            self.files[toplevel_dir][photo_type][feature_name] = []
+
+        self.files[toplevel_dir][photo_type][feature_name].append(meta)
 
 
     def generate_buildscript(self):
@@ -64,31 +83,34 @@ class Dvd(cavedb.docgen_common.Common):
 
             ret += 'mv "%s" "%s/"\n' % (readme_file, dvd_tmp_dir)
 
-        for photo_type in self.files.keys():
-            dvd_dir = '%s/%s' % (dvd_tmp_dir, self.phototypes[photo_type][0])
-            ret += 'mkdir -p "%s"\n' % (dvd_dir)
+        for toplevel_dir in self.files.keys():
+            for photo_type in self.files[toplevel_dir].keys():
+                dvd_dir = '%s/%s/%s' % (dvd_tmp_dir, toplevel_dir, self.phototypes[photo_type][0])
+                ret += 'mkdir -p "%s"\n' % (dvd_dir)
 
-            for feature_name in self.files[photo_type].keys():
-                num_photos = len(self.files[photo_type][feature_name])
-                photo_num = 1
+                for feature_name in self.files[toplevel_dir][photo_type].keys():
+                    num_photos = len(self.files[toplevel_dir][photo_type][feature_name])
+                    photo_num = 1
 
-                for photo_meta in self.files[photo_type][feature_name]:
-                    destfile = '%s/%s %s' % (dvd_dir, feature_name, self.phototypes[photo_type][1])
+                    for photo_meta in self.files[toplevel_dir][photo_type][feature_name]:
+                        destfile = '%s/%s %s' % \
+                                   (dvd_dir, feature_name, self.phototypes[photo_type][1])
 
-                    if num_photos > 1:
-                        destfile += ' - %02d of %02d' % (photo_num, num_photos)
-                        photo_num = photo_num + 1
+                        if num_photos > 1:
+                            destfile += ' - %02d of %02d' % (photo_num, num_photos)
+                            photo_num = photo_num + 1
 
-                    if 'author' in photo_meta:
-                        destfile += ' - %s' % (photo_meta['author'])
+                        if 'author' in photo_meta:
+                            destfile += ' - %s' % (photo_meta['author'])
 
-                    extpos = photo_meta['src'].rfind('.')
-                    destfile += photo_meta['src'][extpos:]
+                        extpos = photo_meta['src'].rfind('.')
+                        destfile += photo_meta['src'][extpos:]
 
-                    ret += 'ln "%s" "%s"\n' % (photo_meta['src'], destfile)
+                        ret += 'ln "%s" "%s"\n' % (photo_meta['src'], destfile)
 
         dvd_zip_file = get_dvd_filename(self.bulletin.id)
         ret += 'cd %s\n' % (output_base_dir)
+        ret += 'rm -f "%s"\n' % (dvd_zip_file)
         ret += 'zip -r "%s" "%s"\n' % (dvd_zip_file, os.path.basename(dvd_tmp_dir))
         ret += 'rm -rf "%s/"\n' % (dvd_tmp_dir)
 
