@@ -106,7 +106,8 @@ class Shp(cavedb.docgen_gis_common.GisCommon):
                            'ogr2ogr -overwrite -f "ESRI Shapefile" "%s" "%s"\n' % \
                            (self.shp_dir, extents_ovffile) + \
                            'cd %s/..\n' % (self.shp_dir) + \
-                           'zip -r %s %s/\n' % \
+                           'rm -rf "%s"\n' % (self.shp_zip_file) + \
+                           'zip -r "%s" "%s"/\n' % \
                            (self.shp_zip_file, os.path.basename(self.shp_dir))
 
 
