@@ -27,21 +27,6 @@ class Shp(cavedb.docgen_gis_common.GisCommon):
         cavedb.docgen_common.create_directory(self.shp_dir)
 
 
-    def close(self):
-        locs_ovffile = self.write_locations_ovf()
-
-        extents_csvfile = self.write_region_extents_csv()
-        extents_ovffile = self.write_region_extents_ovf(extents_csvfile)
-
-        self.buildscript = 'ogr2ogr -overwrite -f "ESRI Shapefile" "%s" "%s"\n' % \
-                           (self.shp_dir, locs_ovffile) + \
-                           'ogr2ogr -overwrite -f "ESRI Shapefile" "%s" "%s"\n' % \
-                           (self.shp_dir, extents_ovffile) + \
-                           'cd %s/..\n' % (self.shp_dir) + \
-                           'zip %s %s/*.{shp,shx,dbf,prj,csv}\n' % \
-                           (self.shp_zip_file, os.path.basename(self.shp_dir))
-
-
     def write_region_extents_csv(self):
         csvfile = '%s/%s.csv' % \
                   (self.shp_dir, cavedb.docgen_gis_common.REGION_EXTENTS_SHP_LAYER_NAME)
@@ -110,6 +95,21 @@ class Shp(cavedb.docgen_gis_common.GisCommon):
         return extents_ovffile
 
 
+    def close(self):
+        locs_ovffile = self.write_locations_ovf()
+
+        extents_csvfile = self.write_region_extents_csv()
+        extents_ovffile = self.write_region_extents_ovf(extents_csvfile)
+
+        self.buildscript = 'ogr2ogr -overwrite -f "ESRI Shapefile" "%s" "%s"\n' % \
+                           (self.shp_dir, locs_ovffile) + \
+                           'ogr2ogr -overwrite -f "ESRI Shapefile" "%s" "%s"\n' % \
+                           (self.shp_dir, extents_ovffile) + \
+                           'cd %s/..\n' % (self.shp_dir) + \
+                           'zip -r %s %s/\n' % \
+                           (self.shp_zip_file, os.path.basename(self.shp_dir))
+
+
     def generate_buildscript(self):
         return self.buildscript
 
@@ -130,6 +130,4 @@ def create_epsg_4326_prjfile(prjfile):
 
 
 def get_shp_zip_filename(bulletin_id):
-    return '%s/%s.zip' % \
-           (cavedb.docgen_gis_common.get_shp_directory(bulletin_id), \
-            cavedb.docgen_gis_common.LOCATIONS_SHP_LAYER_NAME)
+    return '%s/shp.zip' % (cavedb.utils.get_output_base_dir(bulletin_id))

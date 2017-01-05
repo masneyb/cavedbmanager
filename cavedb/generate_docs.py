@@ -18,6 +18,7 @@ import os.path
 import resource
 import subprocess
 from zipfile import ZipFile
+import csv
 import osgeo.osr
 from django.http import HttpResponseRedirect, Http404
 from cavedb.docgen_composite import Composite
@@ -155,20 +156,35 @@ def write_gis_section(bulletin_id, outputter):
     for layer in cavedb.models.GisLayer.objects.all():
         outputter.gis_layer(layer)
 
+    lineplots_dir = '%s/lineplots' % (cavedb.docgen_gis_common.get_shp_directory(bulletin_id))
+    if not os.path.isdir(lineplots_dir):
+        os.makedirs(lineplots_dir)
+
+    # Write out a CSV file that contains a description of all of the lineplots
+    # These lineplots will be included with the SHP ZIP file.
+    csvfile = open('%s/lineplots.csv' % (lineplots_dir), 'w')
+    csvwriter = csv.writer(csvfile, delimiter=',')
+    csvwriter.writerow(['id', 'type', 'description', 'datum', 'coordinate_system'])
+
     # Expand cave and surface lineplots
     for lineplot in cavedb.models.BulletinGisLineplot.objects.filter(bulletin__id=bulletin_id):
-        gisdir = '%s/bulletins/bulletin_%s/output/lineplots/bulletin_lineplot_%s' % \
-                 (cavedb.settings.MEDIA_ROOT, lineplot.bulletin.id, lineplot.id)
+        gisdir = '%s/bulletin_lineplot_%s' % (lineplots_dir, lineplot.id)
         add_gis_lineplot(lineplot, gisdir, 'surface', outputter)
+
+        csvwriter.writerow(['bulletin_%s' % (lineplot.id), 'surface', lineplot.description, \
+                            lineplot.datum, lineplot.coord_sys])
 
 
     for lineplot in cavedb.models.FeatureGisLineplot.objects \
        .filter(feature__bulletin_region__bulletin__id=bulletin_id):
 
-        gisdir = '%s/bulletins/bulletin_%s/output/lineplots/feature_lineplot_%s' % \
-                 (cavedb.settings.MEDIA_ROOT, lineplot.feature.bulletin_region.bulletin.id, \
-                  lineplot.id)
+        gisdir = '%s/feature_lineplot_%s' % (lineplots_dir, lineplot.id)
         add_gis_lineplot(lineplot, gisdir, 'underground', outputter)
+
+        csvwriter.writerow(['feature_%s' % (lineplot.id), 'underground', lineplot.description, \
+                            lineplot.datum, lineplot.coord_sys])
+
+    csvfile.close()
 
     outputter.end_gis_layers()
 
