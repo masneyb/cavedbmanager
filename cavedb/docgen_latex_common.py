@@ -464,23 +464,60 @@ class LatexCommon(cavedb.docgen_common.Common):
             self.__writeln(r'\textit{Unknown coordinate acquisition method.} \\*')
 
 
-    def __show_feature_header(self, feature):
-        self.__writeln(r'\vspace{1ex}')
-        self.__writeln(r'')
+
+    def __show_feature_tikz_header(self, feature):
         self.__writeln(r'\begin{tikzpicture}')
         self.__writeln(r'\node [mybox] (box){')
         self.__writeln(r'\begin{minipage}[b]{0.95\columnwidth}')
         self.__writeln(r'\phantomsection')
         self.__writeln(r'\label{feature' + str(feature.id) + r'}')
 
-        self.__feature_names(feature)
 
+    def __show_feature_tikz_footer(self, feature):
+        self.__writeln(r'\vspace{-2ex}')
+        self.__writeln(r'\end{minipage}')
+        self.__writeln(r'};')
+        self.__writeln(r'\index{' + escape(feature.name) + '|(}')
+        self.__writeln(r'\end{tikzpicture}')
+
+
+    # Allow overriding this number since this number is currently tuned for letter paper.
+    # This will need to change for other types of paper.
+    def get_max_entrances_on_col(self):
+        #pylint: disable=no-self-use
+        return 9
+
+
+    def __show_feature_header(self, feature):
+        max_entrances = self.get_max_entrances_on_col()
+        if len(self.feature_attrs['entrances']) >= max_entrances:
+            # If there are more than 9 entrances, then flush out all of the existing
+            # floats and start the cave on a new page.
+            self.__writeln(r'\clearpage')
+        else:
+            self.__writeln(r'\vspace{1ex}')
+
+        self.__writeln(r'')
+
+        self.__show_feature_tikz_header(feature)
+        self.__feature_names(feature)
         self.__feature_length_and_depth(feature)
 
         has_coordinates = False
         for counter, (entrance, coordinates) in enumerate(self.feature_attrs['entrances']):
             if counter > 0:
-                self.__writeln(r' \\')
+                # Check to see if we need to split up the entrances into separate boxes.
+                # Otherwise, a single large box will just overrun the entire column. Treat
+                # the cave name as an additional entrance so that both columns are roughly
+                # equal.
+                if (counter + 1) % max_entrances == 0:
+                    self.__show_feature_tikz_footer(feature)
+                    self.__writeln(r'')
+                    self.__writeln(r'\newpage')
+                    self.__writeln(r'')
+                    self.__show_feature_tikz_header(feature)
+                else:
+                    self.__writeln(r' \\')
 
             if entrance.entrance_name and entrance.entrance_name != feature.name:
                 self.__writeln(r'\textit{\textbf{' + escape(entrance.entrance_name) + r'}} \\*')
@@ -492,11 +529,7 @@ class LatexCommon(cavedb.docgen_common.Common):
         if not has_coordinates:
             self.__writeln(r'\textit{Coordinates are not available.} \\*')
 
-        self.__writeln(r'\vspace{-2ex}')
-        self.__writeln(r'\end{minipage}')
-        self.__writeln(r'};')
-        self.__writeln(r'\index{' + escape(feature.name) + '|(}')
-        self.__writeln(r'\end{tikzpicture}')
+        self.__show_feature_tikz_footer(feature)
         self.__writeln(r'\nopagebreak[4]')
 
 
