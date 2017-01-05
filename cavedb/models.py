@@ -16,6 +16,7 @@ import os
 import re
 import time
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from django.db import models
 from cavedb.middleware import get_request_uri, get_valid_bulletins
 import cavedb.perms
@@ -446,6 +447,16 @@ def feature_photo_upload_to(instance, filename):
                filename.replace(' ', '_').replace('&', 'and').replace('\'', '').replace('#', ''))
 
 
+def photo_filename_validator(filename):
+    if not filename:
+        return
+
+    lower_filename = filename.name.lower()
+    if not lower_filename.endswith(('.jpg', '.png', '.pdf')):
+        raise ValidationError('You can only specify file types of JPG, PNG, and PDF. If you ' + \
+                              'have a non-image, then put it in the Attachments section below.')
+
+
 class FeaturePhoto(models.Model):
     PHOTO_TYPE_CHOICES = (
         ('map', 'Map'), ('entrance_picture', 'Entrance Photo'),
@@ -463,9 +474,11 @@ class FeaturePhoto(models.Model):
 
     feature = models.ForeignKey('Feature')
     filename = models.FileField('Primary Photo (color if you have it)', \
-                                upload_to=feature_photo_upload_to)
+                                upload_to=feature_photo_upload_to, \
+                                 validators=[photo_filename_validator])
     secondary_filename = models.FileField('Optional Secondary Photo (b/w)', \
-                                          upload_to=feature_photo_upload_to, null=True, blank=True)
+                                          upload_to=feature_photo_upload_to, null=True, \
+                                          blank=True, validators=[photo_filename_validator])
     type = models.CharField(max_length=64, choices=PHOTO_TYPE_CHOICES)
     caption = models.CharField(max_length=255, null=True, blank=True)
     people_shown = models.CharField(max_length=255, null=True, blank=True)
