@@ -106,7 +106,7 @@ class Shp(cavedb.docgen_gis_common.GisCommon):
         extents_csv_filename = self.write_region_extents_csv()
         extents_ovf_filename = self.write_region_extents_ovf(extents_csv_filename)
 
-        self.buildscript = 'ogr2ogr -overwrite -f "ESRI Shapefile" "%s" "%s"\n' % \
+        self.buildscript = 'ogr2ogr -overwrite -f "ESRI Shapefile" "%s" "%s" -lco EMPTY_STRING_AS_NULL=yes\n' % \
                            (self.shp_dir, locs_ovffile) + \
                            'ogr2ogr -overwrite -f "ESRI Shapefile" "%s" "%s"\n' % \
                            (self.shp_dir, extents_ovf_filename) + \
