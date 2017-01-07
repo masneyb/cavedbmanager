@@ -113,9 +113,9 @@ class Dvd(cavedb.docgen_common.Common):
 
                         ret += 'ln "%s" "%s"\n' % (photo_meta['src'], destfile)
 
-        ret += 'cd %s\n' % (output_base_dir)
+        ret += 'cd %s/..\n' % (self.dvd_tmp_dir)
         ret += 'rm -f "%s"\n' % (self.dvd_zip_file)
-        ret += 'zip -r "%s" "%s"\n' % (self.dvd_zip_file, output_base_dir)
+        ret += 'zip -r "%s" "%s"\n' % (self.dvd_zip_file, os.path.basename(self.dvd_tmp_dir))
         ret += 'rm -rf "%s/"\n' % (self.dvd_tmp_dir)
 
         return ret
