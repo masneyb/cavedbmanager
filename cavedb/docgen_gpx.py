@@ -66,5 +66,13 @@ def create_for_bulletin(bulletin):
                'bulletin/%s/gpx' % (bulletin.id))
 
 
+def create_for_global():
+    return Gpx('All Bulletins', get_global_gpx_filename(), None)
+
+
 def get_bulletin_gpx_filename(bulletin_id):
     return '%s/gpx/bulletin_%s.gpx' % (cavedb.utils.get_output_base_dir(bulletin_id), bulletin_id)
+
+
+def get_global_gpx_filename():
+    return '%s/gpx/all.gpx' % (cavedb.utils.get_global_output_base_dir())

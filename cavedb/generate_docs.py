@@ -40,6 +40,7 @@ import cavedb.perms
 import cavedb.settings
 import cavedb.utils
 
+# Documents that span a single bulletin
 def create_bulletin_docgen_classes(bulletin):
     return Composite([cavedb.docgen_dvd.create_for_bulletin(bulletin),
                       cavedb.docgen_entrance_csv.create_for_bulletin(bulletin),
@@ -61,6 +62,16 @@ def create_bulletin_docgen_classes(bulletin):
                      ])
 
 
+# Documents that span all bulletins
+def create_global_docgen_classes():
+    return Composite([cavedb.docgen_entrance_csv.create_for_global(),
+                      cavedb.docgen_gpx.create_for_global(),
+                      cavedb.docgen_kml.create_for_global(),
+                      cavedb.docgen_mxf.create_for_global(),
+                      cavedb.docgen_shp.create_for_global(),
+                     ])
+
+
 def get_bulletin_download_links(bulletin):
     docgen = create_bulletin_docgen_classes(bulletin)
     return docgen.create_html_download_urls()
@@ -75,39 +86,54 @@ def write_bulletin_files(bulletin):
 
     outputter.indexed_terms(get_indexed_terms(bulletin))
 
-    outputter.begin_gis_maps()
-    for gismap in cavedb.models.GisMap.objects.all():
-        outputter.gis_map(gismap)
-    outputter.end_gis_maps()
-
-    write_gis_section(bulletin.id, outputter)
+    write_gis_sections(bulletin.id, outputter)
 
     outputter.begin_regions()
 
     for region in cavedb.models.BulletinRegion.objects.filter(bulletin__id=bulletin.id):
-        gis_region_hash = get_region_gis_hash(region.id)
-
-        outputter.begin_region(region, gis_region_hash)
-
-        for feature in cavedb.models.Feature.objects.filter(bulletin_region__id=region.id):
-            write_feature(feature, outputter)
-
-        outputter.end_region()
+        write_region(region, outputter)
 
     outputter.end_regions()
 
     outputter.close()
 
+    write_build_scripts(bulletin.id, outputter)
+
+
+def write_global_bulletin_files():
+    outputter = create_global_docgen_classes()
+
+    outputter.open(None)
+
+    outputter.indexed_terms([])
+
+    # FIXME
+    #write_gis_sections(bulletin.id, outputter)
+
+    outputter.begin_regions()
+
+    for bulletin in cavedb.models.Bulletin.objects.all():
+        for region in cavedb.models.BulletinRegion.objects.filter(bulletin__id=bulletin.id):
+            write_region(region, outputter)
+
+    outputter.end_regions()
+
+    outputter.close()
+
+    write_build_scripts(cavedb.utils.GLOBAL_BULLETIN_ID, outputter)
+
+
+def write_build_scripts(bulletin_id, outputter):
     # Write two different build scripts. The first is a wrapper for the second
     # script. The first one is not run with -e so that the lockfile is properly
     # cleaned up. The second script is ran with -e so that the script will fail
     # if any commands fail. The web interface checks for the presence of this
     # lockfile to see if the bulletin documents are currently being generated.
 
-    build_script_wrapper_file = cavedb.utils.get_build_script_wrapper(bulletin.id)
-    build_lock_file = cavedb.utils.get_build_lock_file(bulletin.id)
-    build_script_file = cavedb.utils.get_build_script(bulletin.id)
-    build_log_file = cavedb.utils.get_build_log_filename(bulletin.id)
+    build_script_wrapper_file = cavedb.utils.get_build_script_wrapper(bulletin_id)
+    build_lock_file = cavedb.utils.get_build_lock_file(bulletin_id)
+    build_script_file = cavedb.utils.get_build_script(bulletin_id)
+    build_log_file = cavedb.utils.get_build_log_filename(bulletin_id)
 
     with open(build_script_wrapper_file, 'w') as output:
         output.write('#!/bin/bash\n')
@@ -122,6 +148,17 @@ def write_bulletin_files(bulletin):
         output.write('#!/bin/bash -ev\n')
         output.write(build_script)
     os.chmod(build_script_file, 0755)
+
+
+def write_region(region, outputter):
+    gis_region_hash = get_region_gis_hash(region.id)
+
+    outputter.begin_region(region, gis_region_hash)
+
+    for feature in cavedb.models.Feature.objects.filter(bulletin_region__id=region.id):
+        write_feature(feature, outputter)
+
+    outputter.end_region()
 
 
 def add_gis_lineplot(lineplot, gisdir, lineplot_type, outputter):
@@ -149,7 +186,12 @@ def add_gis_lineplot(lineplot, gisdir, lineplot_type, outputter):
     outputter.gis_lineplot(lineplot, lineplot_type, '%s/%s' % (gisdir, lineplot.shp_filename))
 
 
-def write_gis_section(bulletin_id, outputter):
+def write_gis_sections(bulletin_id, outputter):
+    outputter.begin_gis_maps()
+    for gismap in cavedb.models.GisMap.objects.all():
+        outputter.gis_map(gismap)
+    outputter.end_gis_maps()
+
     outputter.begin_gis_layers()
 
     for layer in cavedb.models.GisLayer.objects.all():
@@ -407,7 +449,7 @@ def close_all_fds():
             pass
 
 
-def run_buildscript_wrapper(bulletin_id, basedir):
+def run_buildscript_wrapper(bulletin_id):
     #pylint: disable=protected-access
 
     build_script_wrapper_file = cavedb.utils.get_build_script_wrapper(bulletin_id)
@@ -420,6 +462,7 @@ def run_buildscript_wrapper(bulletin_id, basedir):
 
         pid2 = os.fork()
         if pid2 == 0:
+            basedir = '%s/bulletins/bulletin_%s' % (cavedb.settings.MEDIA_ROOT, bulletin_id)
             os.chdir(basedir)
             status = os.system('%s' % (build_script_wrapper_file))
 
@@ -438,10 +481,9 @@ def generate_bulletin(request, bulletin_id):
         raise Http404
 
     bulletin = bulletins[0]
-    basedir = '%s/bulletins/bulletin_%s' % (cavedb.settings.MEDIA_ROOT, bulletin_id)
 
     write_bulletin_files(bulletin)
-    run_buildscript_wrapper(bulletin_id, basedir)
+    run_buildscript_wrapper(bulletin_id)
 
     return HttpResponseRedirect('%sadmin/cavedb/bulletin/' % (cavedb.settings.CONTEXT_PATH))
 
@@ -468,3 +510,13 @@ def generate_all_bulletin_sources(request):
 
     return HttpResponseRedirect('%sadmin/cavedb/bulletin/' % (cavedb.settings.CONTEXT_PATH))
 
+
+def generate_global_bulletin(request):
+    #pylint: disable=unused-argument
+    if not cavedb.perms.is_global_generation_allowed():
+        raise Http404
+
+    write_global_bulletin_files()
+    run_buildscript_wrapper(cavedb.utils.GLOBAL_BULLETIN_ID)
+
+    return HttpResponseRedirect('%sadmin/cavedb/bulletin/' % (cavedb.settings.CONTEXT_PATH))

@@ -24,6 +24,14 @@ def is_bulletin_generation_allowed(bulletin_id):
                profile.bulletins.get_queryset().filter(id=bulletin_id).count() > 0
 
 
+def is_global_generation_allowed():
+    if isinstance(get_current_user(), AnonymousUser):
+        return False
+
+    profile = get_current_user().caveuserprofile
+    return profile.can_generate_docs
+
+
 def is_bulletin_docs_allowed(bulletin_id):
     if isinstance(get_current_user(), AnonymousUser):
         return False

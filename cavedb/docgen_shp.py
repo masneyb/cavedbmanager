@@ -143,5 +143,17 @@ def create_for_bulletin(bulletin):
     return Shp(shp_zip_file, shp_dir, csv_filename, 'bulletin/%s/shp' % (bulletin.id))
 
 
+def create_for_global():
+    csv_filename = cavedb.docgen_entrance_csv.get_global_csv_filename()
+    shp_zip_file = get_global_shp_zip_filename()
+    shp_dir = cavedb.docgen_gis_common.get_bulletin_shp_directory(cavedb.utils.GLOBAL_BULLETIN_ID)
+
+    return Shp(shp_zip_file, shp_dir, csv_filename, None)
+
+
 def get_bulletin_shp_zip_filename(bulletin_id):
     return '%s/shp.zip' % (cavedb.utils.get_output_base_dir(bulletin_id))
+
+
+def get_global_shp_zip_filename():
+    return '%s/shp.zip' % (cavedb.utils.get_global_output_base_dir())

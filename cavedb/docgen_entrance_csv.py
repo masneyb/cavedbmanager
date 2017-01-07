@@ -80,5 +80,13 @@ def create_for_bulletin(bulletin):
                        'bulletin/%s/csv' % (bulletin.id))
 
 
+def create_for_global():
+    return EntranceCsv(get_global_csv_filename(), None)
+
+
 def get_bulletin_csv_filename(bulletin_id):
     return '%s/csv/bulletin_%s.csv' % (cavedb.utils.get_output_base_dir(bulletin_id), bulletin_id)
+
+
+def get_global_csv_filename():
+    return '%s/csv/all.csv' % (cavedb.utils.get_global_output_base_dir())

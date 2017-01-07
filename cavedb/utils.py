@@ -20,6 +20,8 @@ import dateutil.parser
 import dateutil.relativedelta
 import cavedb.settings
 
+GLOBAL_BULLETIN_ID = 'global'
+
 def get_bulletin_base_dir(bulletin_id):
     return '%s/bulletins/bulletin_%s' % (cavedb.settings.MEDIA_ROOT, bulletin_id)
 
@@ -38,6 +40,10 @@ def get_build_lock_file(bulletin_id):
 
 def get_build_log_filename(bulletin_id):
     return '%s/bulletin-build-output.txt' % (get_bulletin_base_dir(bulletin_id))
+
+
+def get_global_output_base_dir():
+    return '%s/output' % (get_bulletin_base_dir(GLOBAL_BULLETIN_ID))
 
 
 def get_output_base_dir(bulletin_id):

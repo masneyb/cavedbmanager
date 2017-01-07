@@ -51,5 +51,13 @@ def create_for_bulletin(bulletin):
     return Mxf(get_bulletin_mxf_filename(bulletin.id), 'bulletin/%s/mxf' % (bulletin.id))
 
 
+def create_for_global():
+    return Mxf(get_global_mxf_filename(), None)
+
+
 def get_bulletin_mxf_filename(bulletin_id):
     return '%s/mxf/bulletin_%s.mxf' % (cavedb.utils.get_output_base_dir(bulletin_id), bulletin_id)
+
+
+def get_global_mxf_filename():
+    return '%s/mxf/all.mxf' % (cavedb.utils.get_global_output_base_dir())
