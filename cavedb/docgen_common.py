@@ -142,7 +142,7 @@ def create_base_directory(filename):
 
 
 def get_entrance_name(feature, ent):
-    if ent.entrance_name:
+    if ent.entrance_name and feature.name != ent.entrance_name:
         return '%s - %s' % (feature.name, ent.entrance_name)
     else:
         return feature.name
