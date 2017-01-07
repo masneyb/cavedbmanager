@@ -15,8 +15,8 @@
 import cavedb.docgen_common
 
 class Composite(cavedb.docgen_common.Common):
-    def __init__(self, bulletin, composites):
-        cavedb.docgen_common.Common.__init__(self, bulletin)
+    def __init__(self, composites):
+        cavedb.docgen_common.Common.__init__(self)
         self.composites = composites
 
 

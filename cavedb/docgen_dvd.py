@@ -18,8 +18,13 @@ import cavedb.utils
 import cavedb.settings
 
 class Dvd(cavedb.docgen_common.Common):
-    def __init__(self, bulletin):
-        cavedb.docgen_common.Common.__init__(self, bulletin)
+    def __init__(self, dvd_zip_file, dvd_tmp_dir, readme_contents, download_url):
+        cavedb.docgen_common.Common.__init__(self)
+        self.dvd_zip_file = dvd_zip_file
+        self.dvd_tmp_dir = dvd_tmp_dir
+        self.readme_contents = readme_contents
+        self.download_url = download_url
+
         self.files = {}
         self.files['include_on_dvd'] = {}
         self.files['exclude_from_dvd'] = {}
@@ -70,22 +75,22 @@ class Dvd(cavedb.docgen_common.Common):
 
 
     def generate_buildscript(self):
-        output_base_dir = cavedb.utils.get_output_base_dir(self.bulletin.id)
-        dvd_tmp_dir = '%s/dvd' % (output_base_dir)
+        ret = 'rm -rf "%s/"\n' % (self.dvd_tmp_dir)
+        ret += 'mkdir -p "%s"\n' % (self.dvd_tmp_dir)
 
-        ret = 'rm -rf "%s/"\n' % (dvd_tmp_dir)
-        ret += 'mkdir -p "%s"\n' % (dvd_tmp_dir)
+        output_base_dir = os.path.dirname(self.dvd_tmp_dir)
 
-        if self.bulletin.dvd_readme:
-            readme_file = '%s/README.txt' % (cavedb.utils.get_output_base_dir(self.bulletin.id))
+        if self.readme_contents:
+            readme_file = '%s/README.txt' % (output_base_dir)
             with open(readme_file, 'w') as output:
-                output.write(self.bulletin.dvd_readme)
+                output.write(self.readme_contents)
 
-            ret += 'mv "%s" "%s/"\n' % (readme_file, dvd_tmp_dir)
+            ret += 'mv "%s" "%s/"\n' % (readme_file, self.dvd_tmp_dir)
 
         for toplevel_dir in self.files.keys():
             for photo_type in self.files[toplevel_dir].keys():
-                dvd_dir = '%s/%s/%s' % (dvd_tmp_dir, toplevel_dir, self.phototypes[photo_type][0])
+                dvd_dir = '%s/%s/%s' % \
+                          (self.dvd_tmp_dir, toplevel_dir, self.phototypes[photo_type][0])
                 ret += 'mkdir -p "%s"\n' % (dvd_dir)
 
                 for feature_name in self.files[toplevel_dir][photo_type].keys():
@@ -108,18 +113,26 @@ class Dvd(cavedb.docgen_common.Common):
 
                         ret += 'ln "%s" "%s"\n' % (photo_meta['src'], destfile)
 
-        dvd_zip_file = get_dvd_filename(self.bulletin.id)
         ret += 'cd %s\n' % (output_base_dir)
-        ret += 'rm -f "%s"\n' % (dvd_zip_file)
-        ret += 'zip -r "%s" "%s"\n' % (dvd_zip_file, os.path.basename(dvd_tmp_dir))
-        ret += 'rm -rf "%s/"\n' % (dvd_tmp_dir)
+        ret += 'rm -f "%s"\n' % (self.dvd_zip_file)
+        ret += 'zip -r "%s" "%s"\n' % (self.dvd_zip_file, output_base_dir)
+        ret += 'rm -rf "%s/"\n' % (self.dvd_tmp_dir)
 
         return ret
 
 
     def create_html_download_urls(self):
-        return self.create_url('/dvd', 'Supplemental DVD (ZIP)', get_dvd_filename(self.bulletin.id))
+        return self.create_url(self.download_url, 'Supplemental DVD (ZIP)', self.dvd_zip_file)
 
 
-def get_dvd_filename(bulletin_id):
+
+def create_for_bulletin(bulletin):
+    output_base_dir = cavedb.utils.get_output_base_dir(bulletin.id)
+    dvd_tmp_dir = '%s/dvd' % (output_base_dir)
+
+    return Dvd(get_bulletin_dvd_filename(bulletin.id), dvd_tmp_dir, \
+               bulletin.dvd_readme, 'bulletin/%s/dvd' % (bulletin.id))
+
+
+def get_bulletin_dvd_filename(bulletin_id):
     return '%s/dvd.zip' % (cavedb.utils.get_output_base_dir(bulletin_id))

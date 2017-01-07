@@ -18,7 +18,8 @@ import cavedb.utils
 
 class GisMaps(cavedb.docgen_gis_common.GisCommon):
     def __init__(self, bulletin, gis_x_buffer=0.005, gis_y_buffer=0.005):
-        cavedb.docgen_gis_common.GisCommon.__init__(self, bulletin, gis_x_buffer, gis_y_buffer)
+        cavedb.docgen_gis_common.GisCommon.__init__(self, gis_x_buffer, gis_y_buffer)
+        self.bulletin = bulletin
         self.gismaps = []
 
 
@@ -30,8 +31,8 @@ class GisMaps(cavedb.docgen_gis_common.GisCommon):
         buildscr = ''
 
         for gismap in self.gismaps:
-            mapfile = cavedb.docgen_gis_common.get_mapserver_mapfile(self.bulletin.id, \
-                                                                     gismap)
+            mapfile = cavedb.docgen_gis_common.get_bulletin_mapserver_mapfile(self.bulletin.id, \
+                                                                              gismap)
             localfile = get_all_regions_gis_map(self.bulletin.id, gismap)
 
             if self.overall_extents['gishash']:
@@ -78,10 +79,11 @@ def get_existing_hashcode(outfile, hashcode_file):
 
 def get_all_regions_gis_map(bulletin_id, map_name):
     return '%s/bulletin_%s_gis_%s_map.jpg' % \
-           (cavedb.docgen_gis_common.get_gis_maps_directory(bulletin_id), bulletin_id, map_name)
+           (cavedb.docgen_gis_common.get_bulletin_gis_maps_directory(bulletin_id), bulletin_id, \
+            map_name)
 
 
 def get_region_gis_map(bulletin_id, region_id, map_name):
     return '%s/bulletin_%s_region_%s_gis_%s_map.jpg' % \
-           (cavedb.docgen_gis_common.get_gis_maps_directory(bulletin_id), bulletin_id, region_id, \
-                                                            map_name)
+           (cavedb.docgen_gis_common.get_bulletin_gis_maps_directory(bulletin_id), bulletin_id, \
+            region_id, map_name)

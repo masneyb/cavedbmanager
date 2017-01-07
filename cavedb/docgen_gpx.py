@@ -17,15 +17,17 @@ import cavedb.docgen_common
 import cavedb.utils
 
 class Gpx(cavedb.docgen_common.Common):
-    def __init__(self, bulletin):
-        cavedb.docgen_common.Common.__init__(self, bulletin)
+    def __init__(self, metadata_name, filename, download_url):
+        cavedb.docgen_common.Common.__init__(self)
+        self.metadata_name = metadata_name
+        self.filename = filename
+        self.download_url = download_url
         self.gpxfile = None
 
 
     def open(self, all_regions_gis_hash):
-        filename = get_gpx_filename(self.bulletin.id)
-        cavedb.docgen_common.create_base_directory(filename)
-        self.gpxfile = open(filename, 'w')
+        cavedb.docgen_common.create_base_directory(self.filename)
+        self.gpxfile = open(self.filename, 'w')
 
         self.gpxfile.write('<?xml version="1.0" encoding="US-ASCII"?>\n')
         self.gpxfile.write('<gpx xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' + \
@@ -33,7 +35,7 @@ class Gpx(cavedb.docgen_common.Common):
                            'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' + \
                            'http://www.topografix.com/GPX/1/1/gpx.xsd">\n')
         self.gpxfile.write('  <metadata>\n')
-        self.gpxfile.write('    <name>%s</name>\n' % (escape(self.bulletin.bulletin_name)))
+        self.gpxfile.write('    <name>%s</name>\n' % (escape(self.metadata_name)))
         self.gpxfile.write('  </metadata>\n')
 
 
@@ -56,7 +58,13 @@ class Gpx(cavedb.docgen_common.Common):
 
 
     def create_html_download_urls(self):
-        return self.create_url('/gpx', 'GPS Unit (GPX)', get_gpx_filename(self.bulletin.id))
+        return self.create_url(self.download_url, 'GPS Unit (GPX)', self.filename)
 
-def get_gpx_filename(bulletin_id):
+
+def create_for_bulletin(bulletin):
+    return Gpx(bulletin.bulletin_name, get_bulletin_gpx_filename(bulletin.id), \
+               'bulletin/%s/gpx' % (bulletin.id))
+
+
+def get_bulletin_gpx_filename(bulletin_id):
     return '%s/gpx/bulletin_%s.gpx' % (cavedb.utils.get_output_base_dir(bulletin_id), bulletin_id)

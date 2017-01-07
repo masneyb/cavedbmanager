@@ -40,18 +40,17 @@ import cavedb.perms
 import cavedb.settings
 import cavedb.utils
 
-def create_docgen_classes(bulletin):
-    return Composite(bulletin,
-                     [cavedb.docgen_dvd.Dvd(bulletin),
-                      cavedb.docgen_entrance_csv.EntranceCsv(bulletin),
-                      cavedb.docgen_gpx.Gpx(bulletin),
-                      cavedb.docgen_kml.Kml(bulletin),
-                      cavedb.docgen_mxf.Mxf(bulletin),
+def create_bulletin_docgen_classes(bulletin):
+    return Composite([cavedb.docgen_dvd.create_for_bulletin(bulletin),
+                      cavedb.docgen_entrance_csv.create_for_bulletin(bulletin),
+                      cavedb.docgen_gpx.create_for_bulletin(bulletin),
+                      cavedb.docgen_kml.create_for_bulletin(bulletin),
+                      cavedb.docgen_mxf.create_for_bulletin(bulletin),
                       cavedb.docgen_text.Text(bulletin),
                       cavedb.docgen_todo_txt.TodoTxt(bulletin),
 
                       # The SHP and mapserver files need to be created before the GisMaps.
-                      cavedb.docgen_shp.Shp(bulletin),
+                      cavedb.docgen_shp.create_for_bulletin(bulletin),
                       cavedb.docgen_mapserver_mapfile.MapserverMapfile(bulletin),
                       cavedb.docgen_gis_maps.GisMaps(bulletin),
 
@@ -63,12 +62,12 @@ def create_docgen_classes(bulletin):
 
 
 def get_bulletin_download_links(bulletin):
-    docgen = create_docgen_classes(bulletin)
+    docgen = create_bulletin_docgen_classes(bulletin)
     return docgen.create_html_download_urls()
 
 
 def write_bulletin_files(bulletin):
-    outputter = create_docgen_classes(bulletin)
+    outputter = create_bulletin_docgen_classes(bulletin)
 
     all_regions_gis_hash = get_all_regions_gis_hash(bulletin.id)
 
@@ -156,7 +155,8 @@ def write_gis_section(bulletin_id, outputter):
     for layer in cavedb.models.GisLayer.objects.all():
         outputter.gis_layer(layer)
 
-    lineplots_dir = '%s/lineplots' % (cavedb.docgen_gis_common.get_shp_directory(bulletin_id))
+    lineplots_dir = '%s/lineplots' % \
+                    (cavedb.docgen_gis_common.get_bulletin_shp_directory(bulletin_id))
     if not os.path.isdir(lineplots_dir):
         os.makedirs(lineplots_dir)
 

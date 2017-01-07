@@ -16,16 +16,17 @@ import cavedb.docgen_common
 import cavedb.utils
 
 class Mxf(cavedb.docgen_common.Common):
-    def __init__(self, bulletin):
-        cavedb.docgen_common.Common.__init__(self, bulletin)
+    def __init__(self, filename, download_url):
+        cavedb.docgen_common.Common.__init__(self)
+        self.filename = filename
+        self.download_url = download_url
         self.number = 1
         self.mxffile = None
 
 
     def open(self, all_regions_gis_hash):
-        filename = get_mxf_filename(self.bulletin.id)
-        cavedb.docgen_common.create_base_directory(filename)
-        self.mxffile = open(filename, 'w')
+        cavedb.docgen_common.create_base_directory(self.filename)
+        self.mxffile = open(self.filename, 'w')
 
 
     def close(self):
@@ -43,8 +44,12 @@ class Mxf(cavedb.docgen_common.Common):
 
 
     def create_html_download_urls(self):
-        return self.create_url('/mxf', 'Maptech (MXF)', get_mxf_filename(self.bulletin.id))
+        return self.create_url(self.download_url, 'Maptech (MXF)', self.filename)
 
 
-def get_mxf_filename(bulletin_id):
+def create_for_bulletin(bulletin):
+    return Mxf(get_bulletin_mxf_filename(bulletin.id), 'bulletin/%s/mxf' % (bulletin.id))
+
+
+def get_bulletin_mxf_filename(bulletin_id):
     return '%s/mxf/bulletin_%s.mxf' % (cavedb.utils.get_output_base_dir(bulletin_id), bulletin_id)

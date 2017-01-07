@@ -17,20 +17,22 @@ import cavedb.docgen_common
 import cavedb.utils
 
 class Kml(cavedb.docgen_common.Common):
-    def __init__(self, bulletin):
-        cavedb.docgen_common.Common.__init__(self, bulletin)
+    def __init__(self, metadata_name, filename, download_url):
+        cavedb.docgen_common.Common.__init__(self)
+        self.metadata_name = metadata_name
+        self.filename = filename
+        self.download_url = download_url
         self.kmlfile = None
 
 
     def open(self, all_regions_gis_hash):
-        filename = get_kml_filename(self.bulletin.id)
-        cavedb.docgen_common.create_base_directory(filename)
-        self.kmlfile = open(filename, 'w')
+        cavedb.docgen_common.create_base_directory(self.filename)
+        self.kmlfile = open(self.filename, 'w')
 
         self.kmlfile.write('<?xml version="1.0" encoding="US-ASCII"?>\n')
         self.kmlfile.write('<kml xmlns="http://earth.google.com/kml/2.2">\n')
         self.kmlfile.write('<Document>\n')
-        self.kmlfile.write('<name>%s</name>\n' % (self.bulletin.bulletin_name))
+        self.kmlfile.write('<name>%s</name>\n' % (self.metadata_name))
 
 
     def begin_region(self, region, gis_region_hash):
@@ -71,8 +73,13 @@ class Kml(cavedb.docgen_common.Common):
 
 
     def create_html_download_urls(self):
-        return self.create_url('/kml', 'Google Earth (KML)', get_kml_filename(self.bulletin.id))
+        return self.create_url(self.download_url, 'Google Earth (KML)', self.filename)
 
 
-def get_kml_filename(bulletin_id):
+def create_for_bulletin(bulletin):
+    return Kml(bulletin.bulletin_name, get_bulletin_kml_filename(bulletin.id), \
+               'bulletin/%s/kml' % (bulletin.id))
+
+
+def get_bulletin_kml_filename(bulletin_id):
     return '%s/kml/bulletin_%s.kml' % (cavedb.utils.get_output_base_dir(bulletin_id), bulletin_id)

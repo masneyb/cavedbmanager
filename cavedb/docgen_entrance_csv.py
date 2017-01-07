@@ -17,16 +17,17 @@ import cavedb.docgen_common
 import cavedb.utils
 
 class EntranceCsv(cavedb.docgen_common.Common):
-    def __init__(self, bulletin):
-        cavedb.docgen_common.Common.__init__(self, bulletin)
+    def __init__(self, filename, download_url):
+        cavedb.docgen_common.Common.__init__(self)
+        self.filename = filename
+        self.download_url = download_url
         self.csvfile = None
         self.csvwriter = None
 
 
     def open(self, all_regions_gis_hash):
-        filename = get_csv_filename(self.bulletin.id)
-        cavedb.docgen_common.create_base_directory(filename)
-        self.csvfile = open(filename, 'w')
+        cavedb.docgen_common.create_base_directory(self.filename)
+        self.csvfile = open(self.filename, 'w')
         self.csvwriter = csv.writer(self.csvfile, delimiter=',')
 
         self.csvwriter.writerow(['internal_id', 'locid', 'survey_id', 'name', 'alternate_names',
@@ -71,8 +72,13 @@ class EntranceCsv(cavedb.docgen_common.Common):
 
 
     def create_html_download_urls(self):
-        return self.create_url('/csv', 'Spreadsheet (CSV)', get_csv_filename(self.bulletin.id))
+        return self.create_url(self.download_url, 'Spreadsheet (CSV)', self.filename)
 
 
-def get_csv_filename(bulletin_id):
+def create_for_bulletin(bulletin):
+    return EntranceCsv(get_bulletin_csv_filename(bulletin.id), \
+                       'bulletin/%s/csv' % (bulletin.id))
+
+
+def get_bulletin_csv_filename(bulletin_id):
     return '%s/csv/bulletin_%s.csv' % (cavedb.utils.get_output_base_dir(bulletin_id), bulletin_id)

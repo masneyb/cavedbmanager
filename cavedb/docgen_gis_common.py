@@ -15,8 +15,8 @@
 import cavedb.docgen_common
 
 class GisCommon(cavedb.docgen_common.Common):
-    def __init__(self, bulletin, gis_x_buffer=0.005, gis_y_buffer=0.005):
-        cavedb.docgen_common.Common.__init__(self, bulletin)
+    def __init__(self, gis_x_buffer=0.005, gis_y_buffer=0.005):
+        cavedb.docgen_common.Common.__init__(self)
         self.gis_x_buffer = gis_x_buffer
         self.gis_y_buffer = gis_y_buffer
 
@@ -44,7 +44,7 @@ class GisCommon(cavedb.docgen_common.Common):
 
 
     def update_extent_boundary(self, extents, coordinates):
-        if not coordinates.wgs84_lat or not coordinates.wgs84_lon:
+        if not extents or not coordinates.wgs84_lat or not coordinates.wgs84_lon:
             return
 
         if not extents['minx'] or coordinates.wgs84_lon - self.gis_x_buffer < extents['minx']:
@@ -76,13 +76,13 @@ LOCATIONS_SHP_LAYER_NAME = 'karst_feature_locations'
 REGION_EXTENTS_SHP_LAYER_NAME = 'region_extents'
 
 
-def get_shp_directory(bulletin_id):
+def get_bulletin_shp_directory(bulletin_id):
     return '%s/shp' % (cavedb.utils.get_output_base_dir(bulletin_id))
 
 
-def get_gis_maps_directory(bulletin_id):
+def get_bulletin_gis_maps_directory(bulletin_id):
     return '%s/gis_maps' % (cavedb.utils.get_output_base_dir(bulletin_id))
 
 
-def get_mapserver_mapfile(bulletin_id, map_name):
-    return '%s/%s.map' % (get_gis_maps_directory(bulletin_id), map_name)
+def get_bulletin_mapserver_mapfile(bulletin_id, map_name):
+    return '%s/%s.map' % (get_bulletin_gis_maps_directory(bulletin_id), map_name)

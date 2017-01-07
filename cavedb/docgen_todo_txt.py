@@ -17,7 +17,8 @@ import cavedb.utils
 
 class TodoTxt(cavedb.docgen_common.Common):
     def __init__(self, bulletin):
-        cavedb.docgen_common.Common.__init__(self, bulletin)
+        cavedb.docgen_common.Common.__init__(self)
+        self.bulletin = bulletin
         self.todofile = None
 
 

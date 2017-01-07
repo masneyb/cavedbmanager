@@ -61,7 +61,7 @@ def show_todo_txt(request, bulletin_id):
 
 
 def show_kml(request, bulletin_id):
-    localfile = cavedb.docgen_kml.get_kml_filename(bulletin_id)
+    localfile = cavedb.docgen_kml.get_bulletin_kml_filename(bulletin_id)
     remotefile = get_bulletin_remote_file(bulletin_id, 'kml')
     return do_show_bulletin_attachment(request, bulletin_id, localfile, remotefile)
 
@@ -73,31 +73,31 @@ def show_text(request, bulletin_id):
 
 
 def show_gpx(request, bulletin_id):
-    localfile = cavedb.docgen_gpx.get_gpx_filename(bulletin_id)
+    localfile = cavedb.docgen_gpx.get_bulletin_gpx_filename(bulletin_id)
     remotefile = get_bulletin_remote_file(bulletin_id, 'gpx')
     return do_show_bulletin_attachment(request, bulletin_id, localfile, remotefile)
 
 
 def show_csv(request, bulletin_id):
-    localfile = cavedb.docgen_entrance_csv.get_csv_filename(bulletin_id)
+    localfile = cavedb.docgen_entrance_csv.get_bulletin_csv_filename(bulletin_id)
     remotefile = get_bulletin_remote_file(bulletin_id, 'csv')
     return do_show_bulletin_attachment(request, bulletin_id, localfile, remotefile)
 
 
 def show_mxf(request, bulletin_id):
-    localfile = cavedb.docgen_mxf.get_mxf_filename(bulletin_id)
+    localfile = cavedb.docgen_mxf.get_bulletin_mxf_filename(bulletin_id)
     remotefile = get_bulletin_remote_file(bulletin_id, 'mxf')
     return do_show_bulletin_attachment(request, bulletin_id, localfile, remotefile)
 
 
 def show_shp(request, bulletin_id):
-    localfile = cavedb.docgen_shp.get_shp_zip_filename(bulletin_id)
+    localfile = cavedb.docgen_shp.get_bulletin_shp_zip_filename(bulletin_id)
     remotefile = '%s_shp_files.zip' % (get_bulletin_base_name(bulletin_id))
     return do_show_bulletin_attachment(request, bulletin_id, localfile, remotefile)
 
 
 def show_dvd(request, bulletin_id):
-    localfile = cavedb.docgen_dvd.get_dvd_filename(bulletin_id)
+    localfile = cavedb.docgen_dvd.get_bulletin_dvd_filename(bulletin_id)
     remotefile = get_bulletin_remote_file(bulletin_id, 'zip')
     return do_show_bulletin_attachment(request, bulletin_id, localfile, remotefile)
 

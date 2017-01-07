@@ -16,20 +16,21 @@ import cavedb.docgen_common
 import cavedb.docgen_gis_common
 import cavedb.settings
 import cavedb.utils
+from cavedb.docgen_gis_common import get_bulletin_mapserver_mapfile
 
 class MapserverMapfile(cavedb.docgen_common.Common):
     def __init__(self, bulletin):
-        cavedb.docgen_common.Common.__init__(self, bulletin)
+        cavedb.docgen_common.Common.__init__(self)
+        self.bulletin = bulletin
         self.gis_maps = {}
 
 
     def gis_map(self, gismap):
-        shpdir = cavedb.docgen_gis_common.get_shp_directory(self.bulletin.id)
+        shpdir = cavedb.docgen_gis_common.get_bulletin_shp_directory(self.bulletin.id)
 
         gis_options = {}
         gis_options['basename'] = gismap.name
-        gis_options['path'] = cavedb.docgen_gis_common.get_mapserver_mapfile(self.bulletin.id, \
-                                                                             gismap.name)
+        gis_options['path'] = get_bulletin_mapserver_mapfile(self.bulletin.id, gismap.name)
         gis_options['locations_shp'] = '%s/%s' % \
                                        (shpdir, cavedb.docgen_gis_common.LOCATIONS_SHP_LAYER_NAME)
         gis_options['extents_shp'] = '%s/%s' % \
@@ -439,4 +440,4 @@ def write_mapserver_footer(gis_options):
 
 
 def get_mapserver_fonts_list(bulletin_id):
-    return '%s/fonts.list' % (cavedb.docgen_gis_common.get_gis_maps_directory(bulletin_id))
+    return '%s/fonts.list' % (cavedb.docgen_gis_common.get_bulletin_gis_maps_directory(bulletin_id))

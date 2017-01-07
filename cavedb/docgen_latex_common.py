@@ -21,7 +21,8 @@ import cavedb.indexer_latex
 
 class LatexCommon(cavedb.docgen_common.Common):
     def __init__(self, bulletin, filename, draft_mode, papersize):
-        cavedb.docgen_common.Common.__init__(self, bulletin)
+        cavedb.docgen_common.Common.__init__(self)
+        self.bulletin = bulletin
         self.filename = filename
         self.file_handle = None
         self.draft_mode = draft_mode

@@ -17,8 +17,8 @@ import os.path
 import cavedb.settings
 
 class Common(object):
-    def __init__(self, bulletin):
-        self.bulletin = bulletin
+    def __init__(self):
+        pass
 
 
     def open(self, all_regions_gis_hash):
@@ -119,8 +119,12 @@ class Common(object):
         return None
 
 
-    def create_url(self, prefix, description, localfile):
-        url = '%sbulletin/%s%s' % (cavedb.settings.MEDIA_URL, self.bulletin.id, prefix)
+    def create_url(self, url_suffix, description, localfile):
+        #pylint: disable=no-self-use
+        if not url_suffix:
+            return None
+
+        url = '%s%s' % (cavedb.settings.MEDIA_URL, url_suffix)
         return '<a href="%s">%s</a> [%s]<br/>\n' % \
                    (url, description, cavedb.utils.get_file_size(localfile))
 

@@ -18,19 +18,25 @@ import cavedb.docgen_gis_common
 import cavedb.utils
 
 class Shp(cavedb.docgen_gis_common.GisCommon):
-    def __init__(self, bulletin, gis_x_buffer=0.005, gis_y_buffer=0.005):
-        cavedb.docgen_gis_common.GisCommon.__init__(self, bulletin, gis_x_buffer, gis_y_buffer)
+    def __init__(self, shp_zip_file, shp_dir, csv_filename, download_url, \
+                 gis_x_buffer=0.005, gis_y_buffer=0.005):
+        cavedb.docgen_gis_common.GisCommon.__init__(self, gis_x_buffer, gis_y_buffer)
         self.buildscript = ''
 
-        self.shp_zip_file = get_shp_zip_filename(self.bulletin.id)
-        self.shp_dir = cavedb.docgen_gis_common.get_shp_directory(self.bulletin.id)
+        self.shp_zip_file = shp_zip_file
+        self.shp_dir = shp_dir
+        self.csv_filename = csv_filename
+        self.download_url = download_url
+
+
+    def open(self, all_regions_gis_hash):
         cavedb.docgen_common.create_directory(self.shp_dir)
 
 
     def write_region_extents_csv(self):
-        csvfile = '%s/%s.csv' % \
+        csv_filename = '%s/%s.csv' % \
                   (self.shp_dir, cavedb.docgen_gis_common.REGION_EXTENTS_SHP_LAYER_NAME)
-        with open(csvfile, 'w') as output:
+        with open(csv_filename, 'w') as output:
             output.write('region_name,wkt\n')
             for region_id, extents in self.region_extents.items():
                 extents = self.region_extents[region_id]
@@ -46,12 +52,11 @@ class Shp(cavedb.docgen_gis_common.GisCommon):
                               extents['minx'], extents['maxy'], \
                               extents['minx'], extents['miny']))
 
-        return csvfile
+        return csv_filename
 
 
     def write_locations_ovf(self):
-        csvfile = cavedb.docgen_entrance_csv.get_csv_filename(self.bulletin.id)
-        csv_data_source_name = os.path.basename(csvfile).replace('.csv', '')
+        csv_data_source_name = os.path.basename(self.csv_filename).replace('.csv', '')
 
         locs_ovffile = '%s/%s.ovf' % \
                        (self.shp_dir, cavedb.docgen_gis_common.LOCATIONS_SHP_LAYER_NAME)
@@ -59,7 +64,7 @@ class Shp(cavedb.docgen_gis_common.GisCommon):
             output.write('<OGRVRTDataSource>')
             output.write('<OGRVRTLayer name="%s">' % \
                          (cavedb.docgen_gis_common.LOCATIONS_SHP_LAYER_NAME))
-            output.write('<SrcDataSource>%s</SrcDataSource>' % (csvfile))
+            output.write('<SrcDataSource>%s</SrcDataSource>' % (self.csv_filename))
             output.write('<SrcLayer>%s</SrcLayer>' % (csv_data_source_name))
             output.write('<GeometryType>wkbPoint</GeometryType>')
             output.write('<GeometryField encoding="PointFromColumns" x="wgs84_lon" y="wgs84_lat" ' +
@@ -73,14 +78,14 @@ class Shp(cavedb.docgen_gis_common.GisCommon):
         return locs_ovffile
 
 
-    def write_region_extents_ovf(self, csvfile):
-        extents_ovffile = '%s/%s.ovf' % \
+    def write_region_extents_ovf(self, csv_filename):
+        extents_ovf_filename = '%s/%s.ovf' % \
                           (self.shp_dir, cavedb.docgen_gis_common.REGION_EXTENTS_SHP_LAYER_NAME)
-        with open(extents_ovffile, 'w') as output:
+        with open(extents_ovf_filename, 'w') as output:
             output.write('<OGRVRTDataSource>')
             output.write('<OGRVRTLayer name="%s">' % \
                          (cavedb.docgen_gis_common.REGION_EXTENTS_SHP_LAYER_NAME))
-            output.write('<SrcDataSource>%s</SrcDataSource>' % (csvfile))
+            output.write('<SrcDataSource>%s</SrcDataSource>' % (csv_filename))
             output.write('<SrcLayer>%s</SrcLayer>' % \
                          (cavedb.docgen_gis_common.REGION_EXTENTS_SHP_LAYER_NAME))
             output.write('<GeometryType>wkbPolygon</GeometryType>')
@@ -92,19 +97,19 @@ class Shp(cavedb.docgen_gis_common.GisCommon):
                                  (self.shp_dir, \
                                   cavedb.docgen_gis_common.REGION_EXTENTS_SHP_LAYER_NAME))
 
-        return extents_ovffile
+        return extents_ovf_filename
 
 
     def close(self):
         locs_ovffile = self.write_locations_ovf()
 
-        extents_csvfile = self.write_region_extents_csv()
-        extents_ovffile = self.write_region_extents_ovf(extents_csvfile)
+        extents_csv_filename = self.write_region_extents_csv()
+        extents_ovf_filename = self.write_region_extents_ovf(extents_csv_filename)
 
         self.buildscript = 'ogr2ogr -overwrite -f "ESRI Shapefile" "%s" "%s"\n' % \
                            (self.shp_dir, locs_ovffile) + \
                            'ogr2ogr -overwrite -f "ESRI Shapefile" "%s" "%s"\n' % \
-                           (self.shp_dir, extents_ovffile) + \
+                           (self.shp_dir, extents_ovf_filename) + \
                            'cd %s/..\n' % (self.shp_dir) + \
                            'rm -rf "%s"\n' % (self.shp_zip_file) + \
                            'zip -r "%s" "%s"/\n' % \
@@ -116,7 +121,7 @@ class Shp(cavedb.docgen_gis_common.GisCommon):
 
 
     def create_html_download_urls(self):
-        return self.create_url('/shp', 'Shapefile (SHP)', self.shp_zip_file)
+        return self.create_url(self.download_url, 'Shapefile (SHP)', self.shp_zip_file)
 
 
 def create_epsg_4326_prjfile(prjfile):
@@ -130,5 +135,13 @@ def create_epsg_4326_prjfile(prjfile):
                      'AUTHORITY["EPSG","4326"]]')
 
 
-def get_shp_zip_filename(bulletin_id):
+def create_for_bulletin(bulletin):
+    csv_filename = cavedb.docgen_entrance_csv.get_bulletin_csv_filename(bulletin.id)
+    shp_zip_file = get_bulletin_shp_zip_filename(bulletin.id)
+    shp_dir = cavedb.docgen_gis_common.get_bulletin_shp_directory(bulletin.id)
+
+    return Shp(shp_zip_file, shp_dir, csv_filename, 'bulletin/%s/shp' % (bulletin.id))
+
+
+def get_bulletin_shp_zip_filename(bulletin_id):
     return '%s/shp.zip' % (cavedb.utils.get_output_base_dir(bulletin_id))
