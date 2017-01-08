@@ -39,8 +39,11 @@
 #   [Install]
 #   WantedBy=multi-user.target
 
+import django
 import cavedb.generate_docs
 import cavedb.utils
+
+django.setup()
 
 for bulletin in cavedb.models.Bulletin.objects.all():
     print 'Generating bulletin %s (%s)\n' % (bulletin.bulletin_name, bulletin.id)
