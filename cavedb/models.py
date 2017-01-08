@@ -113,7 +113,8 @@ class UtmZone(models.Model):
 
 
 def bulletin_upload_to(instance, filename):
-    return 'bulletin_attachments/%s/cover/%s' % (instance.id, filename)
+    return 'bulletin_attachments/%s/cover/%s' % \
+           (instance.id, cavedb.utils.sanitize_filename(filename))
 
 
 class Bulletin(models.Model):
@@ -294,7 +295,8 @@ class RegionChoice(models.ForeignKey):
 
 
 def gis_lineplot_upload_to(instance, filename):
-    return 'bulletin_attachments/%s/gis_lineplot/%s' % (instance.bulletin.id, filename)
+    return 'bulletin_attachments/%s/gis_lineplot/%s' % \
+           (instance.bulletin.id, cavedb.utils.sanitize_filename(filename))
 
 
 class BulletinGisLineplot(models.Model):
@@ -383,7 +385,8 @@ class BulletinSectionReference(models.Model):
 
 
 def bulletin_attachment_upload_to(instance, filename):
-    return 'bulletin_attachments/%s/attachments/%s' % (instance.bulletin.id, filename)
+    return 'bulletin_attachments/%s/attachments/%s' % \
+           (instance.bulletin.id, cavedb.utils.sanitize_filename(filename))
 
 
 class BulletinAttachment(models.Model):
@@ -446,10 +449,8 @@ class TopoQuad(models.Model):
 
 
 def feature_photo_upload_to(instance, filename):
-    # FIXME - replace with only known good characters
     return 'feature_attachments/%s/photos/%s' % \
-              (instance.feature.id, \
-               filename.replace(' ', '_').replace('&', 'and').replace('\'', '').replace('#', ''))
+              (instance.feature.id, cavedb.utils.sanitize_filename(filename))
 
 
 def photo_filename_validator(filename):
@@ -539,7 +540,8 @@ class FeatureReferencedMap(models.Model):
 
 
 def feature_attachment_upload_to(instance, filename):
-    return 'feature_attachments/%s/attachments/%s' % (instance.feature.id, filename)
+    return 'feature_attachments/%s/attachments/%s' % \
+           (instance.feature.id, cavedb.utils.sanitize_filename(filename))
 
 
 class FeatureAttachment(models.Model):
@@ -577,7 +579,8 @@ class FeatureAttachment(models.Model):
 
 
 def feature_gis_lineplot_upload_to(instance, filename):
-    return 'feature_attachments/%s/gis_lineplot/%s' % (instance.feature.id, filename)
+    return 'feature_attachments/%s/gis_lineplot/%s' % \
+           (instance.feature.id, cavedb.utils.sanitize_filename(filename))
 
 
 class FeatureGisLineplot(models.Model):

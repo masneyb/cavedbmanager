@@ -160,3 +160,13 @@ def convert_lat_lon_to_decimal(value):
 
     raise SyntaxError('Invalid coordinate. Supported values are ' + \
                       'dd mm ss[.frac sec], dd mm.[ss] and dd.[decimal degrees]')
+
+
+VALID_FILENAME_CHARS = frozenset(['_', '.'])
+
+def sanitize_filename(filename):
+    if not filename:
+        return ''
+
+    filename = filename.strip().replace(' ', '_').replace('&', 'and')
+    return "".join([c for c in filename if c.isalpha() or c.isdigit() or c in VALID_FILENAME_CHARS])

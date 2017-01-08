@@ -43,5 +43,14 @@ class TestUtils(unittest.TestCase):
         self.assertRaises(SyntaxError, cavedb.utils.convert_lat_lon_to_decimal, 'invalid')
 
 
+    def test_sanitize_filename(self):
+        self.assertEqual(cavedb.utils.sanitize_filename('Person1 and Person2.jpg'), 'Person1_and_Person2.jpg')
+        self.assertEqual(cavedb.utils.sanitize_filename('Person1 & Person2.jpg'), 'Person1_and_Person2.jpg')
+        self.assertEqual(cavedb.utils.sanitize_filename('This is a test%!!.jpg'), 'This_is_a_test.jpg')
+        self.assertEqual(cavedb.utils.sanitize_filename('   Filename123    .jpg     '), 'Filename123____.jpg')
+        self.assertEqual(cavedb.utils.sanitize_filename('../../../etc/Filename123    .jpg     '), '......etcFilename123____.jpg')
+        self.assertEqual(cavedb.utils.sanitize_filename(''), '')
+        self.assertEqual(cavedb.utils.sanitize_filename(None), '')
+
 if __name__ == '__main__':
     unittest.main()
