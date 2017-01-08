@@ -925,7 +925,7 @@ def escape(inputstr):
     inputstr = inputstr.strip()
 
     # Escape the # for LaTeX
-    return inputstr.replace('#', '\\#')
+    return inputstr.replace('#', '\\#').replace('$', '\\$')
 
 
 def none_to_empty(inputstr):
