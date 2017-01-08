@@ -31,8 +31,10 @@ class LatexLetterDraft(cavedb.docgen_latex_common.LatexCommon):
 
 
     def create_html_download_urls(self):
-        return self.create_url('/draft_pdf', 'Draft PDF (No Images; Bolded Index Terms)', \
-                               get_draft_pdf_filename(self.bulletin.id))
+        return self.create_url('bulletin/%s/draft_pdf' % \
+                               (self.bulletin.id), \
+                                'Draft PDF (No Images; Bolded Index Terms)', \
+                                get_draft_pdf_filename(self.bulletin.id))
 
 
     def indexed_terms(self, terms):

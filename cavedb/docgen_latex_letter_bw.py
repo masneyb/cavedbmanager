@@ -30,7 +30,9 @@ class LatexLetterBW(cavedb.docgen_latex_common.LatexCommon):
 
 
     def create_html_download_urls(self):
-        return self.create_url('/pdf', 'PDF (B/W)', get_pdf_filename(self.bulletin.id))
+        return self.create_url('bulletin/%s/pdf' % \
+                               (self.bulletin.id), 'PDF (B/W)', \
+                                get_pdf_filename(self.bulletin.id))
 
 
 def get_bw_tex_filename(bulletin_id):

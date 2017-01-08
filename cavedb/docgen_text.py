@@ -124,7 +124,9 @@ class Text(cavedb.docgen_common.Common):
 
 
     def create_html_download_urls(self):
-        return self.create_url('/text', 'Text (TXT)', get_text_filename(self.bulletin.id))
+        return self.create_url('bulletin/%s/text' % \
+                               (self.bulletin.id), 'Text (TXT)', \
+                                get_text_filename(self.bulletin.id))
 
 
 def get_text_filename(bulletin_id):

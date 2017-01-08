@@ -30,8 +30,9 @@ class LatexLetterColor(cavedb.docgen_latex_common.LatexCommon):
 
 
     def create_html_download_urls(self):
-        return self.create_url('/color_pdf', 'PDF (Color)', \
-                               get_color_pdf_filename(self.bulletin.id))
+        return self.create_url('bulletin/%s/color_pdf' % \
+                               (self.bulletin.id), 'PDF (Color)', \
+                                get_color_pdf_filename(self.bulletin.id))
 
 
 def get_color_tex_filename(bulletin_id):
