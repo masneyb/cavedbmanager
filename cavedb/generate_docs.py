@@ -99,6 +99,8 @@ def write_bulletin_files(bulletin):
 
     write_build_scripts(bulletin.id, outputter)
 
+    run_buildscript_wrapper(bulletin_id)
+
 
 def write_global_bulletin_files():
     outputter = create_global_docgen_classes()
@@ -120,6 +122,8 @@ def write_global_bulletin_files():
     outputter.close()
 
     write_build_scripts(cavedb.utils.GLOBAL_BULLETIN_ID, outputter)
+
+    run_buildscript_wrapper(cavedb.utils.GLOBAL_BULLETIN_ID)
 
 
 def write_build_scripts(bulletin_id, outputter):
@@ -482,6 +486,5 @@ def generate_bulletin(request, bulletin_id):
     bulletin = bulletins[0]
 
     write_bulletin_files(bulletin)
-    run_buildscript_wrapper(bulletin_id)
 
     return HttpResponseRedirect('%sadmin/cavedb/bulletin/' % (cavedb.settings.CONTEXT_PATH))
