@@ -107,8 +107,7 @@ def write_global_bulletin_files():
 
     outputter.indexed_terms([])
 
-    # FIXME
-    #write_gis_sections(bulletin.id, outputter)
+    # No GIS section. Only write that on the bulletin.
 
     outputter.begin_regions()
 
