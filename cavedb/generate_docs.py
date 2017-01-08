@@ -485,37 +485,3 @@ def generate_bulletin(request, bulletin_id):
     run_buildscript_wrapper(bulletin_id)
 
     return HttpResponseRedirect('%sadmin/cavedb/bulletin/' % (cavedb.settings.CONTEXT_PATH))
-
-
-def generate_bulletin_source(request, bulletin_id):
-    #pylint: disable=unused-argument
-    if not cavedb.perms.is_bulletin_generation_allowed(bulletin_id):
-        raise Http404
-
-    bulletins = cavedb.models.Bulletin.objects.filter(id=bulletin_id)
-    if bulletins.count() == 0:
-        raise Http404
-
-    write_bulletin_files(bulletins[0])
-
-    return HttpResponseRedirect('%sadmin/cavedb/bulletin/' % (cavedb.settings.CONTEXT_PATH))
-
-def generate_all_bulletin_sources(request):
-    for bulletin in cavedb.models.Bulletin.objects.all():
-        if not cavedb.perms.is_bulletin_generation_allowed(bulletin.id):
-            continue
-
-        generate_bulletin_source(request, bulletin.id)
-
-    return HttpResponseRedirect('%sadmin/cavedb/bulletin/' % (cavedb.settings.CONTEXT_PATH))
-
-
-def generate_global_bulletin(request):
-    #pylint: disable=unused-argument
-    if not cavedb.perms.is_global_generation_allowed():
-        raise Http404
-
-    write_global_bulletin_files()
-    run_buildscript_wrapper(cavedb.utils.GLOBAL_BULLETIN_ID)
-
-    return HttpResponseRedirect('%sadmin/cavedb/bulletin/' % (cavedb.settings.CONTEXT_PATH))
