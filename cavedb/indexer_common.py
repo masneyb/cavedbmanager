@@ -38,7 +38,7 @@ class IndexerCommon(object):
             else:
                 self.__add_term(all_index_terms[0], all_index_terms[1:])
 
-        self.__sorted_terms.sort(key=lambda term: len(term), reverse=True)
+        self.__sorted_terms.sort(key=len, reverse=True)
 
 
     def get_index_str(self, search_term, index_terms):
