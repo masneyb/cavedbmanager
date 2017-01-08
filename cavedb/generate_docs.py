@@ -99,7 +99,7 @@ def write_bulletin_files(bulletin):
 
     write_build_scripts(bulletin.id, outputter)
 
-    run_buildscript_wrapper(bulletin_id)
+    run_buildscript_wrapper(bulletin.id)
 
 
 def write_global_bulletin_files():
