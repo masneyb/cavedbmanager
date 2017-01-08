@@ -372,6 +372,11 @@ class BulletinSectionReference(models.Model):
                                        null=True)
     mod_date = models.DateTimeField("Modification Date", auto_now=True, editable=False, null=True)
 
+    def __unicode__(self):
+        return u'%s,%s,%s,%s,%s,%s,%s,%s,%s' % \
+               (self.author, self.title, self.book, self.volume, self.number, self.pages, \
+                self.url, self.date, self.extra)
+
     class Meta:
         verbose_name = 'reference'
         ordering = ('book', 'volume', 'number', 'pages')
@@ -525,6 +530,9 @@ class FeatureReferencedMap(models.Model):
                                        null=True)
     mod_date = models.DateTimeField("Modification Date", auto_now=True, editable=False, null=True)
 
+    def __unicode__(self):
+        return u'%s' % (self.map)
+
     class Meta:
         ordering = ('feature', 'map', )
         verbose_name = 'referenced map'
@@ -652,6 +660,12 @@ class FeatureReference(models.Model):
     create_date = models.DateTimeField("Creation Date", auto_now_add=True, editable=False, \
                                        null=True)
     mod_date = models.DateTimeField("Modification Date", auto_now=True, editable=False, null=True)
+
+
+    def __unicode__(self):
+        return u'%s,%s,%s,%s,%s,%s,%s,%s,%s' % \
+               (self.author, self.title, self.book, self.volume, self.number, self.pages, \
+                self.url, self.date, self.extra)
 
     class Meta:
         verbose_name = 'reference'
