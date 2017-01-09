@@ -3,7 +3,7 @@
 This project simplifies the data management for a state and/or county cave
 survey. It eliminates the need for the manual duplication of data, which will
 help to save time and minimize errors. The system dynamically generates
-various types of files based on the data that you upload to the database:
+the following types of files based on the data that you upload to the database:
 
 * GIS files: SHP, KML (Google Earth), GPX, MXF (Maptech), and images generated
   using Mapserver with your cave locations and cave lineplots overlayed onto
@@ -18,9 +18,9 @@ various types of files based on the data that you upload to the database:
 This significantly reduces the hassle of formatting the book and allows the user
 to concentrate on the collection of data.
 
-This project is currently used by the West Virginia Speleological Survey
-to manage over 5,000 cave and karst features within the state. The web interface
-is only available to its members.
+This project is currently used by the 
+[West Virginia Speleological Survey](https://www.wvass.org/)
+to manage over 5,000 cave and karst features within the state.
 
 
 ## Sample Bulletin
@@ -96,7 +96,7 @@ This system was used to publish the book:
   color versions of all maps and photos, plus extras.
 
 This book is available for sale to [NSS members](http://caves.org/) through
-the [West Virginia Speleological Survey](http://www.wvass.org/publications.html).
+the [West Virginia Speleological Survey](http://www.wvass.org/).
 It is also available for purchase through the
 [NSS Bookstore](https://bookstore.caves.org/index.php?mode=store&submode=showitem&itemnumber=01-0687)
 to NSS members.
