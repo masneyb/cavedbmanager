@@ -99,8 +99,6 @@ def write_bulletin_files(bulletin):
 
     write_build_scripts(bulletin.id, outputter)
 
-    run_buildscript_wrapper(bulletin.id)
-
 
 def write_global_bulletin_files():
     outputter = create_global_docgen_classes()
@@ -122,8 +120,6 @@ def write_global_bulletin_files():
     outputter.close()
 
     write_build_scripts(cavedb.utils.GLOBAL_BULLETIN_ID, outputter)
-
-    run_buildscript_wrapper(cavedb.utils.GLOBAL_BULLETIN_ID)
 
 
 def write_build_scripts(bulletin_id, outputter):
@@ -452,12 +448,19 @@ def close_all_fds():
             pass
 
 
-def run_buildscript_wrapper(bulletin_id):
+def run_buildscript_wrapper(bulletin_id, fork_process):
     #pylint: disable=protected-access
 
     build_script_wrapper_file = cavedb.utils.get_build_script_wrapper(bulletin_id)
 
-    # Rebuild the bulletin
+    basedir = '%s/bulletins/bulletin_%s' % (cavedb.settings.MEDIA_ROOT, bulletin_id)
+    os.chdir(basedir)
+
+    if not fork_process:
+        os.system('%s' % (build_script_wrapper_file))
+        return
+
+    # Otherwise run it in a separate background process
     pid1 = os.fork()
     if pid1 == 0:
         os.setsid()
@@ -465,8 +468,6 @@ def run_buildscript_wrapper(bulletin_id):
 
         pid2 = os.fork()
         if pid2 == 0:
-            basedir = '%s/bulletins/bulletin_%s' % (cavedb.settings.MEDIA_ROOT, bulletin_id)
-            os.chdir(basedir)
             status = os.system('%s' % (build_script_wrapper_file))
 
             os._exit(status)
@@ -486,5 +487,6 @@ def generate_bulletin(request, bulletin_id):
     bulletin = bulletins[0]
 
     write_bulletin_files(bulletin)
+    run_buildscript_wrapper(bulletin_id, True)
 
     return HttpResponseRedirect('%sadmin/cavedb/bulletin/' % (cavedb.settings.CONTEXT_PATH))
