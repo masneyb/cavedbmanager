@@ -12,32 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# You can have systemd trigger rebuilds all all bulletins on a daily basis
-# with this service and timer file:
+# To run from the command line:
 #
-# build-all-bulletins.service:
-#
-#   [Unit]
-#   Description=Build all bulletins
-#
-#   [Service]
-#   User=www-data
-#   Type=simple
-#   WorkingDirectory=/usr/local/cavedbmanager
-#   ExecStart=/usr/bin/python ./cavedb/generate_all_docs.py
-#   Environment="DJANGO_SETTINGS_MODULE=cavedb.settings"
-#   Environment="PYTHONPATH=."
-#
-# build-all-bulletins.timer:
-#
-#   [Unit]
-#   Description=Build all bulletins
-#
-#   [Timer]
-#   OnCalendar=daily
-#
-#   [Install]
-#   WantedBy=multi-user.target
+#   cd /path/to/cavedbmanager
+#   DJANGO_SETTINGS_MODULE=cavedb.settings PYTHONPATH=. python ./scripts/generate_all_bulletins.py
 
 import django
 import cavedb.generate_docs
@@ -46,10 +24,10 @@ import cavedb.utils
 django.setup()
 
 for bulletin in cavedb.models.Bulletin.objects.all():
-    print 'Generating bulletin %s (%s)\n' % (bulletin.bulletin_name, bulletin.id)
+    print 'Generating bulletin %s (%s)' % (bulletin.bulletin_name, bulletin.id)
     cavedb.generate_docs.write_bulletin_files(bulletin)
     cavedb.generate_docs.run_buildscript_wrapper(bulletin.id, False)
 
-print 'Generating global bulletin\n'
+print 'Generating global bulletin'
 cavedb.generate_docs.write_global_bulletin_files()
 cavedb.generate_docs.run_buildscript_wrapper(cavedb.utils.GLOBAL_BULLETIN_ID, False)
