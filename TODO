@@ -1,3 +1,6 @@
+* Combine hillshade and topo maps. Make hillshade maps a bit more colorful.
+  See http://blog.mastermaps.com/2012/07 for examples.
+* Add Dockerfile.
 * Add units field to length and depth on web interface
 * Automatically generate the survey ID field
 * Add 11 reasons a cave can be significant to WVASS
