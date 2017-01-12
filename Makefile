@@ -18,4 +18,4 @@ test:
 	python -m unittest discover
 
 clean:
-	find . -name "*.pyc" | xargs rm -f
+	find . -name "*.pyc" -delete
