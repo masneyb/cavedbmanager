@@ -86,7 +86,7 @@ TEMPLATES = [
                 #'django.template.loaders.eggs.load_template_source',
             ],
         },
-        'DIRS': (INSTALL_ROOT + "/templates"),
+        'DIRS': ([INSTALL_ROOT + "/templates"]),
     },
 ]
 
