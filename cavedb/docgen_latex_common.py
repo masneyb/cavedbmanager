@@ -924,11 +924,13 @@ def escape(inputstr):
 
     inputstr = inputstr.strip()
 
-    # Escape the # for LaTeX
+    # FIXME - escape
+    # - \ with \textbackslash in some cases
+    # - _ with \textunderscore
+    # - _ with \textunderscore
     return inputstr.replace('#', '\\#') \
                    .replace('$', '\\$') \
-                   .replace('&', '\\&') \
-                   .replace('_', '\\textunderscore ')
+                   .replace('&', '\\&')
 
 
 def none_to_empty(inputstr):
