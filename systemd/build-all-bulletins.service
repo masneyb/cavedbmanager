@@ -1,0 +1,15 @@
+[Unit]
+Description=Build all bulletins
+
+[Service]
+User=www-data
+Type=simple
+WorkingDirectory=/usr/local/cavedbmanager
+ExecStart=/usr/bin/python ./cavedb/scripts/generate_all_bulletins.py
+Environment="DJANGO_SETTINGS_MODULE=cavedb.settings"
+Environment="PYTHONPATH=."
+LimitNOFILE=20480
+#ProtectSystem=strict
+#ReadWritePaths=/usr/local/cavedbmanager-data/bulletins/ /usr/local/cavedbmanager/
+PrivateTmp=true
+PrivateNetwork=true
