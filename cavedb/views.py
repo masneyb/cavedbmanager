@@ -126,7 +126,6 @@ def show_bulletin_cover(request, bulletin_id, filename):
 def show_bulletin_attachment(request, bulletin_id, filename):
     localfile = '%s/bulletin_attachments/%s/attachments/%s' % \
                     (settings.MEDIA_ROOT, bulletin_id, filename)
-    print 'Local is %s' % (localfile)
     return do_show_bulletin_attachment(request, bulletin_id, localfile, filename)
 
 
