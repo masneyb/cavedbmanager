@@ -32,9 +32,9 @@ class Dvd(cavedb.docgen_common.Common):
         # Tuple contains (Directory Name, File Suffix)
         self.phototypes = {}
         self.phototypes['map'] = ('Maps', 'Map')
-        self.phototypes['entrance_picture'] = ('Entrance Photos', 'Entrance Photo')
-        self.phototypes['in_cave_picture'] = ('In Cave Photos', 'In Cave Photo')
-        self.phototypes['surface_picture'] = ('Surface Photos', 'Surface Photo')
+        self.phototypes['entrance_picture'] = ('EntrancePhotos', 'Entrance Photo')
+        self.phototypes['in_cave_picture'] = ('InCavePhotos', 'In Cave Photo')
+        self.phototypes['surface_picture'] = ('SurfacePhotos', 'Surface Photo')
         self.phototypes['drawing'] = ('Drawings', 'Drawing')
         self.phototypes['other'] = ('Others', 'Other')
         self.phototypes['attachment'] = ('Attachments', 'Attachment')
@@ -85,7 +85,8 @@ class Dvd(cavedb.docgen_common.Common):
             with open(readme_file, 'w') as output:
                 output.write(self.readme_contents)
 
-            ret += 'mv "%s" "%s/"\n' % (readme_file, self.dvd_tmp_dir)
+            ret += 'mkdir "%s/include_on_dvd/"\n' % (self.dvd_tmp_dir)
+            ret += 'mv "%s" "%s/include_on_dvd/"\n' % (readme_file, self.dvd_tmp_dir)
 
         for toplevel_dir in self.files.keys():
             for photo_type in self.files[toplevel_dir].keys():
@@ -113,7 +114,8 @@ class Dvd(cavedb.docgen_common.Common):
 
                         ret += 'ln "%s" "%s"\n' % (photo_meta['src'], destfile)
 
-        ret += 'cd %s/..\n' % (self.dvd_tmp_dir)
+        ret += 'find "%s" -type f -exec chmod 644 {} \\;\n' % (self.dvd_tmp_dir)
+        ret += 'cd "%s/.."\n' % (self.dvd_tmp_dir)
         ret += 'rm -f "%s"\n' % (self.dvd_zip_file)
         ret += 'zip -r "%s" "%s"\n' % (self.dvd_zip_file, os.path.basename(self.dvd_tmp_dir))
         ret += 'rm -rf "%s/"\n' % (self.dvd_tmp_dir)
