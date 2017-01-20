@@ -1,5 +1,7 @@
 # cavedbmanager
 
+[![Build Status](https://travis-ci.org/masneyb/cavedbmanager.svg?branch=master)](https://travis-ci.org/masneyb/cavedbmanager)
+
 This project simplifies the data management for a state and/or county cave
 survey. It eliminates the need for the manual duplication of data, which will
 help to save time and minimize errors. The system dynamically generates
