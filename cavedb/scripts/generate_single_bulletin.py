@@ -15,7 +15,7 @@
 # To run:
 #
 #   cd /path/to/cavedbmanager
-#   DJANGO_SETTINGS_MODULE=cavedb.settings PYTHONPATH=. python ./scripts/generate_single_bulletin.py <bulletin id>
+#   DJANGO_SETTINGS_MODULE=cavedb.settings PYTHONPATH=. python ./cavedb/scripts/generate_single_bulletin.py <bulletin id>
 
 import sys
 import django
