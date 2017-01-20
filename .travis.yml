@@ -5,11 +5,10 @@ services:
 
 before_install:
 - docker build -t cavedbmanager .
-- docker run -d --name app cavedbmanager
 - docker ps -a
 
 script:
-- docker exec app make test
+- docker run --name app -ti cavedbmanager make test
 
 after_script:
 - docker rm -f app
