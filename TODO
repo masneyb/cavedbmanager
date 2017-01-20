@@ -1,3 +1,5 @@
+* Finish Dockerfile and docker-compose.yml
+* Finish elevation_dem_update.py
 * Support markdown on text area input fields. Current latex code embedded in
   Tucker County descriptions: \textbf{}, \textit{}, \subsection*{}
 * DVD ZIP file (from finalize-tucker-county-cd):
@@ -5,10 +7,8 @@
   - wget -O "$NEWCD/Surface Photos/Cross Bedded Limestone Outcrop Along Otter Creek - Masney.jpg" http://farm3.static.flickr.com/2336/3537779054_697ce259bb_b.jpg
   - mv "$NEWCD/Surface Photos/Cave Hollow-Arbogast System Surface Photo - 1 of 2 - Masney.jpg" "$NEWCD/Surface Photos/Dragfold Outside Cave Hollow Entrance - Masney.jpg"
   - mv "$NEWCD/Surface Photos/Cave Hollow-Arbogast System Surface Photo - 2 of 2.jpg" "$NEWCD/Surface Photos/Rufus Maxwell - AT Bonnifield - Abraham Bonnifield.jpg"
-* Bring in elevation_lookup.py functionality
 * Combine hillshade and topo maps. Make hillshade maps a bit more colorful.
   See http://blog.mastermaps.com/2012/07 for examples.
-* Add Dockerfile.
 * Migrate from Python 2.7 to Python 3.
 * Upgrade from Django 1.8 to Django 1.10 (or later if available).
 * Add units field to length and depth on web interface
