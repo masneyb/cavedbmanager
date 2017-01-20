@@ -1,0 +1,17 @@
+sudo: required
+
+language: python
+
+services:
+  - docker
+
+before_install:
+- docker build -t cavedbmanager .
+- docker run -d --name app cavedbmanager
+- docker ps -a
+
+script:
+- docker exec app make test
+
+after_script:
+- docker rm -f app
