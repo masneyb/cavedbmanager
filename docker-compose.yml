@@ -1,0 +1,14 @@
+version: '2'
+services:
+  postgresql:
+    image: "kiasaki/alpine-postgres"
+    environment:
+      - POSTGRES_USER=root
+    expose:
+      - 5432
+  web:
+    build: .
+    ports:
+     - "8003:8003"
+    depends_on:
+     - postgresql
