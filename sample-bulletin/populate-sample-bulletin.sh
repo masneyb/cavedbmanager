@@ -6,7 +6,7 @@ WHOAMI=$(whoami)
 
 DBNAME=cavedb
 DATA_DEST_DIR=/usr/local/cavedbmanager-data
-POSTGIS_DATA_IMPORTER_BASE_DIR=/home/"${WHOAMI}"/data/code/postgis-data-importer
+POSTGIS_DATA_IMPORTER_BASE_DIR=/usr/local/postgis-data-importer
 
 # Create an empty PostgreSQL database for the cave data
 createdb "${DBNAME}"
