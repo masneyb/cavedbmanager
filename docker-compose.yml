@@ -17,6 +17,7 @@ services:
      - postgresql
     volumes:
      - ./docker-tmp/postgis-data-importer-downloads:/usr/local/postgis-data-importer/download
+     - ./docker-tmp/cavedbmanager-data:/usr/local/cavedbmanager-data
     entrypoint:
      - ./docker-entrypoint.sh
     environment:
