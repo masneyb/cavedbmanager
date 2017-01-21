@@ -26,10 +26,14 @@ services:
      - PGDATABASE=cavedb
      - PGUSER=root
      - PGPASSWORD=root
+     # The WEB_ADMIN_* variables are here for initial bootstrap of the
+     # project. Once you get it going, you should remove these and change your
+     # password.
      - WEB_ADMIN_EMAIL=user@domain.com
      - WEB_ADMIN_FULLNAME=Your Name
      - WEB_ADMIN_USER=admin
      - WEB_ADMIN_PASS=password
+     # Set this to 0 when running in production.
      - CAVEDB_DEBUG=1
      - CAVEDB_SITE_HEADER=My Cave Database
      - CAVEDB_SECRET_KEY=FIXME_CHANGE_THIS_SECRET_KEY
