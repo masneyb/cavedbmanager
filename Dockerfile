@@ -8,7 +8,7 @@ RUN apt-get update && \
             python-imaging python-dateutil python-gdal python-pylint-django \
             texlive texlive-latex-extra python2.7 zip mapserver-bin \
             ttf-freefont make unzip postgresql-client sudo gdal-bin patch \
-            shellcheck curl wget ca-certificates && \
+            shellcheck curl wget ca-certificates postgis && \
     rm -rf /usr/share/doc && \
     (rm /var/lib/apt/lists/* || true) && \
     apt-get clean

@@ -13,6 +13,8 @@ services:
      - "8000:8000"
     depends_on:
      - postgresql
+    volumes:
+     - ./postgis-data-importer-downloads:/usr/local/postgis-data-importer/download
     entrypoint:
      - ./docker-entrypoint.sh
     environment:
