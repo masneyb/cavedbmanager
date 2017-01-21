@@ -1,2 +1,2 @@
 *.pyc
-postgis-data-importer-downloads/
+docker-tmp/
