@@ -13,7 +13,7 @@ RUN apt-get update && \
     (rm /var/lib/apt/lists/* || true) && \
     apt-get clean
 
-RUN curl -L -o postgis-data-importer.zip https://github.com/masneyb/postgis-data-importer/archive/master.zip && \
+RUN curl -L -o /postgis-data-importer.zip https://github.com/masneyb/postgis-data-importer/archive/master.zip && \
     unzip -d /usr/local /postgis-data-importer.zip && \
     mv /usr/local/postgis-data-importer-master /usr/local/postgis-data-importer && \
     rm /postgis-data-importer.zip
