@@ -11,6 +11,9 @@ run:
 runRemote:
 	./manage.py runserver 0.0.0.0:8000
 
+dockerRun:
+	docker-compose up --build
+
 lint:
 	pylint --load-plugins pylint_django \
 		--disable=missing-docstring,locally-disabled cavedb/*.py \
