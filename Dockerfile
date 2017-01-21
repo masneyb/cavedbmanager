@@ -7,8 +7,8 @@ RUN apt-get update && \
     apt-get install --no-install-recommends -y python-psycopg2 python-django \
             python-imaging python-dateutil python-gdal python-pylint-django \
             texlive texlive-latex-extra python2.7 zip mapserver-bin \
-            ttf-freefont make unzip postgresql-client sudo gdal-bin \
-            shellcheck curl ca-certificates && \
+            ttf-freefont make unzip postgresql-client sudo gdal-bin patch \
+            shellcheck curl wget ca-certificates && \
     rm -rf /usr/share/doc && \
     (rm /var/lib/apt/lists/* || true) && \
     apt-get clean

@@ -1,10 +1,17 @@
-#!/bin/bash
+#!/bin/bash -v
 
-# Check if the database exists
+# Give PostgreSQL some time to start up
+sleep 5
+
+# Check if the database exists.
 psql -lqt root | awk '{print $1}' | grep -qw cavedb
 if [ "$?" != "0" ] ; then
-	# Give PostgreSQL some time to start up
-	sleep 5
+	cd ../postgis-data-importer
+	patch -p1 < ../cavedbmanager/sample-bulletin/postgis-data-importer-sample-bulletin.patch
+
+	make
+
+	cd ../cavedbmanager
 
 	./sample-bulletin/populate-sample-bulletin.sh
 fi
