@@ -1,4 +1,4 @@
-# Copyright 2007-2016 Brian Masney <masneyb@onstation.org>
+# Copyright 2007-2017 Brian Masney <masneyb@onstation.org>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,26 +14,32 @@
 
 import os
 
-DEBUG = True
+def get_environment_var(name, default_value):
+    if name not in os.environ:
+        return default_value
+    return os.environ[name]
+
+DEBUG = True if get_environment_var('CAVEDB_DEBUG', '1') == '1' else False
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 INSTALL_ROOT = os.path.abspath(os.path.dirname(__file__))
 
 ADMINS = (
-    ('Your Name', 'user@domain.org'),
+    (get_environment_var('WEB_ADMIN_FULLNAME', 'Your Name'), \
+     get_environment_var('WEB_ADMIN_FULLNAME', 'user@domain.org')),
 )
-
-ALLOWED_HOSTS = ('localhost',)
-
-ADMIN_SITE_HEADER = "My Cave Database"
-
 MANAGERS = ADMINS
+
+ALLOWED_HOSTS = get_environment_var('CAVEDB_ALLOWED_HOSTS', 'localhost').split(':')
+
+ADMIN_SITE_HEADER = get_environment_var('CAVEDB_SITE_HEADER', 'My Cave Database')
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'cavedb',
-        'HOST': '/var/run/postgresql/',
+        # By default, get the database connection parameters from the
+        # environment variables PGHOST, PGPORT, PGUSER, PGPASSWORD.
     }
 }
 
@@ -54,7 +60,7 @@ MEDIA_URL = CONTEXT_PATH + 'cavedb/'
 STATIC_URL = '/media/'
 STATIC_ROOT = 'media/'
 
-SECRET_KEY = 'FIXME_CHANGE_THIS_SECRET_KEY'
+SECRET_KEY = get_environment_var('CAVEDB_SECRET_KEY', 'FIXME_CHANGE_THIS_SECRET_KEY')
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -113,4 +119,3 @@ GIS_CONNECTION = 'dbname=wvgis'
 GIS_FONTS_LIST = 'opensymbol /usr/share/fonts/truetype/freefont/FreeSansBold.ttf'
 # Fedora-based systems
 #GIS_FONTS_LIST = 'opensymbol /usr/share/fonts/gnu-free/FreeSansBold.ttf'
-

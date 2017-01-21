@@ -15,7 +15,12 @@ createdb "${DBNAME}"
 # Django admin user that you will use to log into the website.
 python "${SAMPLE_DIR}"/../manage.py migrate auth
 python "${SAMPLE_DIR}"/../manage.py migrate
-python "${SAMPLE_DIR}"/../manage.py createsuperuser
+
+if [ "${WEB_ADMIN_USER}" != "" ] ; then
+	echo "from django.contrib.auth.models import User; User.objects.create_superuser('${WEB_ADMIN_USER}', '${WEB_ADMIN_EMAIL}', '${WEB_ADMIN_PASS}')" | python manage.py shell
+else
+	python "${SAMPLE_DIR}"/../manage.py createsuperuser
+fi
 
 # Set a user profile for the django user added by the step above:
 echo "insert into cavedb_caveuserprofile values (1, 1, true, true, true);" | psql "${DBNAME}"

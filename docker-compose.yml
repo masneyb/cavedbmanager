@@ -4,11 +4,29 @@ services:
     image: "kiasaki/alpine-postgres"
     environment:
       - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
     expose:
-      - 5432
+      - "5432"
   web:
     build: .
     ports:
-     - "8003:8003"
+     - "8000:8000"
     depends_on:
      - postgresql
+    entrypoint:
+     - ./docker-entrypoint.sh
+    environment:
+     - PGHOST=postgresql
+     - PGPORT=5432
+     - PGDATABASE=cavedb
+     - PGUSER=root
+     - PGPASSWORD=root
+     - WEB_ADMIN_EMAIL=user@domain.com
+     - WEB_ADMIN_FULLNAME=Your Name
+     - WEB_ADMIN_USER=admin
+     - WEB_ADMIN_PASS=password
+     - CAVEDB_DEBUG=1
+     - CAVEDB_SITE_HEADER=My Cave Database
+     - CAVEDB_SECRET_KEY=FIXME_CHANGE_THIS_SECRET_KEY
+     # Separate multiple hosts with a :
+     - CAVEDB_ALLOWED_HOSTS=localhost

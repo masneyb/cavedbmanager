@@ -12,7 +12,11 @@ runRemote:
 	./manage.py runserver 0.0.0.0:8000
 
 lint:
-	pylint --load-plugins pylint_django --disable=missing-docstring,locally-disabled cavedb/*.py cavedb/scripts/*.py cavedb/tests/*.py
+	pylint --load-plugins pylint_django \
+		--disable=missing-docstring,locally-disabled cavedb/*.py \
+		cavedb/scripts/*.py cavedb/tests/*.py
+	shellcheck ./sample-bulletin/populate-sample-bulletin.sh
+	shellcheck ./docker-entrypoint.sh
 
 test:
 	python -m unittest discover
