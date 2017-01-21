@@ -73,7 +73,7 @@ docker-tmp/cavedbmanager-data/bulletins/bulletin_1/bulletin-build-output.txt
 
 Note: During initial startup, it will download about 2-3 GB of data, and it will
 transform some of the GIS data. On my laptop with an i7 processor, it takes about
-30 minutes to complete. About 3 GB of data will be stored in the docker-tmp/
+15 minutes to complete. About 3 GB of data will be stored in the docker-tmp/
 directory outside the container and will be mounted inside the containers
 as volumes.
 
