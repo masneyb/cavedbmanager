@@ -1,6 +1,7 @@
 help:
 	@echo make run ......... Start webserver bound to localhost
 	@echo make runRemote ... Start webserver bound to all network interfaces
+	@echo make dockerRun ... Build and run Docker containers
 	@echo make lint ........ Run pylint against the code
 	@echo make test ........ Run unit tests
 	@echo make clean ....... Delete filesystem build artifacts
