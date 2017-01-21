@@ -18,6 +18,8 @@ RUN curl -L -o /postgis-data-importer.zip https://github.com/masneyb/postgis-dat
     mv /usr/local/postgis-data-importer-master /usr/local/postgis-data-importer && \
     rm /postgis-data-importer.zip
 
+ENV PYTHONUNBUFFERED 1
+
 VOLUME ["/usr/local/cavedbmanager-data", "/usr/local/postgis-data-importer/download"]
 
 EXPOSE 8000
