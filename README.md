@@ -58,34 +58,22 @@ in the [screenshots](screenshots) directory.
 
 ## Installation
 
-* These directions have only been tested on a fresh install of Ubuntu 16.04
-  running Django 1.8.7.
-* Install the [postgis-data-importer](https://github.com/masneyb/postgis-data-importer)
-  project to support setting up your GIS layers in a PostgreSQL database.
-  * If you are planning to generate the sample bulletin, then you only need to include the
-    DEMs and aerial imagery for the Aurora, Lake Lynn and Lead Mine 7.5 minute quads. By
-    default, the import script will download the data for these quads, along with all of
-    the other 7.5 minute quads in West Virginia that are underlain by karst.
-* Install package dependencies:
-  * `sudo apt-get install -y python-psycopg2 python-django python-imaging python-dateutil
-     python-gdal python-pylint-django texlive texlive-latex-extra python2.7 zip mapserver-bin
-     ttf-freefont make`
-* Update your database settings in _cavedb/settings.py_. Be sure to change
-  the SECRET_KEY setting to random data if you are running the server
-  on a non-loopback interface.
-* Install the sample data: `./sample-bulletin/populate-sample-bulletin.sh`. Be sure
-  to read the comments in the file and make any appropriate changes before running.
-* Start the server: `make run`. The server will only listen to the
-  loopback interface. Use `make runRemote` to have it bind to
-  all network interfaces. The latter is useful if you are testing
-  from inside a virtual machine.
-* Log into the web interface.
-  * Click on the Bulletins link on the main page. In the documents column,
-    click on the generate link. After a few minutes, refresh the page and
-    you should see generated documents if everything went well.
-  * Build output is stored in
-    /usr/local/cavedbmanager-data/bulletins/bulletin_1/bulletin-build-output.txt.
-    if you need to troubleshoot any issues.
+The project can be started by running:
+
+    docker-compose up
+
+Open [http://localhost:8000](http://localhost:8000) in your web browser.
+The default username / password is admin / password. Click on the Bulletins link
+on the main page. In the documents column, click on the generate link. After a
+few minutes, refresh the page and you should see generated documents.
+
+Build output is stored in
+docker-tmp/cavedbmanager-data/bulletins/bulletin_1/bulletin-build-output.txt
+(outside the container) if you need to troubleshoot any issues.
+
+Note: During initial startup, it will download about 2-3 GB of data, and it will
+transform some of the GIS data. On my laptop with an i7 processor, it takes about
+30 minutes to complete.
 
 
 ## Publications
