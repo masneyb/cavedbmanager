@@ -1,2 +1,2 @@
 *.pyc
-docker-tmp/
+docker-volumes/

@@ -68,12 +68,12 @@ on the main page. In the documents column, click on the generate link. After a
 few minutes, refresh the page and you should see generated documents.
 
 Build output is stored in
-docker-tmp/cavedbmanager-data/bulletins/bulletin_1/bulletin-build-output.txt
+docker-volumes/cavedbmanager-data/bulletins/bulletin_1/bulletin-build-output.txt
 (outside the container) if you need to troubleshoot any issues.
 
 Note: During initial startup, it will download about 2-3 GB of data, and it will
 transform some of the GIS data. On my laptop with an i7 processor, it takes about
-15 minutes to complete. About 3 GB of data will be stored in the docker-tmp/
+15 minutes to complete. About 3 GB of data will be stored in the docker-volumes/
 directory outside the container and will be mounted inside the containers
 as volumes.
 

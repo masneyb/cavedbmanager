@@ -8,7 +8,7 @@ services:
     expose:
       - "5432"
     volumes:
-     - ./docker-tmp/var-lib-postgresql-data:/var/lib/postgresql/data
+     - ./docker-volumes/var-lib-postgresql-data:/var/lib/postgresql/data
   web:
     build: .
     ports:
@@ -16,8 +16,8 @@ services:
     depends_on:
      - postgresql
     volumes:
-     - ./docker-tmp/postgis-data-importer-downloads:/usr/local/postgis-data-importer/download
-     - ./docker-tmp/cavedbmanager-data:/usr/local/cavedbmanager-data
+     - ./docker-volumes/postgis-data-importer-downloads:/usr/local/postgis-data-importer/download
+     - ./docker-volumes/cavedbmanager-data:/usr/local/cavedbmanager-data
     entrypoint:
      - ./docker-entrypoint.sh
     environment:
