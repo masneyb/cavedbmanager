@@ -94,3 +94,8 @@ It is also available for purchase through the
 [NSS Bookstore](https://bookstore.caves.org/index.php?mode=store&submode=showitem&itemnumber=01-0687)
 to NSS members.
 
+
+## Contact
+
+Brian Masney <masneyb@onstation.org>
+NSS #51142L
