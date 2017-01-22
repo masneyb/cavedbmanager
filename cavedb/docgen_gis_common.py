@@ -44,20 +44,21 @@ class GisCommon(cavedb.docgen_common.Common):
 
 
     def update_extent_boundary(self, extents, coordinates):
-        if not extents or not coordinates.wgs84_lat or not coordinates.wgs84_lon:
+        wgs84_lon_lat = coordinates.get_lon_lat_wgs84()
+        if not extents or not wgs84_lon_lat[0] or not wgs84_lon_lat[1]:
             return
 
-        if not extents['minx'] or coordinates.wgs84_lon - self.gis_x_buffer < extents['minx']:
-            extents['minx'] = coordinates.wgs84_lon - self.gis_x_buffer
+        if not extents['minx'] or wgs84_lon_lat[0] - self.gis_x_buffer < extents['minx']:
+            extents['minx'] = wgs84_lon_lat[0] - self.gis_x_buffer
 
-        if not extents['miny'] or coordinates.wgs84_lat - self.gis_y_buffer < extents['miny']:
-            extents['miny'] = coordinates.wgs84_lat - self.gis_y_buffer
+        if not extents['miny'] or wgs84_lon_lat[1] - self.gis_y_buffer < extents['miny']:
+            extents['miny'] = wgs84_lon_lat[1] - self.gis_y_buffer
 
-        if not extents['maxx'] or coordinates.wgs84_lon + self.gis_x_buffer > extents['maxx']:
-            extents['maxx'] = coordinates.wgs84_lon + self.gis_x_buffer
+        if not extents['maxx'] or wgs84_lon_lat[0] + self.gis_x_buffer > extents['maxx']:
+            extents['maxx'] = wgs84_lon_lat[0] + self.gis_x_buffer
 
-        if not extents['maxy'] or coordinates.wgs84_lat + self.gis_y_buffer > extents['maxy']:
-            extents['maxy'] = coordinates.wgs84_lat + self.gis_y_buffer
+        if not extents['maxy'] or wgs84_lon_lat[1] + self.gis_y_buffer > extents['maxy']:
+            extents['maxy'] = wgs84_lon_lat[1] + self.gis_y_buffer
 
 
 def init_extents(region_id, name, gishash):

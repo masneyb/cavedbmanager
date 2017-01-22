@@ -42,8 +42,10 @@ class Gpx(cavedb.docgen_common.Common):
     def feature_entrance(self, feature, entrance, coordinates):
         name = cavedb.docgen_common.get_entrance_name(feature, entrance)
 
+        wgs84_lon_lat = coordinates.get_lon_lat_wgs84()
+
         self.gpxfile.write('  <wpt lat="%s" lon="%s">\n' % \
-                           (coordinates.wgs84_lat, coordinates.wgs84_lon))
+                           (wgs84_lon_lat[1], wgs84_lon_lat[0]))
         self.gpxfile.write('    <ele>%s</ele>\n' % (entrance.elevation_ft))
         self.gpxfile.write('    <name>%s</name>\n' % (escape(name)))
         self.gpxfile.write('    <cmt>%s</cmt>\n' % (feature.feature_type))

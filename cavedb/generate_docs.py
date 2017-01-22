@@ -21,6 +21,7 @@ from zipfile import ZipFile
 import csv
 import osgeo.osr
 from django.http import HttpResponseRedirect, Http404
+import cavedb.coord_transform
 from cavedb.docgen_composite import Composite
 import cavedb.docgen_dvd
 import cavedb.docgen_entrance_csv
@@ -286,6 +287,16 @@ class FeatureTodoAnalyzer(object):
             outputter.feature_todo(feature, self.todo_enum, self.todo_descr)
 
 
+def transform_coordinate(entrance):
+    return cavedb.coord_transform.TransformedCoordinate(entrance.datum, \
+                                                        entrance.utmzone.utm_zone, \
+                                                        entrance.utmzone.utm_north, \
+                                                        entrance.utmeast, \
+                                                        entrance.utmnorth, \
+                                                        entrance.longitude, \
+                                                        entrance.latitude)
+
+
 def write_feature(feature, outputter):
     todo = FeatureTodoAnalyzer(feature)
 
@@ -320,68 +331,6 @@ def write_feature(feature, outputter):
     outputter.end_feature()
 
 
-class TransformedCoordinates(object):
-    def __init__(self):
-        self.utmzone, self.nad27_utmeast, self.nad27_utmnorth = '', '', ''
-        self.wgs84_lat, self.wgs84_lon = '', ''
-
-
-def transform_coordinate(entrance):
-    coords = TransformedCoordinates()
-
-    coords.utmzone = entrance.utmzone
-
-    in_srs = osgeo.osr.SpatialReference()
-    in_srs.SetWellKnownGeogCS(entrance.datum.encode('ascii'))
-
-    if entrance.utmeast != None and entrance.utmeast != 0 and entrance.utmnorth != None and \
-       entrance.utmnorth != 0:
-        in_srs.SetUTM(entrance.utmzone.utm_zone, entrance.utmzone.utm_north)
-
-        (coords.wgs84_lon, coords.wgs84_lat) = get_wgs84(in_srs, \
-                                                         int(entrance.utmeast), \
-                                                         int(entrance.utmnorth))
-
-        (coords.nad27_utmeast, coords.nad27_utmnorth) = get_nad27(in_srs, \
-                                                                  entrance.utmzone, \
-                                                                  int(entrance.utmeast), \
-                                                                  int(entrance.utmnorth))
-
-    elif entrance.longitude != None and entrance.longitude != 0 and \
-         entrance.latitude != None and entrance.latitude != 0:
-        (coords.wgs84_lon, coords.wgs84_lat) = get_wgs84(in_srs, \
-                                                         float(entrance.longitude), \
-                                                         float(entrance.latitude))
-
-        (coords.nad27_utmeast, coords.nad27_utmnorth) = get_nad27(in_srs, \
-                                                                  entrance.utmzone, \
-                                                                  float(entrance.longitude), \
-                                                                  float(entrance.latitude))
-
-    return coords
-
-
-def get_wgs84(in_srs, xcoord, ycoord):
-    out_srs = osgeo.osr.SpatialReference()
-    out_srs.SetWellKnownGeogCS('WGS84')
-
-    transformer = osgeo.osr.CoordinateTransformation(in_srs, out_srs)
-    (newx, newy, _) = transformer.TransformPoint(xcoord, ycoord)
-
-    return (newx, newy)
-
-
-def get_nad27(in_srs, utmzone, xcoord, ycoord):
-    out_srs = osgeo.osr.SpatialReference()
-    out_srs.SetUTM(utmzone.utm_zone, utmzone.utm_north)
-    out_srs.SetWellKnownGeogCS('NAD27')
-
-    transformer = osgeo.osr.CoordinateTransformation(in_srs, out_srs)
-
-    (newx, newy, _) = transformer.TransformPoint(xcoord, ycoord)
-    return (newx, newy)
-
-
 def get_region_gis_hash(region_id):
     has_entrances = False
 
@@ -392,15 +341,18 @@ def get_region_gis_hash(region_id):
                 continue
 
             coordinates = transform_coordinate(entrance)
-            if not coordinates.wgs84_lat or not coordinates.wgs84_lon:
+            wgs84_lon_lat = coordinates.get_lon_lat_wgs84()
+
+            if not wgs84_lon_lat[0] or not wgs84_lon_lat[1]:
                 continue
+
+            nad27_utm = coordinates.get_utm_nad27()
 
             has_entrances = True
             entranceinfo = '%s,%s,%s,%s,%s,%s,%s,%s,%s' % \
                            (feature.name, feature.feature_type, feature.is_significant, \
-                            entrance.entrance_name, coordinates.utmzone, \
-                            coordinates.nad27_utmeast, coordinates.nad27_utmnorth, \
-                            coordinates.wgs84_lat, coordinates.wgs84_lon)
+                            entrance.entrance_name, entrance.utmzone, \
+                            nad27_utm[1], nad27_utm[0], wgs84_lon_lat[1], wgs84_lon_lat[0])
             md5hash.update(entranceinfo)
 
     return md5hash.hexdigest() if has_entrances else None

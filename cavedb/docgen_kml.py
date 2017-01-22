@@ -55,9 +55,11 @@ class Kml(cavedb.docgen_common.Common):
             self.kmlfile.write(escape(feature.description))
         self.kmlfile.write('</description>\n')
 
+        wgs84_lon_lat = coordinates.get_lon_lat_wgs84()
+
         self.kmlfile.write('<Point>\n')
         self.kmlfile.write('<coordinates>%s,%s,%s</coordinates>' %
-                           (coordinates.wgs84_lat, coordinates.wgs84_lon, entrance.elevation_ft))
+                           (wgs84_lon_lat[1], wgs84_lon_lat[0], entrance.elevation_ft))
         self.kmlfile.write('</Point>\n')
         self.kmlfile.write('</Placemark>')
 

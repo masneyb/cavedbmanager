@@ -34,8 +34,10 @@ class Mxf(cavedb.docgen_common.Common):
 
 
     def feature_entrance(self, feature, entrance, coordinates):
+        wgs84_lon_lat = coordinates.get_lon_lat_wgs84()
+
         self.mxffile.write('%s, %s, \"%s\", \"%s%s\", \"Number: %s Height: %s\", ff0000, 3\n' % \
-                           (coordinates.wgs84_lat, coordinates.wgs84_lon, \
+                           (wgs84_lon_lat[1], wgs84_lon_lat[0], \
                             cavedb.docgen_common.get_entrance_name(feature, entrance), \
                             feature.survey_county.survey_short_name, feature.survey_id, \
                             self.number, entrance.elevation_ft))

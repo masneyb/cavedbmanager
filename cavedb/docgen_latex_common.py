@@ -433,14 +433,22 @@ class LatexCommon(cavedb.docgen_common.Common):
 
 
     def __show_coordinates(self, entrance, coordinates):
-        hemisphere = 'N ' if coordinates.utmzone.utm_north else 'S '
-        self.__writeln(r'NAD27 UTM: \hfill ' + str(coordinates.utmzone.utm_zone) + hemisphere + \
-                     '%.0f' % (coordinates.nad27_utmnorth) + r'N ' + \
-                     '%.0f' % (coordinates.nad27_utmeast) + r'E \\*')
+        has_coordinates = False
 
-        self.__writeln(r'WGS84 Lat/Lon: \hfill ' + \
-                     decimal_degrees_to_ddmmss_str(coordinates.wgs84_lat) + r' / ' + \
-                     decimal_degrees_to_ddmmss_str(coordinates.wgs84_lon) + r' \\*')
+        utm_nad27 = coordinates.get_utm_nad27()
+        if utm_nad27[0]:
+            has_coordinates = True
+            hemisphere = 'N ' if entrance.utmzone.utm_north else 'S '
+            self.__writeln(r'NAD27 UTM: \hfill ' + str(entrance.utmzone.utm_zone) + hemisphere + \
+                           '%.0f' % (utm_nad27[1]) + r'N ' + \
+                           '%.0f' % (utm_nad27[0]) + r'E \\*')
+
+        lat_lon_wgs84 = coordinates.get_lon_lat_wgs84()
+        if lat_lon_wgs84[0]:
+            has_coordinates = True
+            self.__writeln(r'WGS84 Lat/Lon: \hfill ' + \
+                           decimal_degrees_to_ddmmss_str(lat_lon_wgs84[1]) + r' / ' + \
+                           decimal_degrees_to_ddmmss_str(lat_lon_wgs84[0]) + r' \\*')
 
         if entrance.elevation_ft:
             self.__write('Elevation: {:,}'.format(entrance.elevation_ft) + '\'')
@@ -464,6 +472,7 @@ class LatexCommon(cavedb.docgen_common.Common):
         else:
             self.__writeln(r'\textit{Unknown coordinate acquisition method.} \\*')
 
+        return has_coordinates
 
 
     def __show_feature_tikz_header(self, feature):
@@ -504,7 +513,7 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.__feature_names(feature)
         self.__feature_length_and_depth(feature)
 
-        has_coordinates = False
+        has_at_least_one_coord = False
         for counter, (entrance, coordinates) in enumerate(self.feature_attrs['entrances']):
             if counter > 0:
                 # Check to see if we need to split up the entrances into separate boxes.
@@ -523,11 +532,10 @@ class LatexCommon(cavedb.docgen_common.Common):
             if entrance.entrance_name and entrance.entrance_name != feature.name:
                 self.__writeln(r'\textit{\textbf{' + escape(entrance.entrance_name) + r'}} \\*')
 
-            if coordinates.wgs84_lat:
-                has_coordinates = True
-                self.__show_coordinates(entrance, coordinates)
+            ent_coord_avail = self.__show_coordinates(entrance, coordinates)
+            has_at_least_one_coord = has_at_least_one_coord or ent_coord_avail
 
-        if not has_coordinates:
+        if not has_at_least_one_coord:
             self.__writeln(r'\textit{Coordinates are not available.} \\*')
 
         self.__show_feature_tikz_footer(feature)
