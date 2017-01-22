@@ -48,11 +48,7 @@ def get_all_entrances():
 def process_dem(filepath, all_entrances):
     dataset = osgeo.gdal.Open(filepath, osgeo.gdal.GA_ReadOnly)
 
-    geotransform = dataset.GetGeoTransform()
-    top_left_x = geotransform[0]
-    res_x = geotransform[1]
-    top_left_y = geotransform[3]
-    res_y = geotransform[5]
+    top_left_x, res_x, _, top_left_y, _, res_y = dataset.GetGeoTransform()
 
     bottom_right_x = top_left_x + (dataset.RasterXSize * res_x)
     bottom_right_y = top_left_y + (dataset.RasterYSize * res_y)
