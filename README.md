@@ -63,9 +63,10 @@ The project can be started by running:
     docker-compose up
 
 Open [http://localhost:8000](http://localhost:8000) in your web browser.
-The default username / password is admin / password. Click on the Bulletins link
-on the main page. In the documents column, click on the generate link. After a
-few minutes, refresh the page and you should see generated documents.
+The default username / password is admin / password. Once logged in, click on
+the Bulletins link on the main page, then click on the generate link in the
+documents column. After a few minutes, refresh the page and you should see
+the generated documents.
 
 Build output is stored in
 docker-volumes/cavedbmanager-data/bulletins/bulletin_1/bulletin-build-output.txt
