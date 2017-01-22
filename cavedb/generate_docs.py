@@ -19,7 +19,6 @@ import resource
 import subprocess
 from zipfile import ZipFile
 import csv
-import osgeo.osr
 from django.http import HttpResponseRedirect, Http404
 import cavedb.coord_transform
 from cavedb.docgen_composite import Composite
