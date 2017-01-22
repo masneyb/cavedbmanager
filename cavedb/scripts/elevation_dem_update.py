@@ -41,14 +41,13 @@ dem_dir = sys.argv[1]
 
 all_entrances = []
 
-# FIXME - use NAD83
 for entrance in cavedb.models.FeatureEntrance.objects.all():
     coords = cavedb.coord_transform.transform_coordinate(entrance)
-    if not coords.nad27_utmeast or not coords.nad27_utmnorth:
+    nad83_utm = coords.get_utm_nad83()
+    if not nad83_utm[0] or not nad83_utm[1]:
         continue
 
-    all_entrances.append((entrance.id, coords.nad27_utmeast, coords.nad27_utmnorth, \
-                          entrance.elevation_ft))
+    all_entrances.append((entrance.id, nad83_utm[0], nad83_utm[1], entrance.elevation_ft))
 
 print 'Loaded %d entrances\n' % (len(all_entrances))
 

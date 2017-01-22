@@ -76,3 +76,9 @@ class TransformedCoordinate(object):
 
     def get_utm_nad83(self):
         return self.transform(self.utm_nad83)
+
+
+def transform_coordinate(entrance):
+    return TransformedCoordinate(entrance.datum, entrance.utmzone.utm_zone, \
+                                 entrance.utmzone.utm_north, entrance.utmeast, entrance.utmnorth, \
+                                 entrance.longitude, entrance.latitude)

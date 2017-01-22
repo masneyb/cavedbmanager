@@ -287,16 +287,6 @@ class FeatureTodoAnalyzer(object):
             outputter.feature_todo(feature, self.todo_enum, self.todo_descr)
 
 
-def transform_coordinate(entrance):
-    return cavedb.coord_transform.TransformedCoordinate(entrance.datum, \
-                                                        entrance.utmzone.utm_zone, \
-                                                        entrance.utmzone.utm_north, \
-                                                        entrance.utmeast, \
-                                                        entrance.utmnorth, \
-                                                        entrance.longitude, \
-                                                        entrance.latitude)
-
-
 def write_feature(feature, outputter):
     todo = FeatureTodoAnalyzer(feature)
 
@@ -306,7 +296,7 @@ def write_feature(feature, outputter):
         if not ent.publish_location:
             continue
 
-        coordinates = transform_coordinate(ent)
+        coordinates = cavedb.coord_transform.transform_coordinate(ent)
 
         outputter.feature_entrance(feature, ent, coordinates)
         todo.process_entrance(ent)
@@ -340,7 +330,7 @@ def get_region_gis_hash(region_id):
             if not entrance.publish_location:
                 continue
 
-            coordinates = transform_coordinate(entrance)
+            coordinates = cavedb.coord_transform.transform_coordinate(entrance)
             wgs84_lon_lat = coordinates.get_lon_lat_wgs84()
 
             if not wgs84_lon_lat[0] or not wgs84_lon_lat[1]:
