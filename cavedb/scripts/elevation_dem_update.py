@@ -31,52 +31,69 @@ import django
 import cavedb.coord_transform
 import cavedb.models
 
-django.setup()
+def get_all_entrances():
+    all_entrances = []
 
-if len(sys.argv) != 2:
-    print 'usage: elevation_dem_update.py <path to DEM directory>'
-    sys.exit(1)
+    for entrance in cavedb.models.FeatureEntrance.objects.all():
+        coords = cavedb.coord_transform.transform_coordinate(entrance)
+        nad83_utm = coords.get_utm_nad83()
+        if not nad83_utm[0] or not nad83_utm[1]:
+            continue
 
-dem_dir = sys.argv[1]
+        all_entrances.append((entrance.id, nad83_utm[0], nad83_utm[1], entrance.elevation_ft))
 
-all_entrances = []
+    return all_entrances
 
-for entrance in cavedb.models.FeatureEntrance.objects.all():
-    coords = cavedb.coord_transform.transform_coordinate(entrance)
-    nad83_utm = coords.get_utm_nad83()
-    if not nad83_utm[0] or not nad83_utm[1]:
-        continue
 
-    all_entrances.append((entrance.id, nad83_utm[0], nad83_utm[1], entrance.elevation_ft))
-
-print 'Loaded %d entrances\n' % (len(all_entrances))
-
-for f in os.listdir(dem_dir):
-    filepath = '%s/%s' % (dem_dir, f)
-
-    if not os.path.isfile(filepath) or not filepath.endswith('.tif'):
-        continue
-
+def process_dem(filepath, all_entrances):
     dataset = osgeo.gdal.Open(filepath, osgeo.gdal.GA_ReadOnly)
+
     geotransform = dataset.GetGeoTransform()
-    min_x = geotransform[0]
-    max_y = geotransform[3]
-    res_x = abs(geotransform[1])
-    res_y = abs(geotransform[5])
+    top_left_x = geotransform[0]
+    res_x = geotransform[1]
+    top_left_y = geotransform[3]
+    res_y = geotransform[5]
+
+    bottom_right_x = top_left_x + (dataset.RasterXSize * res_x)
+    bottom_right_y = top_left_y + (dataset.RasterYSize * res_y)
 
     band = dataset.GetRasterBand(1)
+    nodata = band.GetNoDataValue()
 
-    for (entrance_id, xcoord, ycoord, zcoord) in all_entrances:
-        down_row = int(math.ceil((max_y - ycoord) / res_y))
-        down_col = int(math.ceil((xcoord - min_x) / res_x))
-        if down_row > 0  and down_col > 0 and \
-             dataset.RasterYSize > down_row and dataset.RasterXSize > down_col:
-            down_raster_scan = band.ReadRaster(down_col - 1, down_row - 1, 1, 1)
-            down_raster_area = struct.unpack('H' * 1, down_raster_scan)
-            lowpoint = int(down_raster_area[0])
-            if lowpoint > 0:
-                print 'entrance: %s, new_elevation=%s, old_elevation=%s' % \
-                      (entrance_id, lowpoint, zcoord)
-                break
+    for (entrance_id, xcoord, ycoord, orig_zcoord) in all_entrances:
+        if not (top_left_x <= xcoord and xcoord <= bottom_right_x and \
+                bottom_right_y <= ycoord and ycoord <= top_left_y):
+            continue
+
+        down_row = int(math.ceil((top_left_y - ycoord) / abs(res_y)))
+        down_col = int(math.ceil((xcoord - top_left_x) / abs(res_x)))
+
+        down_raster_scan = band.ReadRaster(down_col - 1, down_row - 1, 1, 1)
+        down_raster_area = struct.unpack('H' * 1, down_raster_scan)
+        lowpoint = down_raster_area[0]
+
+        if lowpoint != nodata:
+            print 'entrance: %s, new_elevation=%s, old_elevation=%s' % \
+                  (entrance_id, int(lowpoint), orig_zcoord)
+            # FIXME - pass in callback to update database
 
     del dataset
+
+
+def process_all_dems(dem_dir, all_entrances):
+    for filename in os.listdir(dem_dir):
+        filepath = '%s/%s' % (dem_dir, filename)
+
+        if not os.path.isfile(filepath) or not filepath.endswith('.tif'):
+            continue
+
+        process_dem(filepath, all_entrances)
+
+
+if __name__ == '__main__':
+    if len(sys.argv) != 2:
+        print 'usage: elevation_dem_update.py <path to DEM directory>'
+        sys.exit(1)
+
+    django.setup()
+    process_all_dems(sys.argv[1], get_all_entrances())

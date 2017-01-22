@@ -1,4 +1,3 @@
-* Finish elevation_dem_update.py
 * Support markdown on text area input fields. Current latex code embedded in
   Tucker County descriptions: \textbf{}, \textit{}, \subsection*{}
 * DVD ZIP file (from finalize-tucker-county-cd):
