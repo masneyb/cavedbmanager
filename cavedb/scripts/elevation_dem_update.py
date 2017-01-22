@@ -31,16 +31,16 @@ import django
 import cavedb.coord_transform
 import cavedb.models
 
-def get_all_entrances():
+def get_all_entrances(coord_transformer):
     all_entrances = []
 
     for entrance in cavedb.models.FeatureEntrance.objects.all():
-        coords = cavedb.coord_transform.transform_coordinate(entrance)
-        nad83_utm = coords.get_utm_nad83()
-        if not nad83_utm[0] or not nad83_utm[1]:
+        coord = cavedb.coord_transform.transform_coordinate(entrance)
+        transformed_coord = coord_transformer(coord)
+        if not transformed_coord[0] or not transformed_coord[1]:
             continue
 
-        all_entrances.append((entrance.id, nad83_utm[0], nad83_utm[1], entrance.elevation_ft))
+        all_entrances.append((entrance.id, transformed_coord[0], transformed_coord[1]))
 
     return all_entrances
 
@@ -56,7 +56,7 @@ def process_dem(filepath, all_entrances):
     band = dataset.GetRasterBand(1)
     nodata = band.GetNoDataValue()
 
-    for (entrance_id, xcoord, ycoord, orig_zcoord) in all_entrances:
+    for (entrance_id, xcoord, ycoord) in all_entrances:
         if not (top_left_x <= xcoord and xcoord <= bottom_right_x and \
                 bottom_right_y <= ycoord and ycoord <= top_left_y):
             continue
@@ -66,12 +66,20 @@ def process_dem(filepath, all_entrances):
 
         down_raster_scan = band.ReadRaster(down_col - 1, down_row - 1, 1, 1)
         down_raster_area = struct.unpack('H' * 1, down_raster_scan)
-        lowpoint = down_raster_area[0]
+        dem_elevation_flt = down_raster_area[0]
+        dem_elevation_int = int(dem_elevation_flt)
 
-        if lowpoint != nodata:
-            print 'entrance: %s, new_elevation=%s, old_elevation=%s' % \
-                  (entrance_id, int(lowpoint), orig_zcoord)
-            # FIXME - pass in callback to update database
+        if dem_elevation_flt == nodata or dem_elevation_int == 0:
+            continue
+
+        entrance = cavedb.models.FeatureEntrance.objects.get(pk=entrance_id)
+
+        if entrance.elevation_ft != dem_elevation_int:
+            print 'entrance id: %s, new_elevation=%s, old_elevation=%s' % \
+                  (entrance_id, dem_elevation_int, entrance.elevation_ft)
+
+            entrance.elevation_ft = dem_elevation_int
+            entrance.save()
 
     del dataset
 
@@ -92,4 +100,4 @@ if __name__ == '__main__':
         sys.exit(1)
 
     django.setup()
-    process_all_dems(sys.argv[1], get_all_entrances())
+    process_all_dems(sys.argv[1], get_all_entrances(lambda coord: coord.get_utm_nad83()))
