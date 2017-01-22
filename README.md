@@ -98,4 +98,3 @@ to NSS members.
 ## Contact
 
 Brian Masney <masneyb@onstation.org>
-NSS #51142L
