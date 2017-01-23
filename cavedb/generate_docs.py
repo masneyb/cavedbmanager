@@ -335,13 +335,13 @@ def get_region_gis_hash(region_id):
             if not wgs84_lon_lat[0] or not wgs84_lon_lat[1]:
                 continue
 
-            nad27_utm = coordinates.get_utm_nad27()
+            nad83_utm = coordinates.get_utm_nad83()
 
             has_entrances = True
             entranceinfo = '%s,%s,%s,%s,%s,%s,%s,%s,%s' % \
                            (feature.name, feature.feature_type, feature.is_significant, \
                             entrance.entrance_name, entrance.utmzone, \
-                            nad27_utm[1], nad27_utm[0], wgs84_lon_lat[1], wgs84_lon_lat[0])
+                            nad83_utm[1], nad83_utm[0], wgs84_lon_lat[1], wgs84_lon_lat[0])
             md5hash.update(entranceinfo)
 
     return md5hash.hexdigest() if has_entrances else None

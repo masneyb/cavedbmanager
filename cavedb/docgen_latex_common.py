@@ -435,13 +435,13 @@ class LatexCommon(cavedb.docgen_common.Common):
     def __show_coordinates(self, entrance, coordinates):
         has_coordinates = False
 
-        utm_nad27 = coordinates.get_utm_nad27()
-        if utm_nad27[0]:
+        utm_nad83 = coordinates.get_utm_nad83()
+        if utm_nad83[0]:
             has_coordinates = True
             hemisphere = 'N ' if entrance.utmzone.utm_north else 'S '
-            self.__writeln(r'NAD27 UTM: \hfill ' + str(entrance.utmzone.utm_zone) + hemisphere + \
-                           '%.0f' % (utm_nad27[1]) + r'N ' + \
-                           '%.0f' % (utm_nad27[0]) + r'E \\*')
+            self.__writeln(r'NAD83 UTM: \hfill ' + str(entrance.utmzone.utm_zone) + hemisphere + \
+                           '%.0f' % (utm_nad83[1]) + r'N ' + \
+                           '%.0f' % (utm_nad83[0]) + r'E \\*')
 
         lat_lon_wgs84 = coordinates.get_lon_lat_wgs84()
         if lat_lon_wgs84[0]:

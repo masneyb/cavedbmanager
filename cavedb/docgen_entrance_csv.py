@@ -32,7 +32,7 @@ class EntranceCsv(cavedb.docgen_common.Common):
 
         self.csvwriter.writerow(['internal_id', 'locid', 'survey_id', 'name', 'alternate_names',
                                  'type', 'coord_acquision', 'wgs84_lon', 'wgs84_lat',
-                                 'nad27_utmzone', 'nad27_utmeast', 'nad27_utmnorth', 'elevation',
+                                 'nad83_utmzone', 'nad83_utmeast', 'nad83_utmnorth', 'elevation',
                                  'region', 'county', 'quad', 'length', 'depth', 'length_based_on',
                                  'significant', 'access enum', 'access descr', 'todo enum',
                                  'todo descr', 'source', 'description', 'history',
@@ -51,13 +51,13 @@ class EntranceCsv(cavedb.docgen_common.Common):
             gislbl_pri = 8
 
         lat_lon_wgs84 = coordinates.get_lon_lat_wgs84()
-        utm_nad27 = coordinates.get_utm_nad27()
+        utm_nad83 = coordinates.get_utm_nad83()
 
         self.csvwriter.writerow([feature.id, entrance.id,
                                  feature.survey_county.survey_short_name + feature.survey_id,
                                  name, feature.alternate_names, feature.feature_type,
                                  entrance.coord_acquision, lat_lon_wgs84[0],
-                                 lat_lon_wgs84[1], entrance.utmzone, utm_nad27[0], utm_nad27[1],
+                                 lat_lon_wgs84[1], entrance.utmzone, utm_nad83[0], utm_nad83[1],
                                  entrance.elevation_ft, feature.bulletin_region.region_name,
                                  feature.survey_county.county_name,
                                  entrance.quad.quad_name if entrance.quad else '',
