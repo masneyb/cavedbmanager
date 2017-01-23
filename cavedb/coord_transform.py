@@ -49,12 +49,17 @@ class TransformedCoordinate(object):
 
         self.transform_cache = {}
 
+        # Add the original coordinate to the cache to improve the overall processing
+        # speed and to ensure that the original coordinate remains unchanged.
+        cache_key = (str(self.in_srs), str(self.in_srs), self.in_xy[0], self.in_xy[1])
+        self.transform_cache[cache_key] = (self.in_xy[0], self.in_xy[1])
+
 
     def transform(self, out_srs):
         if not self.in_srs or not out_srs or not self.in_xy[0] or not self.in_xy[1]:
             return (None, None)
 
-        cache_key = (self.in_srs, out_srs, self.in_xy[0], self.in_xy[1])
+        cache_key = (str(self.in_srs), str(out_srs), self.in_xy[0], self.in_xy[1])
         if cache_key in self.transform_cache:
             return self.transform_cache[cache_key]
 
