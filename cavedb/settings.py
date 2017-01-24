@@ -28,7 +28,7 @@ INSTALL_ROOT = os.path.abspath(os.path.dirname(__file__))
 
 ADMINS = (
     (get_environment_var('WEB_ADMIN_FULLNAME', 'Your Name'), \
-     get_environment_var('WEB_ADMIN_FULLNAME', 'user@domain.org')),
+     get_environment_var('WEB_ADMIN_EMAIL', 'user@domain.org')),
 )
 MANAGERS = ADMINS
 

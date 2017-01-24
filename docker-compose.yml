@@ -60,11 +60,11 @@ services:
      - PGUSER=root
      - PGPASSWORD=root
      - PYTHONPATH=/usr/local/cavedbmanager
-     # The WEB_ADMIN_* variables are here for initial bootstrap of the
-     # project. Once you get it going, you should remove these and change your
-     # password.
-     - WEB_ADMIN_EMAIL=user@domain.com
      - WEB_ADMIN_FULLNAME=Your Name
+     - WEB_ADMIN_EMAIL=user@domain.com
+     # The WEB_ADMIN_USER and WEB_ADMIN_PASS variables are here for initial bootstrap
+     # of the project. Once you get it going, you should remove these and change your
+     # password.
      - WEB_ADMIN_USER=admin
      - WEB_ADMIN_PASS=password
     ports:
