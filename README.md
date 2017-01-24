@@ -72,6 +72,10 @@ Build output is stored in
 docker-volumes/cavedbmanager-data/bulletins/bulletin_1/bulletin-build-output.txt
 (outside the container) if you need to troubleshoot any issues.
 
+docker-compose sets up three different containers: a database, a web server and
+a worker container for building the various documents. The web container
+communicates with the worker container via a named pipe.
+
 Note: During initial startup, it will download about 2-3 GB of data, and it will
 transform some of the GIS data. On my laptop with an i7 processor, it takes about
 15 minutes to complete. About 3 GB of data will be stored in the docker-volumes/
