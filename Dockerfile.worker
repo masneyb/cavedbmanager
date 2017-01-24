@@ -2,13 +2,22 @@ FROM ubuntu:16.04
 
 MAINTAINER Brian Masney <masneyb@onstation.org>
 
+ENV PYTHONUNBUFFERED 1
+
+# Be sure this RUN command matches the one in Dockerfile.web.
 RUN apt-get update && \
-    apt-get dist-upgrade -y && \
     apt-get install --no-install-recommends -y python-psycopg2 python-django \
             python-imaging python-dateutil python-gdal python-pylint-django \
-            texlive texlive-latex-extra python2.7 zip mapserver-bin \
-            ttf-freefont make unzip postgresql-client gdal-bin patch \
-            shellcheck curl wget ca-certificates postgis && \
+            python2.7 postgresql-client make shellcheck && \
+    rm -rf /usr/share/doc && \
+    (rm /var/lib/apt/lists/* || true) && \
+    apt-get clean
+
+# Additional packages for building the bulletin documents.
+RUN apt-get update && \
+    apt-get install --no-install-recommends -y texlive texlive-latex-extra \
+            zip mapserver-bin ttf-freefont unzip postgresql-client gdal-bin \
+            patch curl wget ca-certificates postgis && \
     rm -rf /usr/share/doc && \
     (rm /var/lib/apt/lists/* || true) && \
     apt-get clean
@@ -18,8 +27,6 @@ RUN curl -L -o /postgis-data-importer.zip \
     unzip -d /usr/local /postgis-data-importer.zip && \
     mv /usr/local/postgis-data-importer-master /usr/local/postgis-data-importer && \
     rm /postgis-data-importer.zip
-
-ENV PYTHONUNBUFFERED 1
 
 VOLUME ["/usr/local/cavedbmanager-data", \
         "/usr/local/postgis-data-importer/download", \
