@@ -1,0 +1,22 @@
+FROM ubuntu:16.04
+
+MAINTAINER Brian Masney <masneyb@onstation.org>
+
+RUN apt-get update && \
+    apt-get dist-upgrade -y && \
+    apt-get install --no-install-recommends -y python-psycopg2 python-django \
+            python-imaging python-dateutil python-gdal python-pylint-django \
+            python2.7 postgresql-client make && \
+    rm -rf /usr/share/doc && \
+    (rm /var/lib/apt/lists/* || true) && \
+    apt-get clean
+
+ENV PYTHONUNBUFFERED 1
+
+VOLUME ["/usr/local/cavedbmanager-data", "/tmp/cavedb-worker"]
+
+EXPOSE 8000
+
+COPY . /usr/local/cavedbmanager
+
+WORKDIR /usr/local/cavedbmanager

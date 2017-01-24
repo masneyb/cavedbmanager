@@ -15,8 +15,6 @@
 import hashlib
 import os
 import os.path
-import resource
-import subprocess
 from zipfile import ZipFile
 import csv
 from django.http import HttpResponseRedirect, Http404
@@ -377,43 +375,14 @@ def get_indexed_terms(bulletin):
     return indexed_terms
 
 
-def close_all_fds():
-    maxfd = resource.getrlimit(resource.RLIMIT_NOFILE)[1]
-    if maxfd == resource.RLIM_INFINITY:
-        maxfd = subprocess.MAXFD
-
-    for filed in range(3, maxfd):
-        try:
-            os.close(filed)
-        except OSError:
-            pass
-
-
-def run_buildscript_wrapper(bulletin_id, fork_process):
+def run_buildscript_wrapper(bulletin_id):
     #pylint: disable=protected-access
 
     build_script_wrapper_file = cavedb.utils.get_build_script_wrapper(bulletin_id)
 
     basedir = '%s/bulletins/bulletin_%s' % (cavedb.settings.MEDIA_ROOT, bulletin_id)
     os.chdir(basedir)
-
-    if not fork_process:
-        os.system('%s' % (build_script_wrapper_file))
-        return
-
-    # Otherwise run it in a separate background process
-    pid1 = os.fork()
-    if pid1 == 0:
-        os.setsid()
-        close_all_fds()
-
-        pid2 = os.fork()
-        if pid2 == 0:
-            status = os.system('%s' % (build_script_wrapper_file))
-
-            os._exit(status)
-        else:
-            os._exit(0)
+    os.system('%s' % (build_script_wrapper_file))
 
 
 def generate_bulletin(request, bulletin_id):
@@ -421,13 +390,11 @@ def generate_bulletin(request, bulletin_id):
     if not cavedb.perms.is_bulletin_generation_allowed(bulletin_id):
         raise Http404
 
-    bulletins = cavedb.models.Bulletin.objects.filter(id=bulletin_id)
-    if bulletins.count() == 0:
+    bulletin = cavedb.models.Bulletin.objects.get(pk=bulletin_id)
+    if bulletin is None:
         raise Http404
 
-    bulletin = bulletins[0]
-
-    write_bulletin_files(bulletin)
-    run_buildscript_wrapper(bulletin_id, True)
+    with open(cavedb.settings.WORKER_FIFO, 'w') as output:
+        output.write('%s\n' % (bulletin_id))
 
     return HttpResponseRedirect('%sadmin/cavedb/bulletin/' % (cavedb.settings.CONTEXT_PATH))

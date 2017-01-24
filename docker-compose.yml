@@ -3,29 +3,59 @@ services:
   postgresql:
     image: "mdillon/postgis:9.5"
     environment:
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=root
+     - POSTGRES_USER=root
+     - POSTGRES_PASSWORD=root
     expose:
-      - "5432"
+     - "5432"
     volumes:
      - ./docker-volumes/var-lib-postgresql-data:/var/lib/postgresql/data
-  web:
-    build: .
-    ports:
-     - "8000:8000"
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
     depends_on:
      - postgresql
-    volumes:
-     - ./docker-volumes/postgis-data-importer-downloads:/usr/local/postgis-data-importer/download
-     - ./docker-volumes/cavedbmanager-data:/usr/local/cavedbmanager-data
     entrypoint:
-     - ./docker-entrypoint.sh
+     - ./cavedb/scripts/docker-worker-entrypoint.sh
     environment:
+     - CAVEDB_DATA_BASE_DIR=/usr/local/cavedbmanager-data
+     - DJANGO_SETTINGS_MODULE=cavedb.settings
+     - CAVEDB_WORKER_FIFO=/tmp/cavedb-worker/cavedb-worker.fifo
      - PGHOST=postgresql
      - PGPORT=5432
      - PGDATABASE=cavedb
      - PGUSER=root
      - PGPASSWORD=root
+     - PYTHONPATH=/usr/local/cavedbmanager
+    volumes:
+     - ./docker-volumes/cavedb-worker-fifo:/tmp/cavedb-worker
+     - ./docker-volumes/cavedbmanager-data:/usr/local/cavedbmanager-data
+     - ./docker-volumes/postgis-data-importer-downloads:/usr/local/postgis-data-importer/download
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    depends_on:
+     - postgresql
+     - worker
+    entrypoint:
+     - ./cavedb/scripts/docker-web-entrypoint.sh
+    environment:
+     # Separate multiple hosts with a :
+     - CAVEDB_ALLOWED_HOSTS=localhost
+     - CAVEDB_DATA_BASE_DIR=/usr/local/cavedbmanager-data
+     # Set this to 0 when running in production.
+     - CAVEDB_DEBUG=1
+     - CAVEDB_SECRET_KEY=FIXME_CHANGE_THIS_SECRET_KEY
+     - CAVEDB_SITE_HEADER=My Cave Database
+     - CAVEDB_WORKER_FIFO=/tmp/cavedb-worker/cavedb-worker.fifo
+     - DJANGO_SETTINGS_MODULE=cavedb.settings
+     - PGHOST=postgresql
+     - PGPORT=5432
+     - PGDATABASE=cavedb
+     - PGUSER=root
+     - PGPASSWORD=root
+     - PYTHONPATH=/usr/local/cavedbmanager
      # The WEB_ADMIN_* variables are here for initial bootstrap of the
      # project. Once you get it going, you should remove these and change your
      # password.
@@ -33,9 +63,8 @@ services:
      - WEB_ADMIN_FULLNAME=Your Name
      - WEB_ADMIN_USER=admin
      - WEB_ADMIN_PASS=password
-     # Set this to 0 when running in production.
-     - CAVEDB_DEBUG=1
-     - CAVEDB_SITE_HEADER=My Cave Database
-     - CAVEDB_SECRET_KEY=FIXME_CHANGE_THIS_SECRET_KEY
-     # Separate multiple hosts with a :
-     - CAVEDB_ALLOWED_HOSTS=localhost
+    ports:
+     - "8000:8000"
+    volumes:
+     - ./docker-volumes/cavedb-worker-fifo:/tmp/cavedb-worker
+     - ./docker-volumes/cavedbmanager-data:/usr/local/cavedbmanager-data

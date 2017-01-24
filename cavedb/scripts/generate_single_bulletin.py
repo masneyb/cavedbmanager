@@ -15,7 +15,9 @@
 # To run:
 #
 #   cd /path/to/cavedbmanager
-#   DJANGO_SETTINGS_MODULE=cavedb.settings PYTHONPATH=. python ./cavedb/scripts/generate_single_bulletin.py <bulletin id>
+#   DJANGO_SETTINGS_MODULE=cavedb.settings \
+#     PYTHONPATH=. \
+#     python ./cavedb/scripts/generate_single_bulletin.py <bulletin id>
 
 import sys
 import django
@@ -37,4 +39,4 @@ if bulletins.count() == 0:
 bulletin = bulletins[0]
 
 cavedb.generate_docs.write_bulletin_files(bulletin)
-cavedb.generate_docs.run_buildscript_wrapper(bulletin_id, False)
+cavedb.generate_docs.run_buildscript_wrapper(bulletin_id)

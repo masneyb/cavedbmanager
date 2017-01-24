@@ -19,6 +19,7 @@ def get_environment_var(name, default_value):
         return default_value
     return os.environ[name]
 
+
 DEBUG = True if get_environment_var('CAVEDB_DEBUG', '1') == '1' else False
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -37,8 +38,8 @@ ADMIN_SITE_HEADER = get_environment_var('CAVEDB_SITE_HEADER', 'My Cave Database'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'cavedb',
-        # By default, get the database connection parameters from the
+        'NAME': get_environment_var('PGDATABASE', 'cavedb'),
+        # By default, get the other database connection parameters from the
         # environment variables PGHOST, PGPORT, PGUSER, PGPASSWORD.
     }
 }
@@ -54,7 +55,7 @@ SITE_ID = 1
 # Specifies where the application is deployed
 CONTEXT_PATH = '/'
 
-MEDIA_ROOT = '/usr/local/cavedbmanager-data'
+MEDIA_ROOT = get_environment_var('CAVEDB_DATA_BASE_DIR', '/usr/local/cavedbmanager-data')
 GIS_INCLUDES_DIR = MEDIA_ROOT + '/gis_maps'
 MEDIA_URL = CONTEXT_PATH + 'cavedb/'
 STATIC_URL = '/media/'
@@ -110,6 +111,8 @@ INSTALLED_APPS = (
 
     'cavedb',
 )
+
+WORKER_FIFO = get_environment_var('CAVEDB_WORKER_FIFO', None)
 
 GIS_CONNECTION_TYPE = 'postgis'
 GIS_CONNECTION = 'dbname=wvgis'

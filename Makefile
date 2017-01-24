@@ -20,7 +20,8 @@ lint:
 		--disable=missing-docstring,locally-disabled cavedb/*.py \
 		cavedb/scripts/*.py cavedb/tests/*.py
 	shellcheck ./sample-bulletin/populate-sample-bulletin.sh
-	shellcheck ./docker-entrypoint.sh
+	shellcheck ./cavedb/scripts/docker-worker-entrypoint.sh
+	shellcheck ./cavedb/scripts/docker-web-entrypoint.sh
 
 test:
 	python -m unittest discover

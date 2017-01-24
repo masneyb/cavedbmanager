@@ -15,7 +15,9 @@
 # To run from the command line:
 #
 #   cd /path/to/cavedbmanager
-#   DJANGO_SETTINGS_MODULE=cavedb.settings PYTHONPATH=. python ./cavedb/scripts/generate_all_bulletins.py
+#   DJANGO_SETTINGS_MODULE=cavedb.settings \
+#     PYTHONPATH=. python \
+#     ./cavedb/scripts/generate_all_bulletins.py
 
 import django
 import cavedb.generate_docs
@@ -26,8 +28,8 @@ django.setup()
 for bulletin in cavedb.models.Bulletin.objects.all():
     print 'Generating bulletin %s (%s)' % (bulletin.bulletin_name, bulletin.id)
     cavedb.generate_docs.write_bulletin_files(bulletin)
-    cavedb.generate_docs.run_buildscript_wrapper(bulletin.id, False)
+    cavedb.generate_docs.run_buildscript_wrapper(bulletin.id)
 
 print 'Generating global bulletin'
 cavedb.generate_docs.write_global_bulletin_files()
-cavedb.generate_docs.run_buildscript_wrapper(cavedb.utils.GLOBAL_BULLETIN_ID, False)
+cavedb.generate_docs.run_buildscript_wrapper(cavedb.utils.GLOBAL_BULLETIN_ID)
