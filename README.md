@@ -68,10 +68,6 @@ the Bulletins link on the main page, then click on the generate link in the
 documents column. After a few minutes, refresh the page and you should see
 the generated documents.
 
-Build output is stored in
-docker-volumes/cavedbmanager-data/bulletins/bulletin_1/bulletin-build-output.txt
-(outside the container) if you need to troubleshoot any issues.
-
 docker-compose sets up three different containers: a database, a web server and
 a worker container for building the various documents. The web container
 communicates with the worker container via a named pipe.
