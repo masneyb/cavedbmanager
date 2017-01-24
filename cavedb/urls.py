@@ -31,7 +31,7 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
 
     url(r'^cavedb/bulletin/(?P<bulletin_id>\d+)/generate$',
-        'cavedb.generate_docs.generate_bulletin'),
+        'cavedb.views.generate_bulletin'),
 
     url(r'^cavedb/bulletin/(?P<bulletin_id>\d+)/map/(?P<map_name>[\w\d\._-]+)$',
         'cavedb.views.show_all_regions_gis_map'),

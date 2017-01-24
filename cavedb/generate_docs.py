@@ -17,7 +17,6 @@ import os
 import os.path
 from zipfile import ZipFile
 import csv
-from django.http import HttpResponseRedirect, Http404
 from django.conf import settings
 import cavedb.coord_transform
 from cavedb.docgen_composite import Composite
@@ -35,7 +34,6 @@ import cavedb.docgen_shp
 import cavedb.docgen_text
 import cavedb.docgen_todo_txt
 import cavedb.models
-import cavedb.perms
 import cavedb.utils
 
 # Documents that span a single bulletin
@@ -383,18 +381,3 @@ def run_buildscript_wrapper(bulletin_id):
     basedir = '%s/bulletins/bulletin_%s' % (settings.MEDIA_ROOT, bulletin_id)
     os.chdir(basedir)
     os.system('%s' % (build_script_wrapper_file))
-
-
-def generate_bulletin(request, bulletin_id):
-    #pylint: disable=unused-argument
-    if not cavedb.perms.is_bulletin_generation_allowed(bulletin_id):
-        raise Http404
-
-    bulletin = cavedb.models.Bulletin.objects.get(pk=bulletin_id)
-    if bulletin is None:
-        raise Http404
-
-    with open(settings.WORKER_FIFO, 'w') as output:
-        output.write('%s\n' % (bulletin_id))
-
-    return HttpResponseRedirect('%sadmin/cavedb/bulletin/' % (settings.CONTEXT_PATH))

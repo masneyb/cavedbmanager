@@ -12,23 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# To run from the command line:
-#
-#   cd /path/to/cavedbmanager
-#   DJANGO_SETTINGS_MODULE=cavedb.settings \
-#     PYTHONPATH=. python \
-#     ./cavedb/scripts/generate_all_bulletins.py
-
-import django
 from django.conf import settings
-import cavedb.generate_docs
-import cavedb.utils
 
-django.setup()
-
-for bulletin in cavedb.models.Bulletin.objects.all():
-    print 'Generating bulletin %s (%s)' % (bulletin.bulletin_name, bulletin.id)
-    settings.QUEUE_STRATEGY(bulletin.id)
-
-print 'Generating global bulletin'
-settings.QUEUE_STRATEGY(cavedb.utils.GLOBAL_BULLETIN_ID)
+def named_pipe_queue(bulletin_id):
+    with open(settings.WORKER_FIFO, 'w') as output:
+        output.write('%s\n' % (bulletin_id))

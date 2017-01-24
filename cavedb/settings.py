@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import os
+import cavedb.worker_queue
 
 def get_environment_var(name, default_value):
     if name not in os.environ:
@@ -111,6 +112,8 @@ INSTALLED_APPS = (
 
     'cavedb',
 )
+
+QUEUE_STRATEGY = cavedb.worker_queue.named_pipe_queue
 
 WORKER_FIFO = get_environment_var('CAVEDB_WORKER_FIFO', None)
 

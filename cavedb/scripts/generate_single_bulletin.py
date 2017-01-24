@@ -22,6 +22,7 @@
 import sys
 import django
 import cavedb.generate_docs
+import cavedb.utils
 
 django.setup()
 
@@ -31,12 +32,16 @@ if len(sys.argv) != 2:
 
 bulletin_id = sys.argv[1]
 
-bulletins = cavedb.models.Bulletin.objects.filter(id=bulletin_id)
-if bulletins.count() == 0:
-    print 'Bulletin %s not found' % (bulletin_id)
-    sys.exit(1)
+if bulletin_id == cavedb.utils.GLOBAL_BULLETIN_ID:
+    cavedb.generate_docs.write_global_bulletin_files()
+else:
+    bulletins = cavedb.models.Bulletin.objects.filter(id=bulletin_id)
+    if bulletins.count() == 0:
+        print 'Bulletin %s not found' % (bulletin_id)
+        sys.exit(1)
 
-bulletin = bulletins[0]
+    bulletin = bulletins[0]
 
-cavedb.generate_docs.write_bulletin_files(bulletin)
+    cavedb.generate_docs.write_bulletin_files(bulletin)
+
 cavedb.generate_docs.run_buildscript_wrapper(bulletin_id)

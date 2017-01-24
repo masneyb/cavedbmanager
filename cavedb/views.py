@@ -18,7 +18,7 @@ from time import strftime
 from os.path import isfile, getsize
 from curses.ascii import isalpha
 from django.core.servers.basehttp import FileWrapper
-from django.http import HttpResponse, Http404
+from django.http import HttpResponseRedirect, HttpResponse, Http404
 from cavedb import settings
 import cavedb.docgen_dvd
 import cavedb.docgen_entrance_csv
@@ -217,3 +217,16 @@ def get_bulletin_base_name(bulletin_id):
 def get_bulletin_remote_file(bulletin_id, extension):
     return '%s.%s' % (get_bulletin_base_name(bulletin_id), extension)
 
+
+def generate_bulletin(request, bulletin_id):
+    #pylint: disable=unused-argument
+    if not cavedb.perms.is_bulletin_generation_allowed(bulletin_id):
+        raise Http404
+
+    bulletin = cavedb.models.Bulletin.objects.get(pk=bulletin_id)
+    if bulletin is None:
+        raise Http404
+
+    settings.QUEUE_STRATEGY(bulletin_id)
+
+    return HttpResponseRedirect('%sadmin/cavedb/bulletin/' % (settings.CONTEXT_PATH))

@@ -33,7 +33,7 @@ mkfifo "${CAVEDB_WORKER_FIFO}"
 
 while [ 1 ] ; do
 	BULLETIN_ID=$(cat "${CAVEDB_WORKER_FIFO}")
-	if [[ ! "${BULLETIN_ID}" =~ ^[0-9]+$ ]] ; then
+	if [[ ! "${BULLETIN_ID}" =~ ^[0-9]+$ ]] && [ "${BULLETIN_ID}" != "global" ]; then
 		echo "Ignoring input ${BULLETIN_ID}"
 		continue
 	fi
