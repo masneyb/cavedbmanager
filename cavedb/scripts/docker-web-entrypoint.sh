@@ -1,4 +1,4 @@
-#!/bin/bash -v
+#!/bin/bash
 
 # Give PostgreSQL some time to start up
 sleep 5
