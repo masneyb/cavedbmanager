@@ -15,6 +15,8 @@
 import cavedb.docgen_common
 
 class Composite(cavedb.docgen_common.Common):
+    # pylint: disable=too-many-public-methods
+
     def __init__(self, composites):
         cavedb.docgen_common.Common.__init__(self)
         self.composites = composites

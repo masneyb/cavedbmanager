@@ -46,6 +46,8 @@ def get_all_entrances(coord_transformer):
 
 
 def process_dem(filepath, all_entrances):
+    # pylint: disable=too-many-locals
+
     dataset = osgeo.gdal.Open(filepath, osgeo.gdal.GA_ReadOnly)
 
     top_left_x, res_x, _, top_left_y, _, res_y = dataset.GetGeoTransform()

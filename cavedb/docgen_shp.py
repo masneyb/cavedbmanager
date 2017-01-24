@@ -20,6 +20,8 @@ import cavedb.utils
 class Shp(cavedb.docgen_gis_common.GisCommon):
     def __init__(self, shp_zip_file, shp_dir, csv_filename, download_url, \
                  gis_x_buffer=0.005, gis_y_buffer=0.005):
+        # pylint: disable=too-many-arguments
+
         cavedb.docgen_gis_common.GisCommon.__init__(self, gis_x_buffer, gis_y_buffer)
         self.buildscript = ''
 

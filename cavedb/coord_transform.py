@@ -20,6 +20,8 @@ LAT_LON_WGS84.SetWellKnownGeogCS('WGS84')
 class TransformedCoordinate(object):
     def __init__(self, src_datum, utm_zone, is_utm_zone_north, utm_easting, utm_northing, \
                  longitude, latitude):
+        # pylint: disable=too-many-arguments
+
         if src_datum:
             self.in_srs = osgeo.osr.SpatialReference()
             self.in_srs.SetWellKnownGeogCS(src_datum.encode('ascii'))

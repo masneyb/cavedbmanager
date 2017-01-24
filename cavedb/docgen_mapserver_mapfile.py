@@ -68,6 +68,8 @@ class MapserverMapfile(cavedb.docgen_common.Common):
 
 
 def write_mapserver_header(gis_options):
+    # pylint: disable=too-many-statements
+
     mapfile = gis_options['fd']
 
     mapfile.write('MAP\n')
@@ -241,6 +243,8 @@ def write_lineplot(gis_options, lineplot, shpfilename):
 
 
 def write_mapserver_footer(gis_options):
+    # pylint: disable=too-many-statements
+
     mapfile = gis_options['fd']
 
     mapfile.write('  LAYER\n')

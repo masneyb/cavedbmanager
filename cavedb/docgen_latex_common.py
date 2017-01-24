@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# pylint: disable=too-many-lines
+
 import os
 import cavedb.models
 import cavedb.utils
@@ -20,6 +22,7 @@ import cavedb.docgen_gis_maps
 import cavedb.indexer_latex
 
 class LatexCommon(cavedb.docgen_common.Common):
+    # pylint: disable=too-many-instance-attributes
     def __init__(self, bulletin, filename, draft_mode, papersize):
         cavedb.docgen_common.Common.__init__(self)
         self.bulletin = bulletin
@@ -44,10 +47,11 @@ class LatexCommon(cavedb.docgen_common.Common):
         idx_file = self.filename.replace('.tex', '.idx')
 
         cd_cmd = 'cd %s\n' % (bulletin_base_dir)
+        rm_cmd = 'rm -rf %s\n' % (tex_dir)
         latex_cmd = 'pdflatex -output-directory %s %s\n' % (tex_dir, self.filename)
         makeidx_cmd = 'openout_any=a makeindex %s\n' % (idx_file)
 
-        return cd_cmd + latex_cmd + makeidx_cmd + latex_cmd
+        return cd_cmd + rm_cmd + latex_cmd + makeidx_cmd + latex_cmd
 
 
     def indexed_terms(self, terms):
@@ -189,6 +193,8 @@ class LatexCommon(cavedb.docgen_common.Common):
 
 
     def __show_document_header(self):
+        # pylint: disable=too-many-statements
+
         draftstr = ',draft' if self.draft_mode else ''
 
         self.__writeln(r'\documentclass[10pt,' + self.papersize + ',leqno,twoside,openany' + \
@@ -955,6 +961,8 @@ def decimal_degrees_to_ddmmss_str(decdegs):
 
 
 def reference_to_string(ref):
+    # pylint: disable=too-many-branches
+
     parts = []
     if ref.author:
         parts.append(escape(convert_quotes(ref.author)))

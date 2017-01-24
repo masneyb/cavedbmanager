@@ -18,6 +18,8 @@ from django.conf import settings
 import cavedb.utils
 
 class Common(object):
+    # pylint: disable=too-many-public-methods
+
     def __init__(self):
         pass
 
