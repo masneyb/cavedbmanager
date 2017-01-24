@@ -63,10 +63,11 @@ The project can be started by running:
     docker-compose up
 
 Open [http://localhost:8000](http://localhost:8000) in your web browser.
-The default username / password is admin / password. Once logged in, click on
-the Bulletins link on the main page, then click on the generate link in the
-documents column. After a few minutes, refresh the page and you should see
-the generated documents.
+The default credentials are admin / password (see
+[docker-compose.yml](docker-compose.yml). Once logged in, click on the Bulletins
+link on the main page, then click on the generate link in the documents column.
+You'll see the build start in your console log. Once finished, refresh the page
+and you should see the generated documents.
 
 docker-compose sets up three different containers: a database, a web server and
 a worker container for building the various documents. The web container
