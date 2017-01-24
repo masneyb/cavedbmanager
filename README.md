@@ -87,6 +87,7 @@ This system was used to publish the book:
   Tucker County by Doug McCarty and Brian Masney, 2011. Includes 304 cave and
   karst features, 155 photos, and 96 maps; contains CD-ROM with full-sized
   color versions of all maps and photos, plus extras.
+  [Cover](https://www.wvass.org/images/b18.jpg)
 
 This book is available for sale to [NSS members](http://caves.org/) through
 the [West Virginia Speleological Survey](http://www.wvass.org/).
