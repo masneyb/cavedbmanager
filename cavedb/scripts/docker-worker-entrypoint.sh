@@ -14,7 +14,7 @@ if [ "$?" != "0" ] ; then
 	         download/us_wv/aerial/USDA-2014 download/us_wv/aerial/SAMB-2003 \
 	         download/us_wv/aerial/SAMB-2003/MrSID \
 	         download/us_wv/aerial/SAMB-2003/JPG download/us_wv/aerial/USGS-1994 \
-	         download/us_wv/dem \ download/us_wv/other
+	         download/us_wv/dem download/us_wv/other
 
 	patch -p1 < /usr/local/cavedbmanager/sample-bulletin/postgis-data-importer-sample-bulletin.patch
 
