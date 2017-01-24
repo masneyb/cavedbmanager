@@ -20,7 +20,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
 from cavedb.middleware import get_request_uri, get_valid_bulletins
-import cavedb.generate_docs
+import cavedb.docgen_all
 import cavedb.perms
 import cavedb.utils
 
@@ -202,7 +202,7 @@ class Bulletin(models.Model):
 
             return 'The documents were generated on %s. %s<br/><br/>\n' % \
                    (mtime, gen_txt) + \
-                   cavedb.generate_docs.get_bulletin_download_links(self) + \
+                   cavedb.docgen_all.get_bulletin_download_links(self) + \
                    '<a href="%s/log">Build Log</a> [%s]' % \
                    (base_url, \
                     cavedb.utils.get_file_size(cavedb.utils.get_build_log_filename(self.id)))
