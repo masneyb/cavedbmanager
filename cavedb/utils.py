@@ -18,12 +18,12 @@ import re
 import datetime
 import dateutil.parser
 import dateutil.relativedelta
-import cavedb.settings
+from django.conf import settings
 
 GLOBAL_BULLETIN_ID = 'global'
 
 def get_bulletin_base_dir(bulletin_id):
-    return '%s/bulletins/bulletin_%s' % (cavedb.settings.MEDIA_ROOT, bulletin_id)
+    return '%s/bulletins/bulletin_%s' % (settings.MEDIA_ROOT, bulletin_id)
 
 
 def get_build_script(bulletin_id):

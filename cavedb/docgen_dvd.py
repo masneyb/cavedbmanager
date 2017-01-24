@@ -13,9 +13,9 @@
 # limitations under the License.
 
 import os
+from django.conf import settings
 import cavedb.docgen_common
 import cavedb.utils
-import cavedb.settings
 
 class Dvd(cavedb.docgen_common.Common):
     def __init__(self, dvd_zip_file, dvd_tmp_dir, readme_contents, download_url):
@@ -45,7 +45,7 @@ class Dvd(cavedb.docgen_common.Common):
             return
 
         meta = {}
-        meta['src'] = '%s/%s' % (cavedb.settings.MEDIA_ROOT, photo.filename)
+        meta['src'] = '%s/%s' % (settings.MEDIA_ROOT, photo.filename)
         if photo.author:
             meta['author'] = photo.author
 
@@ -55,7 +55,7 @@ class Dvd(cavedb.docgen_common.Common):
 
     def feature_attachment(self, feature, attachment):
         meta = {}
-        meta['src'] = '%s/%s' % (cavedb.settings.MEDIA_ROOT, attachment.attachment)
+        meta['src'] = '%s/%s' % (settings.MEDIA_ROOT, attachment.attachment)
         if attachment.author:
             meta['author'] = attachment.author
         if attachment.user_visible_file_suffix:

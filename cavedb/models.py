@@ -20,7 +20,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from cavedb.middleware import get_request_uri, get_valid_bulletins
 import cavedb.perms
-import cavedb.settings
+from django.conf import settings
 import cavedb.utils
 
 DATUM_CHOICES = (
@@ -177,13 +177,13 @@ class Bulletin(models.Model):
         if not cavedb.perms.is_bulletin_docs_allowed(self.id):
             return ''
 
-        base_url = '%sbulletin/%s' % (cavedb.settings.MEDIA_URL, self.id)
+        base_url = '%sbulletin/%s' % (settings.MEDIA_URL, self.id)
         if self.is_document_build_in_process():
             return 'Documents are currently being regenerated. ' + \
                    'Please check back in about 10 minutes. ' + \
                    'It will take longer if some of the GIS maps need to be regenerated.'
 
-        regen_url = '%sbulletin/%s/generate' % (cavedb.settings.MEDIA_URL, self.id)
+        regen_url = '%sbulletin/%s/generate' % (settings.MEDIA_URL, self.id)
 
         mtime = self.get_bulletin_mod_date_str()
         if mtime is None:
@@ -215,7 +215,7 @@ class Bulletin(models.Model):
         if not cavedb.perms.is_bulletin_gis_maps_allowed(self.id):
             return ''
 
-        baseurl = '%sbulletin/%s' % (cavedb.settings.MEDIA_URL, self.id)
+        baseurl = '%sbulletin/%s' % (settings.MEDIA_URL, self.id)
         gismaps = GisMap.objects.all()
 
         ret = ''

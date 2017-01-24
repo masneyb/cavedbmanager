@@ -18,6 +18,7 @@ import os.path
 from zipfile import ZipFile
 import csv
 from django.http import HttpResponseRedirect, Http404
+from django.conf import settings
 import cavedb.coord_transform
 from cavedb.docgen_composite import Composite
 import cavedb.docgen_dvd
@@ -35,7 +36,6 @@ import cavedb.docgen_text
 import cavedb.docgen_todo_txt
 import cavedb.models
 import cavedb.perms
-import cavedb.settings
 import cavedb.utils
 
 # Documents that span a single bulletin
@@ -159,7 +159,7 @@ def write_region(region, outputter):
 
 
 def add_gis_lineplot(lineplot, gisdir, lineplot_type, outputter):
-    zipfile_name = '%s/%s' % (cavedb.settings.MEDIA_ROOT, lineplot.attach_zip)
+    zipfile_name = '%s/%s' % (settings.MEDIA_ROOT, lineplot.attach_zip)
 
     if not os.path.isdir(gisdir):
         os.makedirs(gisdir)
@@ -380,7 +380,7 @@ def run_buildscript_wrapper(bulletin_id):
 
     build_script_wrapper_file = cavedb.utils.get_build_script_wrapper(bulletin_id)
 
-    basedir = '%s/bulletins/bulletin_%s' % (cavedb.settings.MEDIA_ROOT, bulletin_id)
+    basedir = '%s/bulletins/bulletin_%s' % (settings.MEDIA_ROOT, bulletin_id)
     os.chdir(basedir)
     os.system('%s' % (build_script_wrapper_file))
 
@@ -394,7 +394,7 @@ def generate_bulletin(request, bulletin_id):
     if bulletin is None:
         raise Http404
 
-    with open(cavedb.settings.WORKER_FIFO, 'w') as output:
+    with open(settings.WORKER_FIFO, 'w') as output:
         output.write('%s\n' % (bulletin_id))
 
-    return HttpResponseRedirect('%sadmin/cavedb/bulletin/' % (cavedb.settings.CONTEXT_PATH))
+    return HttpResponseRedirect('%sadmin/cavedb/bulletin/' % (settings.CONTEXT_PATH))

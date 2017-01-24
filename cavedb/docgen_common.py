@@ -14,7 +14,8 @@
 
 import os
 import os.path
-import cavedb.settings
+from django.conf import settings
+import cavedb.utils
 
 class Common(object):
     def __init__(self):
@@ -124,7 +125,7 @@ class Common(object):
         if not url_suffix:
             return None
 
-        url = '%s%s' % (cavedb.settings.MEDIA_URL, url_suffix)
+        url = '%s%s' % (settings.MEDIA_URL, url_suffix)
         return '<a href="%s">%s</a> [%s]<br/>\n' % \
                    (url, description, cavedb.utils.get_file_size(localfile))
 

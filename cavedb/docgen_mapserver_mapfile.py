@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from django.conf import settings
 import cavedb.docgen_common
 import cavedb.docgen_gis_common
-import cavedb.settings
 import cavedb.utils
 from cavedb.docgen_gis_common import get_bulletin_mapserver_mapfile
 
@@ -64,7 +64,7 @@ class MapserverMapfile(cavedb.docgen_common.Common):
 
         fonts_list = get_mapserver_fonts_list(self.bulletin.id)
         with open(fonts_list, "w") as output:
-            output.write(cavedb.settings.GIS_FONTS_LIST)
+            output.write(settings.GIS_FONTS_LIST)
 
 
 def write_mapserver_header(gis_options):
@@ -134,7 +134,7 @@ def write_mapserver_header(gis_options):
     mapfile.write('    POSITION ll\n')
     mapfile.write('  END\n')
     mapfile.write('  INCLUDE "%s/%s.map"\n' % \
-                  (cavedb.settings.GIS_INCLUDES_DIR, gis_options['basename']))
+                  (settings.GIS_INCLUDES_DIR, gis_options['basename']))
 
 
 def write_layer(gis_options, layer):
@@ -144,8 +144,8 @@ def write_layer(gis_options, layer):
     mapfile.write('    NAME %s\n' % (layer.table_name))
 
     if layer.type != 'RASTER':
-        mapfile.write('    CONNECTIONTYPE %s\n' % (cavedb.settings.GIS_CONNECTION_TYPE))
-        mapfile.write('    CONNECTION %s\n' % (cavedb.settings.GIS_CONNECTION))
+        mapfile.write('    CONNECTIONTYPE %s\n' % (settings.GIS_CONNECTION_TYPE))
+        mapfile.write('    CONNECTION %s\n' % (settings.GIS_CONNECTION))
 
     if layer.filename:
         mapfile.write('    DATA "%s"\n' % (layer.filename))

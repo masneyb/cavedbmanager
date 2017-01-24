@@ -15,13 +15,13 @@
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.http import HttpResponseRedirect
-import cavedb.settings
+from django.conf import settings
 
 #pylint: disable=unused-argument
 def forward_to_admin(request):
     return HttpResponseRedirect('/admin/')
 
-admin.site.site_header = cavedb.settings.ADMIN_SITE_HEADER
+admin.site.site_header = settings.ADMIN_SITE_HEADER
 
 admin.autodiscover()
 
