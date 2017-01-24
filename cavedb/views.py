@@ -20,6 +20,7 @@ from curses.ascii import isalpha
 from django.core.servers.basehttp import FileWrapper
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from cavedb import settings
+import cavedb.docgen_common
 import cavedb.docgen_dvd
 import cavedb.docgen_entrance_csv
 import cavedb.docgen_gis_maps
@@ -226,6 +227,11 @@ def generate_bulletin(request, bulletin_id):
     bulletin = cavedb.models.Bulletin.objects.get(pk=bulletin_id)
     if bulletin is None:
         raise Http404
+
+    build_lock_file = cavedb.utils.get_build_lock_file(bulletin_id)
+    cavedb.docgen_common.create_base_directory(build_lock_file)
+    with open(build_lock_file, 'w') as output:
+        output.write('')
 
     settings.QUEUE_STRATEGY(bulletin_id)
 
