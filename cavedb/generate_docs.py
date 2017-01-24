@@ -135,7 +135,7 @@ def write_build_scripts(bulletin_id, outputter):
     with open(build_script_wrapper_file, 'w') as output:
         output.write('#!/bin/bash\n')
         output.write('touch %s\n' % (build_lock_file))
-        output.write('%s > %s 2>&1\n' % (build_script_file, build_log_file))
+        output.write('%s 2>&1 | tee %s\n' % (build_script_file, build_log_file))
         output.write('rm -f %s\n' % (build_lock_file))
     os.chmod(build_script_wrapper_file, 0755)
 
