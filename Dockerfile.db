@@ -1,0 +1,7 @@
+FROM kiasaki/alpine-postgres
+
+MAINTAINER Brian Masney <masneyb@onstation.org>
+
+RUN echo "@testing http://nl.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories && \
+    apk add --update-cache postgis@testing && \
+    rm -rf /var/cache/apk/*

@@ -17,7 +17,7 @@ RUN apt-get update && \
 RUN apt-get update && \
     apt-get install --no-install-recommends -y texlive texlive-latex-extra \
             zip mapserver-bin ttf-freefont unzip postgresql-client gdal-bin \
-            patch curl wget ca-certificates postgis && \
+            patch curl ca-certificates postgis && \
     rm -rf /usr/share/doc && \
     (rm /var/lib/apt/lists/* || true) && \
     apt-get clean

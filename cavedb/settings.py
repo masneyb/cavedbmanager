@@ -115,7 +115,7 @@ INSTALLED_APPS = (
 WORKER_FIFO = get_environment_var('CAVEDB_WORKER_FIFO', None)
 
 GIS_CONNECTION_TYPE = 'postgis'
-GIS_CONNECTION = 'dbname=wvgis'
+GIS_CONNECTION = 'dbname=%s' % (get_environment_var('CAVEDB_GIS_DBNAME', None))
 
 # Contents of fonts.list file for Mapserver
 # Debian-based systems
