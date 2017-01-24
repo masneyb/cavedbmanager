@@ -1,4 +1,4 @@
-#!/bin/bash -v
+#!/bin/bash
 
 # See if the GIS data needs to be seeded. Depending on the speed of your
 # computer, this can take 15 minutes or so to complete.
@@ -25,11 +25,13 @@ fi
 
 mkfifo "${CAVEDB_WORKER_FIFO}"
 
-while read -r bulletin_id < "${CAVEDB_WORKER_FIFO}" ; do
-	if [[ ! "${bulletin_id}" =~ ^[0-9]+$ ]] ; then
-		echo "Ignoring input ${bulletin_id}"
+while [ 1 ] ; do
+	BULLETIN_ID=$(cat "${CAVEDB_WORKER_FIFO}")
+	if [[ ! "${BULLETIN_ID}" =~ ^[0-9]+$ ]] ; then
+		echo "Ignoring input ${BULLETIN_ID}"
 		continue
 	fi
 
-	python ./cavedb/scripts/generate_single_bulletin.py "${bulletin_id}"
+	echo "Generating bulletin documents for bulletin_id ${BULLETIN_ID}"
+	python ./cavedb/scripts/generate_single_bulletin.py "${BULLETIN_ID}"
 done
