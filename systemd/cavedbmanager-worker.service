@@ -1,0 +1,15 @@
+[Unit]
+Description=cavedbmanager worker
+
+[Service]
+User=www-data
+Type=simple
+WorkingDirectory=/usr/local/cavedbmanager
+ExecStart=/usr/local/cavedbmanager/cavedb/scripts/worker.sh
+Environment="CAVEDB_WORKER_FIFO=/tmp/cavedb-worker/cavedb-worker.fifo"
+Environment="DJANGO_SETTINGS_MODULE=cavedb.settings"
+Environment="PYTHONPATH=."
+LimitNOFILE=20480
+
+[Install]
+WantedBy=multi-user.target
