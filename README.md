@@ -70,8 +70,7 @@ You'll see the build start in your console log. Once finished, refresh the page
 and you should see the generated documents.
 
 docker-compose sets up three different containers: a database, a web server and
-a worker container for building the various documents. The web container
-communicates with the worker container via a named pipe.
+a worker container for building the various documents.
 
 Note: During initial startup, it will download about 2-3 GB of data, and it will
 transform some of the GIS data. On my laptop with an i7 processor, it takes about
