@@ -16,6 +16,8 @@ import os
 import sys
 from django.core.wsgi import get_wsgi_application
 
+os.environ['CAVEDB_WORKER_FIFO'] = '/tmp/cavedb-worker/cavedb-worker.fifo'
+
 os.environ['DJANGO_SETTINGS_MODULE'] = 'cavedb.settings'
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "cavedb.settings")
 sys.path.append('/usr/local/cavedbmanager/cavedb/')
