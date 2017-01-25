@@ -169,7 +169,8 @@ def sanitize_filename(filename):
         return ''
 
     filename = filename.strip().replace(' ', '_').replace('&', 'and')
-    filename = "".join([c for c in filename if c.isalpha() or c.isdigit() or c in VALID_FILENAME_CHARS])
+    filename = "".join([c for c in filename if c.isalpha() or c.isdigit() or \
+                                               c in VALID_FILENAME_CHARS])
 
     extpos = filename.rfind('.')
     if extpos > 0:
