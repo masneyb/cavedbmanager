@@ -9,6 +9,7 @@ before_install:
 
 script:
 - docker run --name app -ti cavedbmanager make test
+- docker run --name app -ti cavedbmanager make lint
 
 after_script:
 - docker rm -f app
