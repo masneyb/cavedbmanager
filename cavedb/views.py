@@ -20,19 +20,19 @@ from curses.ascii import isalpha
 from django.core.servers.basehttp import FileWrapper
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from cavedb import settings
-import cavedb.docgen_common
-import cavedb.docgen_dvd
-import cavedb.docgen_entrance_csv
-import cavedb.docgen_gis_maps
-import cavedb.docgen_gpx
-import cavedb.docgen_kml
-import cavedb.docgen_latex_letter_bw
-import cavedb.docgen_latex_letter_color
-import cavedb.docgen_latex_letter_draft
-import cavedb.docgen_mxf
-import cavedb.docgen_shp
-import cavedb.docgen_text
 import cavedb.docgen_todo_txt
+import cavedb.docgen_text
+import cavedb.docgen_shp
+import cavedb.docgen_mxf
+import cavedb.docgen_latex_letter_draft
+import cavedb.docgen_latex_letter_color
+import cavedb.docgen_latex_letter_bw
+import cavedb.docgen_kml
+import cavedb.docgen_gpx
+import cavedb.docgen_gis_maps
+import cavedb.docgen_entrance_csv
+import cavedb.docgen_dvd
+import cavedb.docgen_common
 import cavedb.models
 import cavedb.perms
 import cavedb.utils
