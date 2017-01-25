@@ -15,9 +15,9 @@
 import os
 import cavedb.worker_queue
 
-def get_boolean(name, defaultValue):
+def get_boolean(name, default_val):
     if name not in os.environ:
-        return defaultValue
+        return default_val
     return os.environ[name] == '1'
 
 
