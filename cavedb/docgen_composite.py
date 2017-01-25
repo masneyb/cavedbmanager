@@ -72,9 +72,9 @@ class Composite(cavedb.docgen_common.Common):
             composite.end_gis_layers()
 
 
-    def begin_regions(self):
+    def begin_regions(self, chapters):
         for composite in self.composites:
-            composite.begin_regions()
+            composite.begin_regions(chapters)
 
 
     def end_regions(self):

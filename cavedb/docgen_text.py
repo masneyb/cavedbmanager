@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import cavedb.models
 import cavedb.utils
 import cavedb.docgen_common
 
@@ -46,7 +45,9 @@ class Text(cavedb.docgen_common.Common):
         if self.bulletin.photo_index_header:
             self.textfile.write('%s\n\n' % (self.bulletin.photo_index_header))
 
-        self.write_chapters()
+
+    def begin_regions(self, chapters):
+        self.write_chapters(chapters)
 
 
     def begin_region(self, region, gis_region_hash):
@@ -97,13 +98,13 @@ class Text(cavedb.docgen_common.Common):
         self.textfile.close()
 
 
-    def write_chapters(self):
-        for chapter in cavedb.models.BulletinChapter.objects.filter(bulletin__id=self.bulletin.id):
+    def write_chapters(self, chapters):
+        for chapter_and_sections in chapters:
+            chapter = chapter_and_sections['chapter']
+
             self.textfile.write('%s\n\n' % (chapter.chapter_title))
 
-            for section in cavedb.models.BulletinSection.objects \
-               .filter(bulletin_chapter__id=chapter.id):
-
+            for section, refs in chapter_and_sections['sections_and_refs']:
                 self.textfile.write('%s\n\n' % (section.section_title))
 
                 if section.section_subtitle:
@@ -111,9 +112,7 @@ class Text(cavedb.docgen_common.Common):
 
                 self.textfile.write('%s\n\n' % (section.section_data))
 
-                for ref in cavedb.models.BulletinSectionReference.objects \
-                   .filter(bulletinsection__id=section.id):
-
+                for ref in refs:
                     self.write_reference(ref)
 
 

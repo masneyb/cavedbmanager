@@ -64,7 +64,7 @@ class Common(object):
         pass
 
 
-    def begin_regions(self):
+    def begin_regions(self, chapters):
         pass
 
 

@@ -34,7 +34,9 @@ def write_bulletin_files(bulletin):
 
     write_gis_sections(bulletin.id, outputter)
 
-    outputter.begin_regions()
+    chapters = get_chapters_and_sections(bulletin.id)
+
+    outputter.begin_regions(chapters)
 
     for region in cavedb.models.BulletinRegion.objects.filter(bulletin__id=bulletin.id):
         write_region(region, outputter)
@@ -55,7 +57,7 @@ def write_global_bulletin_files():
 
     # No GIS section. Only write that on the bulletin.
 
-    outputter.begin_regions()
+    outputter.begin_regions([])
 
     for bulletin in cavedb.models.Bulletin.objects.all():
         for region in cavedb.models.BulletinRegion.objects.filter(bulletin__id=bulletin.id):
@@ -174,6 +176,26 @@ def write_gis_sections(bulletin_id, outputter):
     csvfile.close()
 
     outputter.end_gis_layers()
+
+
+def get_chapters_and_sections(bulletin_id):
+    chapters = []
+
+    for chapter in cavedb.models.BulletinChapter.objects.filter(bulletin__id=bulletin_id):
+        chapter_and_sections = {}
+        chapter_and_sections['chapter'] = chapter
+        chapter_and_sections['sections_and_refs'] = []
+        chapters.append(chapter_and_sections)
+
+        for sct in cavedb.models.BulletinSection.objects.filter(bulletin_chapter__id=chapter.id):
+            refs = []
+            for ref in cavedb.models.BulletinSectionReference.objects \
+                                     .filter(bulletinsection__id=sct.id):
+                refs.append(ref)
+
+            chapter_and_sections['sections_and_refs'].append((sct, refs))
+
+    return chapters
 
 
 class FeatureTodoAnalyzer(object):

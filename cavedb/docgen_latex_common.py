@@ -15,7 +15,6 @@
 # pylint: disable=too-many-lines
 
 import os
-import cavedb.models
 import cavedb.utils
 import cavedb.docgen_common
 import cavedb.docgen_gis_maps
@@ -39,6 +38,7 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.list_of_caves = []
         self.photos_at_end = None
         self.entire_bulletin_refs = set([])
+        self.chapters = None
 
 
     def generate_buildscript(self):
@@ -65,7 +65,9 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.__show_document_header()
 
 
-    def begin_regions(self):
+    def begin_regions(self, chapters):
+        self.chapters = chapters
+
         self.__show_title_page()
         self.__show_preamble_page()
         self.__show_contributor_page()
@@ -832,15 +834,14 @@ class LatexCommon(cavedb.docgen_common.Common):
 
 
     def __write_chapters(self, is_appendix):
-        for chapter in cavedb.models.BulletinChapter.objects.filter(bulletin__id=self.bulletin.id):
+        for chapter_and_sections in self.chapters:
+            chapter = chapter_and_sections['chapter']
             if chapter.is_appendix != is_appendix:
                 continue
 
             self.__writeln(r'\chapter{' + escape(chapter.chapter_title) + r'}')
 
-            for section in cavedb.models.BulletinSection.objects \
-               .filter(bulletin_chapter__id=chapter.id):
-
+            for section, refs in chapter_and_sections['sections_and_refs']:
                 if section.section_title:
                     self.__writeln(r'\section{' + escape(section.section_title) + r'}')
 
@@ -857,11 +858,6 @@ class LatexCommon(cavedb.docgen_common.Common):
                 self.__writeln(r'')
 
                 self.__writeln(r'\parindent 0ex')
-
-                refs = []
-                for ref in cavedb.models.BulletinSectionReference.objects \
-                   .filter(bulletinsection__id=section.id):
-                    refs.append(ref)
 
                 self.__show_references(refs)
 
@@ -938,7 +934,6 @@ def escape(inputstr):
 
     inputstr = inputstr.strip()
 
-    # FIXME - escape
     # - \ with \textbackslash in some cases
     # - _ with \textunderscore
     # - _ with \textunderscore
