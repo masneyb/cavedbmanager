@@ -53,9 +53,12 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(cavedb.utils.sanitize_filename('   Filename123    .jpg     '), \
                                                         'Filename123____.jpg')
         self.assertEqual(cavedb.utils.sanitize_filename('../../../etc/Filename123    .jpg     '), \
-                                                        '......etcFilename123____.jpg')
+                                                        '______etcFilename123____.jpg')
         self.assertEqual(cavedb.utils.sanitize_filename(''), '')
         self.assertEqual(cavedb.utils.sanitize_filename(None), '')
+        self.assertEqual(cavedb.utils.sanitize_filename('1.Person1 & Person2.jpg'), \
+                                                        '1_Person1_and_Person2.jpg')
+
 
 if __name__ == '__main__':
     unittest.main()
