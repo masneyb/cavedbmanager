@@ -26,5 +26,8 @@ lint:
 test:
 	python -m unittest discover
 
+ci: test lint
+	# NOOP
+
 clean:
 	find . -name "*.pyc" -delete
