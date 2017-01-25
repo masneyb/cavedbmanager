@@ -14,7 +14,7 @@
 
 import cavedb.utils
 import cavedb.docgen_latex_common
-import cavedb.indexer_latex_boldface
+import cavedb.indexer_latex_underline
 
 class LatexLetterDraft(cavedb.docgen_latex_common.LatexCommon):
     def __init__(self, bulletin):
@@ -33,12 +33,12 @@ class LatexLetterDraft(cavedb.docgen_latex_common.LatexCommon):
     def create_html_download_urls(self):
         return self.create_url('bulletin/%s/draft_pdf' % \
                                (self.bulletin.id), \
-                                'Draft PDF (No Images; Bolded Index Terms)', \
+                                'Draft PDF (No Images; Underlined Index Terms)', \
                                 get_draft_pdf_filename(self.bulletin.id))
 
 
     def indexed_terms(self, terms):
-        self.indexer = cavedb.indexer_latex_boldface.IndexerLatexBoldface(terms)
+        self.indexer = cavedb.indexer_latex_underline.IndexerLatexUnderline(terms)
 
 
 def get_draft_tex_filename(bulletin_id):

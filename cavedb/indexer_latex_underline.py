@@ -25,7 +25,7 @@
 
 import cavedb.indexer_latex
 
-class IndexerLatexBoldface(cavedb.indexer_latex.IndexerLatex):
+class IndexerLatexUnderline(cavedb.indexer_latex.IndexerLatex):
     def __init__(self, terms):
         cavedb.indexer_latex.IndexerLatex.__init__(self, terms)
 
@@ -37,4 +37,4 @@ class IndexerLatexBoldface(cavedb.indexer_latex.IndexerLatex):
         for index_term in index_terms:
             indexstr = r'%s\index{%s}' % (indexstr, index_term)
 
-        return r'%s\textbf{%s}' % (indexstr, search_term)
+        return r'%s\underline{%s}' % (indexstr, search_term)
