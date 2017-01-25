@@ -13,21 +13,13 @@
 # limitations under the License.
 
 import cavedb.utils
-import cavedb.docgen_latex_common
+import cavedb.docgen_latex_letter_bw
 import cavedb.indexer_latex_underline
 
-class LatexLetterDraft(cavedb.docgen_latex_common.LatexCommon):
+class LatexLetterDraft(cavedb.docgen_latex_letter_bw.LatexLetterBW):
     def __init__(self, bulletin):
-        cavedb.docgen_latex_common.LatexCommon.__init__(self, bulletin, \
+        cavedb.docgen_latex_letter_bw.LatexLetterBW.__init__(self, bulletin, \
                        get_draft_tex_filename(bulletin.id), True, 'letterpaper')
-
-
-    def get_gis_map_names(self):
-        return cavedb.docgen_latex_common.get_bw_gis_map_names(self.bulletin)
-
-
-    def get_photo_filename(self, photo):
-        return cavedb.docgen_latex_common.get_bw_photo_filename(photo)
 
 
     def create_html_download_urls(self):

@@ -16,9 +16,12 @@ import cavedb.utils
 import cavedb.docgen_latex_common
 
 class LatexLetterBW(cavedb.docgen_latex_common.LatexCommon):
-    def __init__(self, bulletin):
-        cavedb.docgen_latex_common.LatexCommon.__init__(self, bulletin, \
-                       get_bw_tex_filename(bulletin.id), False, 'letterpaper')
+    def __init__(self, bulletin, filename=None, draft_mode=False, papersize='letterpaper'):
+        if not filename:
+            filename = get_bw_tex_filename(bulletin.id)
+
+        cavedb.docgen_latex_common.LatexCommon.__init__(self, bulletin, filename, \
+                                                        draft_mode, papersize)
 
 
     def get_gis_map_names(self):
