@@ -47,7 +47,7 @@ class LatexCommon(cavedb.docgen_common.Common):
         idx_file = self.filename.replace('.tex', '.idx')
 
         cd_cmd = 'cd %s\n' % (bulletin_base_dir)
-        rm_cmd = 'rm -rf %s\n' % (tex_dir)
+        rm_cmd = 'rm -f %s/*.{aux,idx,ilg,ind,log,pdf,toc}\n' % (tex_dir)
         latex_cmd = 'pdflatex -output-directory %s %s\n' % (tex_dir, self.filename)
         makeidx_cmd = 'openout_any=a makeindex %s\n' % (idx_file)
 
