@@ -17,17 +17,17 @@ import cavedb.docgen_common
 import cavedb.utils
 
 class Gpx(cavedb.docgen_common.Common):
-    def __init__(self, metadata_name, filename, download_url):
+    def __init__(self, metadata_name, gpx_filename, download_url):
         cavedb.docgen_common.Common.__init__(self)
         self.metadata_name = metadata_name
-        self.filename = filename
+        self.gpx_filename = gpx_filename
         self.download_url = download_url
         self.gpxfile = None
 
 
     def open(self, all_regions_gis_hash):
-        cavedb.docgen_common.create_base_directory(self.filename)
-        self.gpxfile = open(self.filename, 'w')
+        cavedb.docgen_common.create_base_directory(self.gpx_filename)
+        self.gpxfile = open(self.gpx_filename, 'w')
 
         self.gpxfile.write('<?xml version="1.0" encoding="US-ASCII"?>\n')
         self.gpxfile.write('<gpx xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' + \
@@ -60,7 +60,7 @@ class Gpx(cavedb.docgen_common.Common):
 
 
     def create_html_download_urls(self):
-        return self.create_url(self.download_url, 'GPS Unit (GPX)', self.filename)
+        return self.create_url(self.download_url, 'GPS Unit (GPX)', self.gpx_filename)
 
 
 def create_for_bulletin(bulletin):
