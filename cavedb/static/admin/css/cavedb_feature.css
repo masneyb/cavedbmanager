@@ -5,6 +5,7 @@ td.field-rotate_degrees input { width: 3em; }
 td.field-elevation_ft input { width: 5em; }
 
 td.field-caption input { width: 25ex; }
+td.field-people_shown input { width: 25ex; }
 td.field-photographer input { width: 15ex; }
 td.field-indexed_terms textarea { width: 30ex; height: 15ex; }
 
