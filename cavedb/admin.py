@@ -148,6 +148,10 @@ class BulletinAdmin(CavedbModelAdmin, admin.ModelAdmin):
                   .filter(id__in=cavedb.middleware.get_valid_bulletins())
 
     class Media:
+        def __init__(self):
+            pass
+
+
         css = {
             "all": ("/media/admin/css/cavedb_bulletin.css",)
         }
@@ -251,6 +255,10 @@ class FeatureAdmin(CavedbModelAdmin, admin.ModelAdmin):
                   .filter(bulletin_region__bulletin__in=cavedb.middleware.get_valid_bulletins())
 
     class Media:
+        def __init__(self):
+            pass
+
+
         css = {
             "all": ("/media/admin/css/cavedb_feature.css",)
         }
