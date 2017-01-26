@@ -1,9 +1,13 @@
+.PHONY: help run runRemote dockerRun diffsettings lint test ci clean
+
 help:
 	@echo make run ......... Start webserver bound to localhost
 	@echo make runRemote ... Start webserver bound to all network interfaces
+	@echo make diffsettings. Show all Django settings
 	@echo make dockerRun ... Build and run Docker containers
 	@echo make lint ........ Run pylint against the code
 	@echo make test ........ Run unit tests
+	@echo make ci .......... Run CI tests
 	@echo make clean ....... Delete filesystem build artifacts
 
 run:
@@ -14,6 +18,9 @@ runRemote:
 
 dockerRun:
 	docker-compose up --build
+
+diffsettings:
+	./manage.py diffsettings --all
 
 lint:
 	pylint --load-plugins pylint_django \

@@ -13,4 +13,4 @@ if [ "$?" != "0" ] ; then
 	echo "Finised populating sample bulletin data."
 fi
 
-make runRemote
+make diffsettings runRemote
