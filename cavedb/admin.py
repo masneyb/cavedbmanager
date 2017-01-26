@@ -147,6 +147,12 @@ class BulletinAdmin(CavedbModelAdmin, admin.ModelAdmin):
                   .get_queryset(request) \
                   .filter(id__in=cavedb.middleware.get_valid_bulletins())
 
+    class Media:
+        css = {
+            "all": ("/media/admin/css/cavedb_bulletin.css",)
+        }
+
+
 admin.site.register(cavedb.models.Bulletin, BulletinAdmin)
 
 
@@ -243,6 +249,12 @@ class FeatureAdmin(CavedbModelAdmin, admin.ModelAdmin):
         return super(FeatureAdmin, self) \
                   .get_queryset(request) \
                   .filter(bulletin_region__bulletin__in=cavedb.middleware.get_valid_bulletins())
+
+    class Media:
+        css = {
+            "all": ("/media/admin/css/cavedb_feature.css",)
+        }
+
 
 admin.site.register(cavedb.models.Feature, FeatureAdmin)
 

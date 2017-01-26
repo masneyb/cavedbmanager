@@ -70,8 +70,12 @@ CONTEXT_PATH = '/'
 MEDIA_ROOT = os.environ.get('CAVEDB_DATA_BASE_DIR', '/usr/local/cavedbmanager-data')
 GIS_INCLUDES_DIR = MEDIA_ROOT + '/gis_maps'
 MEDIA_URL = CONTEXT_PATH + 'cavedb/'
+
 STATIC_URL = '/media/'
-STATIC_ROOT = 'media/'
+STATIC_ROOT = 'static/'
+STATICFILES_DIRS = (
+	os.path.join(os.path.dirname(__file__), 'static'),
+)
 
 SECRET_KEY = os.environ.get('CAVEDB_SECRET_KEY', 'FIXME_CHANGE_THIS_SECRET_KEY')
 
