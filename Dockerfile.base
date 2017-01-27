@@ -11,3 +11,6 @@ RUN apt-get update && \
     rm -rf /usr/share/doc /usr/share/man && \
     (rm /var/lib/apt/lists/* || true) && \
     apt-get clean
+
+ENV TZ=America/New_York
+RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && echo ${TZ} > /etc/timezone
