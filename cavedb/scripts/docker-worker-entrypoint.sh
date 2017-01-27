@@ -47,6 +47,7 @@ chown -R www-data:www-data /usr/local/cavedbmanager-data/
 FIFO_DIR=$(dirname "${CAVEDB_WORKER_FIFO}")
 if [ -d "${FIFO_DIR}" ] ; then
 	chown -R www-data:www-data "${FIFO_DIR}"
+	chmod 0700 "${FIFO_DIR}"
 fi
 
 sudo --user www-data --preserve-env PYTHONPATH="${PYTHONPATH=}" ./cavedb/scripts/worker.sh

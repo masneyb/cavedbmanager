@@ -27,10 +27,6 @@ def get_bulletin_base_dir(bulletin_id):
 
 
 def get_build_script(bulletin_id):
-    return '%s/dobuild' % (get_bulletin_base_dir(bulletin_id))
-
-
-def get_build_script_wrapper(bulletin_id):
     return '%s/build' % (get_bulletin_base_dir(bulletin_id))
 
 

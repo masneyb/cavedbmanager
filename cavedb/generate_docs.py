@@ -71,23 +71,9 @@ def write_global_bulletin_files():
 
 
 def write_build_scripts(bulletin_id, outputter):
-    # Write two different build scripts. The first is a wrapper for the second
-    # script. The first one is not run with -e so that the lockfile is properly
-    # cleaned up. The second script is ran with -e so that the script will fail
-    # if any commands fail. The web interface checks for the presence of this
-    # lockfile to see if the bulletin documents are currently being generated.
-
-    build_script_wrapper_file = cavedb.utils.get_build_script_wrapper(bulletin_id)
     build_lock_file = cavedb.utils.get_build_lock_file(bulletin_id)
     build_script_file = cavedb.utils.get_build_script(bulletin_id)
     build_log_file = cavedb.utils.get_build_log_filename(bulletin_id)
-
-    with open(build_script_wrapper_file, 'w') as output:
-        output.write('#!/bin/bash\n')
-        output.write('touch %s\n' % (build_lock_file))
-        output.write('%s 2>&1 | tee %s\n' % (build_script_file, build_log_file))
-        output.write('rm -f %s\n' % (build_lock_file))
-    os.chmod(build_script_wrapper_file, 0755)
 
     build_script = outputter.generate_buildscript()
 
@@ -345,11 +331,9 @@ def get_indexed_terms(bulletin):
     return indexed_terms
 
 
-def run_buildscript_wrapper(bulletin_id):
-    #pylint: disable=protected-access
-
-    build_script_wrapper_file = cavedb.utils.get_build_script_wrapper(bulletin_id)
+def run_buildscript(bulletin_id):
+    build_script_file = cavedb.utils.get_build_script(bulletin_id)
 
     basedir = '%s/bulletins/bulletin_%s' % (settings.MEDIA_ROOT, bulletin_id)
     os.chdir(basedir)
-    os.system('%s' % (build_script_wrapper_file))
+    os.system('%s' % (build_script_file))

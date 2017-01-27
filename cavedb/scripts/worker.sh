@@ -16,25 +16,37 @@
 
 FIFO_DIR=$(dirname "${CAVEDB_WORKER_FIFO}")
 
-if [ -e "${CAVEDB_WORKER_FIFO}" ] ; then
-	rm "${CAVEDB_WORKER_FIFO}"
-elif [ ! -d "${FIFO_DIR}" ] ; then
+if [ ! -d "${FIFO_DIR}" ] ; then
 	mkdir -p "${FIFO_DIR}"
 	chmod 0700 "${FIFO_DIR}"
 fi
 
-mkfifo -m 0600 "${CAVEDB_WORKER_FIFO}"
-if [ $? != 0 ] ; then
-	exit 1
+if [ ! -p "${CAVEDB_WORKER_FIFO}" ] ; then
+	mkfifo -m 0600 "${CAVEDB_WORKER_FIFO}"
+	if [ $? != 0 ] ; then
+		exit 1
+	fi
 fi
+
 
 while true ; do
 	BULLETIN_ID=$(cat "${CAVEDB_WORKER_FIFO}")
+	if [ $? != 0 ] ; then
+		exit 1
+	fi
+
 	if [[ ! "${BULLETIN_ID}" =~ ^[0-9]+$ ]] && [ "${BULLETIN_ID}" != "global" ]; then
 		echo "Ignoring input ${BULLETIN_ID}"
 		continue
 	fi
 
 	echo "Generating bulletin documents for bulletin_id ${BULLETIN_ID}"
-	python /usr/local/cavedbmanager/cavedb/scripts/generate_single_bulletin.py "${BULLETIN_ID}"
+
+	BASE_DIR="${CAVEDB_DATA_BASE_DIR}"/bulletins/bulletin_"${BULLETIN_ID}"
+	BUILD_LOG="${BASE_DIR}"/bulletin-build-output.txt
+	LOCK_FILE="${BASE_DIR}"/build-in-progress.lock
+
+	touch "${LOCK_FILE}"
+	python /usr/local/cavedbmanager/cavedb/scripts/generate_single_bulletin.py "${BULLETIN_ID}" 2>&1 | tee "${BUILD_LOG}"
+	rm -f "${LOCK_FILE}"
 done

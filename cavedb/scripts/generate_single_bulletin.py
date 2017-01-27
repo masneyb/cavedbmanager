@@ -37,7 +37,7 @@ def do_build_bulletin(bulletin_id):
 
         cavedb.generate_docs.write_bulletin_files(bulletin)
 
-    cavedb.generate_docs.run_buildscript_wrapper(bulletin_id)
+    cavedb.generate_docs.run_buildscript(bulletin_id)
 
 
 if __name__ == '__main__':
