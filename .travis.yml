@@ -4,7 +4,9 @@ services:
   - docker
 
 before_install:
+- docker build -t cavedbmanager -f Dockerfile.base .
 - docker build -t cavedbmanager -f Dockerfile.web .
+- docker images -a
 - docker ps -a
 
 script:
