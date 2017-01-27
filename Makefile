@@ -17,6 +17,7 @@ runRemote:
 	./manage.py runserver 0.0.0.0:8000
 
 dockerRun:
+	docker build --file Dockerfile.base --tag cavedbmanager_base:latest .
 	docker-compose up --build
 
 diffsettings:
