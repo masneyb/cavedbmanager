@@ -71,9 +71,7 @@ def write_global_bulletin_files():
 
 
 def write_build_scripts(bulletin_id, outputter):
-    build_lock_file = cavedb.utils.get_build_lock_file(bulletin_id)
     build_script_file = cavedb.utils.get_build_script(bulletin_id)
-    build_log_file = cavedb.utils.get_build_log_filename(bulletin_id)
 
     build_script = outputter.generate_buildscript()
 
