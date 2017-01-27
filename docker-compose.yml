@@ -21,6 +21,8 @@ services:
      - ./cavedb/scripts/docker-worker-entrypoint.sh
     environment:
      - CAVEDB_DATA_BASE_DIR=/usr/local/cavedbmanager-data
+     # Set this to 0 when running in production.
+     - CAVEDB_DEBUG=1
      - CAVEDB_GIS_DBNAME=wvgis
      - CAVEDB_WORKER_FIFO=/tmp/cavedb-worker/cavedb-worker.fifo
      - DJANGO_SETTINGS_MODULE=cavedb.settings
