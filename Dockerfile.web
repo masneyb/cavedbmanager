@@ -1,20 +1,10 @@
-FROM ubuntu:16.04
+FROM cavedbmanager_base
 
 MAINTAINER Brian Masney <masneyb@onstation.org>
 
-ENV PYTHONUNBUFFERED 1
-
-# Be sure this RUN command matches the one in Dockerfile.worker.
-RUN apt-get update && \
-    apt-get install --no-install-recommends -y python-psycopg2 python-django \
-            python-imaging python-dateutil python-gdal python-pylint-django \
-            python2.7 postgresql-client make shellcheck && \
-    rm -rf /usr/share/doc && \
-    (rm /var/lib/apt/lists/* || true) && \
-    apt-get clean
-
 RUN apt-get update && \
     apt-get install --no-install-recommends -y nginx supervisor uwsgi uwsgi-plugin-python && \
+    rm -rf /usr/share/doc /usr/share/man && \
     (rm /var/lib/apt/lists/* || true) && \
     apt-get clean && \
     echo "daemon off;" >> /etc/nginx/nginx.conf && \
@@ -22,8 +12,8 @@ RUN apt-get update && \
     chown www-data:www-data /var/run/uwsgi/
 
 COPY conf/nginx-app.conf /etc/nginx/sites-available/default
-COPY conf/uwsgi.ini /etc/uwsgi/
 COPY conf/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY conf/uwsgi.ini /etc/uwsgi/
 
 VOLUME ["/usr/local/cavedbmanager-data", "/tmp/cavedb-worker"]
 
