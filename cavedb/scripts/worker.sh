@@ -1,16 +1,20 @@
 #!/bin/bash
 
+FIFO_DIR=$(dirname "${CAVEDB_WORKER_FIFO}")
+
 if [ -e "${CAVEDB_WORKER_FIFO}" ] ; then
 	rm "${CAVEDB_WORKER_FIFO}"
+elif [ ! -d "${FIFO_DIR}" ] ; then
+	mkdir -p "${FIFO_DIR}"
+	chmod 0700 "${FIFO_DIR}"
 fi
 
-FIFO_DIR=$(dirname "${CAVEDB_WORKER_FIFO}")
-mkdir -p "${FIFO_DIR}"
-chmod 700 "${FIFO_DIR}"
+mkfifo -m 0600 "${CAVEDB_WORKER_FIFO}"
+if [ $? != 0 ] ; then
+	exit 1
+fi
 
-mkfifo "${CAVEDB_WORKER_FIFO}"
-
-while [ 1 ] ; do
+while true ; do
 	BULLETIN_ID=$(cat "${CAVEDB_WORKER_FIFO}")
 	if [[ ! "${BULLETIN_ID}" =~ ^[0-9]+$ ]] && [ "${BULLETIN_ID}" != "global" ]; then
 		echo "Ignoring input ${BULLETIN_ID}"

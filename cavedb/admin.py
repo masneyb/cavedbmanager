@@ -153,7 +153,7 @@ class BulletinAdmin(CavedbModelAdmin, admin.ModelAdmin):
 
 
         css = {
-            "all": ("/media/admin/css/cavedb_bulletin.css",)
+            "all": ("/static/admin/css/cavedb_bulletin.css",)
         }
 
 
@@ -260,7 +260,7 @@ class FeatureAdmin(CavedbModelAdmin, admin.ModelAdmin):
 
 
         css = {
-            "all": ("/media/admin/css/cavedb_feature.css",)
+            "all": ("/static/admin/css/cavedb_feature.css",)
         }
 
 

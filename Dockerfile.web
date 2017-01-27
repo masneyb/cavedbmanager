@@ -13,9 +13,21 @@ RUN apt-get update && \
     (rm /var/lib/apt/lists/* || true) && \
     apt-get clean
 
+RUN apt-get update && \
+    apt-get install --no-install-recommends -y nginx supervisor uwsgi uwsgi-plugin-python && \
+    (rm /var/lib/apt/lists/* || true) && \
+    apt-get clean && \
+    echo "daemon off;" >> /etc/nginx/nginx.conf && \
+    mkdir -m 0700 /var/run/uwsgi/ && \
+    chown www-data:www-data /var/run/uwsgi/
+
+COPY conf/nginx-app.conf /etc/nginx/sites-available/default
+COPY conf/uwsgi.ini /etc/uwsgi/
+COPY conf/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
 VOLUME ["/usr/local/cavedbmanager-data", "/tmp/cavedb-worker"]
 
-EXPOSE 8000
+EXPOSE 80
 
 COPY . /usr/local/cavedbmanager
 

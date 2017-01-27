@@ -22,8 +22,8 @@ services:
     environment:
      - CAVEDB_DATA_BASE_DIR=/usr/local/cavedbmanager-data
      - CAVEDB_GIS_DBNAME=wvgis
-     - DJANGO_SETTINGS_MODULE=cavedb.settings
      - CAVEDB_WORKER_FIFO=/tmp/cavedb-worker/cavedb-worker.fifo
+     - DJANGO_SETTINGS_MODULE=cavedb.settings
      - PGHOST=postgresql
      - PGPORT=5432
      - PGDATABASE=cavedb
@@ -68,7 +68,7 @@ services:
      - WEB_ADMIN_USER=admin
      - WEB_ADMIN_PASS=password
     ports:
-     - "8000:8000"
+     - "8000:80"
     volumes:
      - ./docker-volumes/cavedb-worker-fifo:/tmp/cavedb-worker
      - ./docker-volumes/cavedbmanager-data:/usr/local/cavedbmanager-data

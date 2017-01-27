@@ -16,7 +16,10 @@ if [ "$?" != "0" ] ; then
 	         download/us_wv/aerial/SAMB-2003/JPG download/us_wv/aerial/USGS-1994 \
 	         download/us_wv/dem download/us_wv/other
 
-	patch -p1 < /usr/local/cavedbmanager/sample-bulletin/postgis-data-importer-sample-bulletin.patch
+	PATCHFILE=/usr/local/cavedbmanager/sample-bulletin/postgis-data-importer-sample-bulletin.patch
+	if [ -f "${PATCHFILE}" ] ; then
+		patch -p1 < "${PATCHFILE}"
+	fi
 
 	make
 
@@ -25,4 +28,11 @@ if [ "$?" != "0" ] ; then
 	echo "Finished downloading and transforming GIS data."
 fi
 
-./cavedb/scripts/worker.sh
+chown -R www-data:www-data /usr/local/cavedbmanager-data/
+
+FIFO_DIR=$(dirname "${CAVEDB_WORKER_FIFO}")
+if [ -d "${FIFO_DIR}" ] ; then
+	chown -R www-data:www-data "${FIFO_DIR}"
+fi
+
+sudo --user www-data --preserve-env PYTHONPATH="${PYTHONPATH=}" ./cavedb/scripts/worker.sh

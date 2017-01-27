@@ -9,8 +9,9 @@ if [ "$?" != "0" ] ; then
 	echo "Populating sample bulletin data..."
 
 	./sample-bulletin/populate-sample-bulletin.sh
+	chown -R www-data:www-data /usr/local/cavedbmanager-data/
 
 	echo "Finised populating sample bulletin data."
 fi
 
-make diffsettings runRemote
+supervisord -n -c /etc/supervisor/supervisord.conf
