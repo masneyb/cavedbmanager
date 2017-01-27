@@ -22,19 +22,25 @@ dockerRun:
 diffsettings:
 	./manage.py diffsettings --all
 
-lint:
+lint: pylint shellcheck
+
+
+pylint:
 	pylint --load-plugins pylint_django \
 		--disable=missing-docstring,locally-disabled cavedb/*.py \
 		cavedb/scripts/*.py cavedb/tests/*.py
-	shellcheck ./sample-bulletin/populate-sample-bulletin.sh
-	shellcheck ./cavedb/scripts/docker-worker-entrypoint.sh
+
+shellcheck:
 	shellcheck ./cavedb/scripts/docker-web-entrypoint.sh
+	shellcheck ./cavedb/scripts/docker-worker-entrypoint.sh
+	shellcheck ./cavedb/scripts/worker.sh
+	shellcheck ./sample-bulletin/populate-sample-bulletin.sh
 
 test:
 	python -m unittest discover
 
 ci: test lint
-	# NOOP
+
 
 clean:
 	find . -name "*.pyc" -delete
