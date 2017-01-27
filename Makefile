@@ -1,4 +1,4 @@
-.PHONY: help run runRemote dockerRun diffsettings lint test ci clean
+.PHONY: help run runRemote dockerRun diffsettings lint pylint shellcheck test ci clean
 
 help:
 	@echo make run ......... Start webserver bound to localhost
