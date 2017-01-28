@@ -62,6 +62,10 @@ services:
      #- EMAIL_PORT=587
      #- EMAIL_HOST_USER=user
      #- EMAIL_HOST_PASSWORD=pass
+     # A self signed certificate will be automatically generated for you if the SSL_* files below
+     # do not exist. Be sure to update the conf/nginx-app.conf file if you change these paths.
+     - SSL_COMBINED_CERTS=/etc/cavedb-ssl/ssl-combined-certs.pem
+     - SSL_KEY=/etc/cavedb-ssl/ssl.key
      - PGHOST=postgresql
      - PGPORT=5432
      - PGDATABASE=cavedb
@@ -77,7 +81,9 @@ services:
      - WEB_ADMIN_PASS=password
     ports:
      - "8000:80"
+     - "8443:443"
     volumes:
+     - ./docker-volumes/cavedb-ssl:/etc/cavedb-ssl:Z
      - ./docker-volumes/cavedb-worker-fifo:/tmp/cavedb-worker:z
      - ./docker-volumes/cavedbmanager-data:/usr/local/cavedbmanager-data:z
   cron:

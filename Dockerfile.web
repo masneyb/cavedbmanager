@@ -3,7 +3,8 @@ FROM cavedbmanager_base
 MAINTAINER Brian Masney <masneyb@onstation.org>
 
 RUN apt-get update && \
-    apt-get install --no-install-recommends -y nginx supervisor uwsgi uwsgi-plugin-python && \
+    apt-get install --no-install-recommends -y nginx ssl-cert supervisor uwsgi \
+                                               uwsgi-plugin-python && \
     rm -rf /usr/share/doc /usr/share/man && \
     (rm /var/lib/apt/lists/* || true) && \
     apt-get clean && \

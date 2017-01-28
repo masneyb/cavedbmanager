@@ -28,4 +28,8 @@ if [ "$?" != "0" ] ; then
 	echo "Finised populating sample bulletin data."
 fi
 
+if [ ! -f "${SSL_COMBINED_CERTS}" ] || [ ! -f "${SSL_KEY}" ] ; then
+	./cavedb/scripts/create-self-signed-https-certificate.sh
+fi
+
 supervisord -n -c /etc/supervisor/supervisord.conf
