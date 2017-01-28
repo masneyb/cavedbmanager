@@ -30,6 +30,8 @@ services:
      - PGUSER=root
      - PGPASSWORD=root
      - PYTHONPATH=/usr/local/cavedbmanager
+    ulimits:
+     nofile: 20480
     volumes:
      - ./docker-volumes/cavedb-worker-fifo:/tmp/cavedb-worker:z
      - ./docker-volumes/cavedbmanager-data:/usr/local/cavedbmanager-data:z
