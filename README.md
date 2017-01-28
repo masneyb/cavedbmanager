@@ -60,7 +60,10 @@ in the [screenshots](screenshots) directory.
 
 The project can be started by running:
 
-    docker-compose up
+    make dockerRun
+
+This will use [Docker Compose](https://www.docker.com/products/docker-compose)
+to build and start several containers.
 
 Open [http://localhost:8000](http://localhost:8000) in your web browser.
 The default credentials are admin / password (see
@@ -68,9 +71,6 @@ The default credentials are admin / password (see
 link on the main page, then click on the generate link in the documents column.
 You'll see the build start in your console log. Once finished, refresh the page
 and you should see the generated documents.
-
-docker-compose sets up three different containers: a database, a web server and
-a worker container for building the various documents.
 
 Note: During initial startup, it will download about 2-3 GB of data, and it will
 transform some of the GIS data. On my laptop with an i7 processor, it takes about
