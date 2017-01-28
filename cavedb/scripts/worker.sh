@@ -29,24 +29,28 @@ if [ ! -p "${CAVEDB_WORKER_FIFO}" ] ; then
 fi
 
 
-while true ; do
-	BULLETIN_ID=$(cat "${CAVEDB_WORKER_FIFO}")
-	if [ $? != 0 ] ; then
-		exit 1
+while read -r MSG < "${CAVEDB_WORKER_FIFO}" ; do
+	if [ "${MSG}" == "generate:global" ] || [[ "${MSG}" =~ ^generate:[0-9]+$ ]] ; then
+		BULLETIN_ID=${MSG//generate:/}
+		BASE_DIR="${CAVEDB_DATA_BASE_DIR}"/bulletins/bulletin_"${BULLETIN_ID}"
+		LOCK_FILE="${BASE_DIR}"/build-in-progress.lock
+		BUILD_LOG="${BASE_DIR}"/bulletin-build-output.txt
+
+		echo "Generating bulletin documents for bulletin_id ${BULLETIN_ID}"
+
+		touch "${LOCK_FILE}"
+		python /usr/local/cavedbmanager/cavedb/scripts/generate_single_bulletin.py "${BULLETIN_ID}" 2>&1 | tee "${BUILD_LOG}"
+		rm -f "${LOCK_FILE}"
+	elif [ "${MSG}" == "generate:all" ] ; then
+		echo "Generating documents for all bulletins"
+
+		python /usr/local/cavedbmanager/cavedb/scripts/generate_all_bulletins.py
+	elif [ "${MSG}" == "elevation_dem_update" ] ; then
+		echo "Updating elevations based on DEMs"
+
+		LOG_FILE="${CAVEDB_DATA_BASE_DIR}"/elevation-dem-update.log
+		python /usr/local/cavedbmanager/cavedb/scripts/elevation_dem_update.py 2>&1 | tee "${LOG_FILE}"
+	else:
+		echo "Ignoring unknown message ${MSG}"
 	fi
-
-	if [[ ! "${BULLETIN_ID}" =~ ^[0-9]+$ ]] && [ "${BULLETIN_ID}" != "global" ]; then
-		echo "Ignoring input ${BULLETIN_ID}"
-		continue
-	fi
-
-	echo "Generating bulletin documents for bulletin_id ${BULLETIN_ID}"
-
-	BASE_DIR="${CAVEDB_DATA_BASE_DIR}"/bulletins/bulletin_"${BULLETIN_ID}"
-	BUILD_LOG="${BASE_DIR}"/bulletin-build-output.txt
-	LOCK_FILE="${BASE_DIR}"/build-in-progress.lock
-
-	touch "${LOCK_FILE}"
-	python /usr/local/cavedbmanager/cavedb/scripts/generate_single_bulletin.py "${BULLETIN_ID}" 2>&1 | tee "${BUILD_LOG}"
-	rm -f "${LOCK_FILE}"
 done

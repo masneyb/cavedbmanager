@@ -233,6 +233,6 @@ def generate_bulletin(request, bulletin_id):
     with open(build_lock_file, 'w') as output:
         output.write('')
 
-    settings.QUEUE_STRATEGY(bulletin_id)
+    settings.QUEUE_STRATEGY('generate:%s' % (bulletin_id))
 
     return HttpResponseRedirect('%sadmin/cavedb/bulletin/' % (settings.CONTEXT_PATH))

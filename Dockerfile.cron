@@ -1,0 +1,18 @@
+FROM cavedbmanager_db_base
+
+MAINTAINER Brian Masney <masneyb@onstation.org>
+
+RUN apk add --update-cache dcron git && \
+    rm -rf /var/cache/apk/*
+
+COPY conf/crontab /etc/crontabs/root
+
+COPY conf/gitconfig /root/.gitconfig
+
+COPY cavedb/scripts/backup-data.sh /backup-data.sh
+
+COPY cavedb/scripts/docker-cron-entrypoint.sh /docker-entrypoint.sh
+
+VOLUME ["/usr/local/cavedbmanager-data", "/tmp/cavedb-worker"]
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
