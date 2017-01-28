@@ -14,9 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-if [ "${CAVEDB_DATA_BASE_DIR}" == "" ] ; then
+if [ "${CAVEDB_DATA_BASE_DIR}" = "" ] ; then
 	echo "usage: CAVEDB_DATA_BASE_DIR=<base directory> $0"
-	exit 1
 fi
 
 cd "${CAVEDB_DATA_BASE_DIR}" || exit 1
