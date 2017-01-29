@@ -25,6 +25,11 @@ services:
      - CAVEDB_GIS_DBNAME=wvgis
      - CAVEDB_WORKER_FIFO=/var/run/cavedb-worker/cavedb-worker.fifo
      - DJANGO_SETTINGS_MODULE=cavedb.settings
+     # Uncomment the following if you would like to use the 2003 aerial imagery.
+     # This is the latest publicly available imagery available that is available
+     # with the leaves off the trees. Requires downloading the GeoExpress
+     # Command Line Applications from
+     # https://www.lizardtech.com/gis-tools/tools-and-utilities
      #- MRSID_DECODE_BINARY=/usr/local/cavedbmanager-data/GeoExpressCLUtils-9.5.0.4326-linux64/bin/mrsidgeodecode
      - PGHOST=postgresql
      - PGPORT=5432
