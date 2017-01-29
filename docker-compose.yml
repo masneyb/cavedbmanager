@@ -5,12 +5,13 @@ services:
       context: .
       dockerfile: Dockerfile.db
     environment:
-     - POSTGRES_USER=root
-     - POSTGRES_PASSWORD=root
+     - PGDATA=/var/lib/postgresql
+     - PGUSER=root
+     - PGPASSWORD=root
     expose:
      - "5432"
     volumes:
-     - ./docker-volumes/var-lib-postgresql-data:/var/lib/postgresql/data:Z
+     - ./docker-volumes/var-lib-postgresql:/var/lib/postgresql:Z
   worker:
     build:
       context: .
@@ -102,4 +103,3 @@ services:
      - PGPASSWORD=root
     volumes:
      - ./docker-volumes/cavedb-worker-fifo:/tmp/cavedb-worker:z
-     - ./docker-volumes/cavedbmanager-data:/usr/local/cavedbmanager-data:z

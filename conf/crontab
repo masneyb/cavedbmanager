@@ -1,2 +1,2 @@
 0 0 * * * echo "generate:all" > "${CAVEDB_WORKER_FIFO}"
-0 1 * * * /backup-data.sh > /proc/$(pgrep crond)/fd/2 2>&1
+0 1 * * * echo "backup" > "${CAVEDB_WORKER_FIFO}"

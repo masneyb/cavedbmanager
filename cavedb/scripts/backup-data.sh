@@ -26,4 +26,4 @@ if [ ! -d .git ] ; then
 fi
 
 git add ./* .gitignore
-git commit -m "Data backed up by $0" -a
+git commit --author="Backups <root@localhost>" -m "Data backed up by $0" -a

@@ -19,7 +19,6 @@ runRemote:
 
 dockerRun:
 	docker build --file Dockerfile.base --tag cavedbmanager_base:latest .
-	docker build --file Dockerfile.db --tag cavedbmanager_db_base:latest .
 	docker-compose up --build
 
 dockerStop:

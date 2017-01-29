@@ -1,18 +1,16 @@
-FROM cavedbmanager_db_base
+FROM alpine:3.4
 
 MAINTAINER Brian Masney <masneyb@onstation.org>
 
-RUN apk add --update-cache dcron git && \
+RUN apk add --update-cache dcron && \
     rm -rf /var/cache/apk/*
 
 COPY conf/crontab /etc/crontabs/root
 
-COPY conf/gitconfig /root/.gitconfig
+VOLUME ["/tmp/cavedb-worker"]
 
-COPY cavedb/scripts/backup-data.sh /backup-data.sh
+# dcron fails with this error if it is the entrypoint:
+# setpgid: Operation not permitted
+# Calling it from a shell fixes the issue.
 
-COPY cavedb/scripts/docker-cron-entrypoint.sh /docker-entrypoint.sh
-
-VOLUME ["/usr/local/cavedbmanager-data", "/tmp/cavedb-worker"]
-
-ENTRYPOINT ["/docker-entrypoint.sh"]
+ENTRYPOINT ["/bin/sh", "-c", "/usr/sbin/crond -f"]
