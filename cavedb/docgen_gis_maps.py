@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import os
+from django.conf import settings
 import cavedb.docgen_gis_common
 import cavedb.utils
 
@@ -87,3 +88,7 @@ def get_region_gis_map(bulletin_id, region_id, map_name):
     return '%s/bulletin_%s_region_%s_gis_%s_map.jpg' % \
            (cavedb.docgen_gis_common.get_bulletin_gis_maps_directory(bulletin_id), bulletin_id, \
             region_id, map_name)
+
+
+def get_mapserver_include(map_name):
+    return '%s/%s.map' % (settings.GIS_INCLUDES_DIR, map_name)

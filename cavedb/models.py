@@ -225,6 +225,10 @@ class Bulletin(models.Model):
             if not gismap.show_all_regions_map:
                 continue
 
+            localfile = cavedb.docgen_gis_maps.get_all_regions_gis_map(self.id, gismap.name)
+            if not os.path.exists(localfile):
+                continue
+
             ret += '<a href="%s/map/%s">%s All Regions</a><br/>\n' % \
                    (baseurl, gismap.name, gismap.name)
 
@@ -232,6 +236,11 @@ class Bulletin(models.Model):
 
         for region in BulletinRegion.objects.filter(bulletin__id=self.id):
             for gismap in gismaps:
+                localfile = cavedb.docgen_gis_maps.get_region_gis_map(self.id, region.id, \
+                                                                      gismap.name)
+                if not os.path.exists(localfile):
+                    continue
+
                 ret += '<a href="%s/region/%s/map/%s">%s %s</a><br/>\n' % \
                                (baseurl, region.id, gismap.name, gismap.name, region.region_name)
 

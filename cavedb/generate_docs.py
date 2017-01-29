@@ -120,6 +120,10 @@ def add_gis_lineplot(lineplot, gisdir, lineplot_type, outputter):
 def write_gis_sections(bulletin_id, outputter):
     outputter.begin_gis_maps()
     for gismap in cavedb.models.GisMap.objects.all():
+        include = cavedb.docgen_gis_maps.get_mapserver_include(gismap.name)
+        if not os.path.exists(include):
+            continue
+
         outputter.gis_map(gismap)
     outputter.end_gis_maps()
 

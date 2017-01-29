@@ -48,6 +48,9 @@ class MapserverMapfile(cavedb.docgen_common.Common):
 
     def gis_layer(self, layer):
         for gismap_basename in layer.maps.all():
+            if gismap_basename.name not in self.gis_maps:
+                continue
+
             write_layer(self.gis_maps[gismap_basename.name], layer)
 
 
@@ -135,8 +138,8 @@ def write_mapserver_header(gis_options):
     mapfile.write('    STATUS EMBED\n')
     mapfile.write('    POSITION ll\n')
     mapfile.write('  END\n')
-    mapfile.write('  INCLUDE "%s/%s.map"\n' % \
-                  (settings.GIS_INCLUDES_DIR, gis_options['basename']))
+    mapfile.write('  INCLUDE "%s"\n' % \
+                  (cavedb.docgen_gis_maps.get_mapserver_include(gis_options['basename'])))
 
 
 def write_layer(gis_options, layer):
