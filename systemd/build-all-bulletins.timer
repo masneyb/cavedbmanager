@@ -1,8 +1,0 @@
-[Unit]
-Description=Build all bulletins
-
-[Timer]
-OnCalendar=daily
-
-[Install]
-WantedBy=multi-user.target
