@@ -22,7 +22,7 @@ psql -lqt root | awk '{print $1}' | grep -qw "${CAVEDB_GIS_DBNAME}"
 if [ "$?" != "0" ] ; then
 	echo "Downloading and transforming GIS data. This may take awhile..."
 
-	pushd /usr/local/postgis-data-importer
+	pushd "${POSTGIS_IMPORTER_BASE_DIR}"
 
 	mkdir -p download/us_wv download/us_wv/hillshade download/us_wv/aerial \
 	         download/us_wv/aerial/USDA-2014 download/us_wv/aerial/SAMB-2003 \
@@ -30,9 +30,11 @@ if [ "$?" != "0" ] ; then
 	         download/us_wv/aerial/SAMB-2003/JPG download/us_wv/aerial/USGS-1994 \
 	         download/us_wv/dem download/us_wv/other
 
-	PATCHFILE=/usr/local/cavedbmanager/sample-bulletin/postgis-data-importer-sample-bulletin.patch
-	if [ -f "${PATCHFILE}" ] ; then
-		patch -p1 < "${PATCHFILE}"
+	if [ "${POSTGIS_IMPORTER_SAMPLE_PATCHFILE:-}" != "" ] ; then
+		PATCHFILE="${POSTGIS_IMPORTER_BASE_DIR}"/sample-bulletin/postgis-data-importer-sample-bulletin.patch
+		if [ -f "${PATCHFILE}" ] ; then
+			patch -p1 < "${PATCHFILE}"
+		fi
 	fi
 
 	make
