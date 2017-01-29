@@ -50,4 +50,4 @@ if [ -d "${FIFO_DIR}" ] ; then
 	chmod 0700 "${FIFO_DIR}"
 fi
 
-sudo --user www-data --preserve-env PYTHONPATH="${PYTHONPATH=}" ./cavedb/scripts/worker.sh
+gosu www-data ./cavedb/scripts/worker.sh
