@@ -7,7 +7,7 @@ RUN apk add --update-cache dcron && \
 
 COPY conf/crontab /etc/crontabs/root
 
-VOLUME ["/tmp/cavedb-worker"]
+VOLUME ["/var/run/cavedb-worker"]
 
 # dcron fails with this error if it is the entrypoint:
 # setpgid: Operation not permitted

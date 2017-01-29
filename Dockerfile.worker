@@ -19,7 +19,7 @@ RUN curl -L -o /tmp/postgis-data-importer.zip \
 
 VOLUME ["/usr/local/cavedbmanager-data", \
         "/usr/local/postgis-data-importer/download", \
-        "/tmp/cavedb-worker"]
+        "/var/run/cavedb-worker"]
 
 COPY . /usr/local/cavedbmanager
 

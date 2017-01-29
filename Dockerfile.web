@@ -16,7 +16,7 @@ COPY conf/nginx-app.conf /etc/nginx/sites-available/default
 COPY conf/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY conf/uwsgi.ini /etc/uwsgi/
 
-VOLUME ["/usr/local/cavedbmanager-data", "/tmp/cavedb-worker"]
+VOLUME ["/usr/local/cavedbmanager-data", "/var/run/cavedb-worker"]
 
 EXPOSE 80
 
