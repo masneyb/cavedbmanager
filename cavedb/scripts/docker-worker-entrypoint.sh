@@ -31,9 +31,9 @@ if [ "$?" != "0" ] ; then
 	         download/us_wv/dem download/us_wv/other
 
 	if [ "${POSTGIS_IMPORTER_SAMPLE_PATCHFILE:-}" != "" ] ; then
-		PATCHFILE="${POSTGIS_IMPORTER_BASE_DIR}"/sample-bulletin/postgis-data-importer-sample-bulletin.patch
-		if [ -f "${PATCHFILE}" ] ; then
-			patch -p1 < "${PATCHFILE}"
+		patch -p1 < /usr/local/cavedbmanager/"${POSTGIS_IMPORTER_SAMPLE_PATCHFILE}"
+		if [ "$?" != "0" ] ; then
+			exit 1
 		fi
 	fi
 
