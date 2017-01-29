@@ -42,7 +42,7 @@ if [ "$?" != "0" ] ; then
 	echo "Finished downloading and transforming GIS data."
 fi
 
-chown -R www-data:www-data /usr/local/cavedbmanager-data/
+chown -R www-data:www-data "${CAVEDB_DATA_BASE_DIR}"
 
 FIFO_DIR=$(dirname "${CAVEDB_WORKER_FIFO}")
 if [ -d "${FIFO_DIR}" ] ; then
