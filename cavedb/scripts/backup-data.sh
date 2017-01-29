@@ -25,5 +25,11 @@ if [ ! -d .git ] ; then
 	echo "bulletins/" > .gitignore
 fi
 
-git add ./* .gitignore
-git commit --author="Backups <root@localhost>" -m "Data backed up by $0" -a
+if [ ! -f .gitconfig ] ; then
+	WHOAMI=$(whoami)
+	git config --global user.email "${WHOAMI}@localhost"
+	git config --global user.name "Backups"
+fi
+
+git add ./* .gitignore .gitconfig
+git commit -m "Data backed up by $0" -a

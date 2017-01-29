@@ -53,7 +53,7 @@ while read -r MSG < "${CAVEDB_WORKER_FIFO}" ; do
 	elif [ "${MSG}" == "backup" ] ; then
 		echo "Backing up data"
 
-		/usr/local/cavedbmanager/cavedb/scripts/backup-data.sh
+		HOME="${CAVEDB_DATA_BASE_DIR}" /usr/local/cavedbmanager/cavedb/scripts/backup-data.sh
 	else
 		echo "Ignoring unknown message ${MSG}"
 	fi
