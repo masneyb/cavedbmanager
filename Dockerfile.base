@@ -6,8 +6,8 @@ ENV PYTHONUNBUFFERED 1
 
 RUN apt-get update && \
     apt-get install --no-install-recommends -y make postgresql-client python2.7 python-dateutil \
-                                               python-django python-gdal python-psycopg2 \
-                                               python-pylint-django shellcheck && \
+                                               python-django python-gdal python-imaging \
+                                               python-psycopg2 python-pylint-django shellcheck && \
     rm -rf /usr/share/doc /usr/share/man && \
     (rm /var/lib/apt/lists/* || true) && \
     apt-get clean
