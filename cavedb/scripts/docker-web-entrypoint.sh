@@ -1,4 +1,4 @@
-#!/bin/bash -eu
+#!/bin/bash -u
 
 # Copyright 2017 Brian Masney <masneyb@onstation.org>
 #
