@@ -54,7 +54,7 @@ while read -r MSG < "${CAVEDB_WORKER_FIFO}" ; do
 		echo "Backing up data"
 
 		/usr/local/cavedbmanager/cavedb/scripts/backup-data.sh
-	else:
+	else
 		echo "Ignoring unknown message ${MSG}"
 	fi
 done
