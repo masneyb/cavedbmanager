@@ -100,14 +100,8 @@ services:
       context: .
       dockerfile: Dockerfile.cron
     depends_on:
-     - postgresql
+     - worker
     environment:
-     - CAVEDB_DATA_BASE_DIR=/usr/local/cavedbmanager-data
      - CAVEDB_WORKER_FIFO=/var/run/cavedb-worker/cavedb-worker.fifo
-     - PGHOST=postgresql
-     - PGPORT=5432
-     - PGDATABASE=cavedb
-     - PGUSER=root
-     - PGPASSWORD=root
     volumes:
      - ./docker-volumes/cavedb-worker-fifo:/var/run/cavedb-worker:z
