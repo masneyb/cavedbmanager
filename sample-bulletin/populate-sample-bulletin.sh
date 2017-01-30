@@ -19,9 +19,6 @@ SAMPLE_DIR=$(dirname "$0")
 DBNAME=cavedb
 POSTGIS_DATA_IMPORTER_BASE_DIR=/usr/local/postgis-data-importer
 
-# Create an empty PostgreSQL database for the cave data
-createdb "${DBNAME}"
-
 # Create the tables in the new database. It will prompt you to create a
 # Django admin user that you will use to log into the website.
 python "${SAMPLE_DIR}"/../manage.py migrate auth
