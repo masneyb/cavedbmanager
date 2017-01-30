@@ -31,5 +31,7 @@ if [ ! -f .gitconfig ] ; then
 	git config --global user.name "Backups"
 fi
 
+pg_dump > "${CAVEDB_DATA_BASE_DIR}"/cavedb.sql
+
 git add ./* .gitignore .gitconfig
 git commit -m "Data backed up by $0" -a
