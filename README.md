@@ -91,9 +91,6 @@ This system was used to publish the book:
 
 This book is available for sale to [NSS members](http://caves.org/) through
 the [West Virginia Speleological Survey](http://www.wvass.org/).
-It is also available for purchase through the
-[NSS Bookstore](https://bookstore.caves.org/index.php?mode=store&submode=showitem&itemnumber=01-0687)
-to NSS members.
 
 
 ## Contact
