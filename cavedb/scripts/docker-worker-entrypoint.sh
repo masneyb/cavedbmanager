@@ -46,10 +46,10 @@ fi
 
 chown -R www-data:www-data "${CAVEDB_DATA_BASE_DIR}"
 
-FIFO_DIR=$(dirname "${CAVEDB_WORKER_FIFO}")
-if [ -d "${FIFO_DIR}" ] ; then
-	chown -R www-data:www-data "${FIFO_DIR}"
-	chmod 0700 "${FIFO_DIR}"
+if [ ! -d "${CAVEDB_WORKER_MSG_DIR}" ] ; then
+	mkdir "${CAVEDB_WORKER_MSG_DIR}"
 fi
+chown -R www-data:www-data "${CAVEDB_WORKER_MSG_DIR}"
+chmod 0700 "${CAVEDB_WORKER_MSG_DIR}"
 
 gosu www-data ./cavedb/scripts/worker.sh

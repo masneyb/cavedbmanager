@@ -1,6 +1,6 @@
-0 0 * * * echo "generate:all" > "${CAVEDB_WORKER_FIFO}"
+0 0 * * * touch "${CAVEDB_WORKER_MSG_DIR}"/generate:all
 
-0 1 * * * echo "elevation_dem_update" > "${CAVEDB_WORKER_FIFO}"
+0 1 * * * touch "${CAVEDB_WORKER_MSG_DIR}"/elevation_dem_update
 
-0 2 * * * echo "backup" > "${CAVEDB_WORKER_FIFO}"
+0 2 * * * touch "${CAVEDB_WORKER_MSG_DIR}"/backup
 

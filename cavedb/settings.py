@@ -126,9 +126,9 @@ INSTALLED_APPS = (
     'cavedb',
 )
 
-QUEUE_STRATEGY = cavedb.worker_queue.named_pipe_queue
+QUEUE_STRATEGY = cavedb.worker_queue.msg_dir
 
-WORKER_FIFO = os.environ.get('CAVEDB_WORKER_FIFO', None)
+CAVEDB_WORKER_MSG_DIR = os.environ.get('CAVEDB_WORKER_MSG_DIR', None)
 
 GIS_CONNECTION_TYPE = 'postgis'
 GIS_CONNECTION = 'dbname=%s' % (os.environ.get('CAVEDB_GIS_DBNAME', None))

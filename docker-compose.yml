@@ -26,7 +26,7 @@ services:
      - CAVEDB_DATA_BASE_DIR=/usr/local/cavedbmanager-data
      - CAVEDB_DEM_PATH=/usr/local/postgis-data-importer/download/us_wv/dem
      - CAVEDB_GIS_DBNAME=wvgis
-     - CAVEDB_WORKER_FIFO=/var/run/cavedb-worker/cavedb-worker.fifo
+     - CAVEDB_WORKER_MSG_DIR=/var/run/cavedb-worker
      - DJANGO_SETTINGS_MODULE=cavedb.settings
      # Uncomment the following if you would like to use the 2003 aerial imagery.
      # This is the latest publicly available imagery available that is available
@@ -69,7 +69,7 @@ services:
      - CAVEDB_GIS_DBNAME=wvgis
      - CAVEDB_SECRET_KEY=FIXME_CHANGE_THIS_SECRET_KEY
      - CAVEDB_SITE_HEADER=My Cave Database
-     - CAVEDB_WORKER_FIFO=/var/run/cavedb-worker/cavedb-worker.fifo
+     - CAVEDB_WORKER_MSG_DIR=/var/run/cavedb-worker
      - DJANGO_SETTINGS_MODULE=cavedb.settings
      #- EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
      #- EMAIL_HOST=hostname

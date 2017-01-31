@@ -4,9 +4,9 @@ MAINTAINER Brian Masney <masneyb@onstation.org>
 
 RUN apt-get update && \
     apt-get install --no-install-recommends -y ca-certificates curl gdal-bin git gosu \
-                                               mapserver-bin patch postgis postgresql-client \
-                                               texlive texlive-latex-extra ttf-freefont unzip \
-                                               zip && \
+                                               inotify-tools mapserver-bin patch postgis \
+                                               postgresql-client texlive texlive-latex-extra \
+                                               ttf-freefont unzip zip && \
     rm -rf /usr/share/doc /usr/share/man && \
     (rm /var/lib/apt/lists/* || true) && \
     apt-get clean
