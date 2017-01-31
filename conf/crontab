@@ -1,2 +1,6 @@
 0 0 * * * echo "generate:all" > "${CAVEDB_WORKER_FIFO}"
-0 1 * * * echo "backup" > "${CAVEDB_WORKER_FIFO}"
+
+0 1 * * * echo "elevation_dem_update" > "${CAVEDB_WORKER_FIFO}"
+
+0 2 * * * echo "backup" > "${CAVEDB_WORKER_FIFO}"
+

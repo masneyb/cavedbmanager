@@ -627,7 +627,10 @@ class FeatureEntrance(models.Model):
     coord_acquision = models.CharField('Coord Acquired By', max_length=64, \
                                        choices=COORD_METHOD_CHOICES, blank=True, null=True)
     datum = models.CharField(max_length=64, choices=DATUM_CHOICES)
-    elevation_ft = models.IntegerField('Elevation (ft)', blank=True, null=True)
+    elevation_ft = models.IntegerField('Elevation (ft)', blank=True, null=True, \
+                                       help_text='Note: The elevations will be automatically ' +
+                                       'updated on a nightly basis based on the Digital ' +
+                                       'Elevation Models (DEM) that are loaded into the system.')
     utmzone = models.ForeignKey(UtmZone, verbose_name='UTM zone')
     utmeast = models.IntegerField('UTM Easting', blank=True, null=True, \
                                   help_text='You only have to enter a UTM or lat/lon coordinate. ' +

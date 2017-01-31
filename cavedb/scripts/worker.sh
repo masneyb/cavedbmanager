@@ -49,7 +49,7 @@ while read -r MSG < "${CAVEDB_WORKER_FIFO}" ; do
 		echo "Updating elevations based on DEMs"
 
 		LOG_FILE="${CAVEDB_DATA_BASE_DIR}"/elevation-dem-update.log
-		python /usr/local/cavedbmanager/cavedb/scripts/elevation_dem_update.py 2>&1 | tee "${LOG_FILE}"
+		python /usr/local/cavedbmanager/cavedb/scripts/elevation_dem_update.py "${CAVEDB_DEM_PATH}" 2>&1 | tee "${LOG_FILE}"
 	elif [ "${MSG}" == "backup" ] ; then
 		echo "Backing up data"
 
