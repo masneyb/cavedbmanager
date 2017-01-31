@@ -29,7 +29,11 @@ if [ ! -p "${CAVEDB_WORKER_FIFO}" ] ; then
 fi
 
 
+echo "Beginning to read from fifo ${CAVEDB_WORKER_FIFO}"
+
 while read -r MSG < "${CAVEDB_WORKER_FIFO}" ; do
+	echo "Received message ${MSG}"
+
 	if [ "${MSG}" == "generate:global" ] || [[ "${MSG}" =~ ^generate:[0-9]+$ ]] ; then
 		BULLETIN_ID=${MSG//generate:/}
 		BASE_DIR="${CAVEDB_DATA_BASE_DIR}"/bulletins/bulletin_"${BULLETIN_ID}"
