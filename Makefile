@@ -17,8 +17,10 @@ run:
 runRemote:
 	./manage.py runserver 0.0.0.0:8000
 
-dockerRun:
+dockerBuildBase:
 	docker build --file Dockerfile.base --tag cavedbmanager_base:latest .
+
+dockerRun: dockerBuildBase
 	docker-compose up --build
 
 dockerStop:
