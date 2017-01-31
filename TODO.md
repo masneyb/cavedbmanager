@@ -1,6 +1,9 @@
+* Caves with large number of entrances (such as CCC) cause the entrance block
+  to run off the page.
+* Ability to tail the build log from the web interface
 * Use a smaller Docker base image instead of Ubuntu 16.04. Need to move web, worker
   and db all at once since pg_dump version needs to match between worker and db.
-  Possibly look at Alpine or Debian Jessie slim.
+  Possibly look at next stable Alpine when it comes out or Debian Jessie slim.
 * Fix latex escaping
 * Support markdown on text area input fields. Current latex code embedded in
   Tucker County descriptions: \textbf{}, \textit{}, \subsection*{}

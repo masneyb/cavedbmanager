@@ -507,15 +507,15 @@ class LatexCommon(cavedb.docgen_common.Common):
 
 
     def __show_feature_header(self, feature):
-        max_entrances = self.get_max_entrances_on_col()
-        if len(self.feature_attrs['entrances']) >= max_entrances:
-            # If there are more than 9 entrances, then flush out all of the existing
-            # floats and start the cave on a new page.
-            self.__writeln(r'\clearpage')
-        else:
-            self.__writeln(r'\vspace{1ex}')
+#        max_entrances = self.get_max_entrances_on_col()
+#        if len(self.feature_attrs['entrances']) >= max_entrances:
+#            # If there are more than 9 entrances, then flush out all of the existing
+#            # floats and start the cave on a new page.
+#            self.__writeln(r'\clearpage')
+#        else:
+#            self.__writeln(r'\vspace{1ex}')
 
-        self.__writeln(r'')
+#        self.__writeln(r'')
 
         self.__show_feature_tikz_header(feature)
         self.__feature_names(feature)
@@ -523,19 +523,20 @@ class LatexCommon(cavedb.docgen_common.Common):
 
         has_at_least_one_coord = False
         for counter, (entrance, coordinates) in enumerate(self.feature_attrs['entrances']):
+#                # Check to see if we need to split up the entrances into separate boxes.
+#                # Otherwise, a single large box will just overrun the entire column. Treat
+#                # the cave name as an additional entrance so that both columns are roughly
+#                # equal.
+#                if (counter + 1) % max_entrances == 0:
+#                    self.__show_feature_tikz_footer(feature)
+#                    self.__writeln(r'')
+#                    self.__writeln(r'\newpage')
+#                    self.__writeln(r'')
+#                    self.__show_feature_tikz_header(feature)
+#                else:
+
             if counter > 0:
-                # Check to see if we need to split up the entrances into separate boxes.
-                # Otherwise, a single large box will just overrun the entire column. Treat
-                # the cave name as an additional entrance so that both columns are roughly
-                # equal.
-                if (counter + 1) % max_entrances == 0:
-                    self.__show_feature_tikz_footer(feature)
-                    self.__writeln(r'')
-                    self.__writeln(r'\newpage')
-                    self.__writeln(r'')
-                    self.__show_feature_tikz_header(feature)
-                else:
-                    self.__writeln(r' \\')
+                self.__writeln(r' \\')
 
             if entrance.entrance_name and entrance.entrance_name != feature.name:
                 self.__writeln(r'\textit{\textbf{' + escape(entrance.entrance_name) + r'}} \\*')
