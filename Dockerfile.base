@@ -4,13 +4,13 @@ MAINTAINER Brian Masney <masneyb@onstation.org>
 
 ENV PYTHONUNBUFFERED 1
 
+ENV TZ=America/New_York
+
 RUN apt-get update && \
     apt-get install --no-install-recommends -y make postgresql-client python2.7 python-dateutil \
                                                python-django python-gdal python-imaging \
                                                python-psycopg2 python-pylint-django shellcheck && \
     rm -rf /usr/share/doc /usr/share/man && \
     (rm /var/lib/apt/lists/* || true) && \
-    apt-get clean
-
-ENV TZ=America/New_York
-RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && echo ${TZ} > /etc/timezone
+    apt-get clean && \
+    ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && echo ${TZ} > /etc/timezone
