@@ -19,7 +19,7 @@ from os.path import isfile, getsize
 from curses.ascii import isalpha
 from django.core.servers.basehttp import FileWrapper
 from django.http import HttpResponseRedirect, HttpResponse, Http404
-from cavedb import settings
+from django.conf import settings
 import cavedb.docgen_todo_txt
 import cavedb.docgen_text
 import cavedb.docgen_shp
@@ -228,11 +228,15 @@ def generate_bulletin(request, bulletin_id):
     if bulletin is None:
         raise Http404
 
+    queue_bulletin_generation(bulletin_id)
+
+    return HttpResponseRedirect('%sadmin/cavedb/bulletin/' % (settings.CONTEXT_PATH))
+
+
+def queue_bulletin_generation(bulletin_id):
     build_lock_file = cavedb.utils.get_build_lock_file(bulletin_id)
     cavedb.docgen_common.create_base_directory(build_lock_file)
     with open(build_lock_file, 'w') as output:
         output.write('')
 
     settings.QUEUE_STRATEGY('generate:%s' % (bulletin_id))
-
-    return HttpResponseRedirect('%sadmin/cavedb/bulletin/' % (settings.CONTEXT_PATH))

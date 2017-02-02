@@ -20,16 +20,12 @@
 #     ./cavedb/scripts/generate_all_bulletins.py
 
 import django
-import cavedb.generate_docs
 import cavedb.utils
+import cavedb.views
 
 django.setup()
 
 for bulletin in cavedb.models.Bulletin.objects.all():
-    print 'Generating bulletin %s (%s)' % (bulletin.bulletin_name, bulletin.id)
-    cavedb.generate_docs.write_bulletin_files(bulletin)
-    cavedb.generate_docs.run_buildscript(bulletin.id)
+    cavedb.views.queue_bulletin_generation(bulletin.id)
 
-print 'Generating global bulletin'
-cavedb.generate_docs.write_global_bulletin_files()
-cavedb.generate_docs.run_buildscript(cavedb.utils.GLOBAL_BULLETIN_ID)
+cavedb.views.queue_bulletin_generation(cavedb.utils.GLOBAL_BULLETIN_ID)
