@@ -48,7 +48,7 @@ class LatexCommon(cavedb.docgen_common.Common):
 
         cd_cmd = 'cd %s\n' % (bulletin_base_dir)
         rm_cmd = 'rm -f %s/*.{aux,idx,ilg,ind,log,pdf,toc}\n' % (tex_dir)
-        latex_cmd = 'pdflatex -output-directory %s %s\n' % (tex_dir, self.filename)
+        latex_cmd = 'pdflatex -halt-on-error -output-directory %s %s\n' % (tex_dir, self.filename)
         makeidx_cmd = 'openout_any=a makeindex %s\n' % (idx_file)
 
         return cd_cmd + rm_cmd + latex_cmd + makeidx_cmd + latex_cmd
