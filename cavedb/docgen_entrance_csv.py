@@ -35,9 +35,7 @@ class EntranceCsv(cavedb.docgen_common.Common):
                                  'nad83_utmzone', 'nad83_utmeast', 'nad83_utmnorth', 'elevation',
                                  'region', 'county', 'quad', 'length', 'depth', 'length_based_on',
                                  'significant', 'access enum', 'access descr', 'todo enum',
-                                 'todo descr', 'source', 'description', 'history',
-                                 'internal_history', 'biology', 'geology_hydrology', 'hazards',
-                                 'gislbl_pri'])
+                                 'todo descr', 'source', 'gislbl_pri'])
 
 
     def feature_entrance(self, feature, entrance, coordinates):
@@ -64,10 +62,7 @@ class EntranceCsv(cavedb.docgen_common.Common):
                                  feature.length_ft, feature.depth_ft, feature.length_based_on,
                                  feature.is_significant, feature.access_enum, feature.access_descr,
                                  feature.todo_enum, feature.todo_descr, feature.source,
-                                 feature.description, feature.history, feature.internal_history,
-                                 feature.biology, feature.geology_hydrology,
-                                 feature.hazards, gislbl_pri])
-
+                                 gislbl_pri])
 
     def close(self):
         self.csvfile.close()
