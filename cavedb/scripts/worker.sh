@@ -19,15 +19,23 @@ echo "Beginning to read jobs from ${CAVEDB_WORKER_MSG_DIR}"
 # See if there are any queued jobs. If so, touch them so that inotify
 # will pick them up.
 if [ ! -z "$(ls -A "${CAVEDB_WORKER_MSG_DIR}")" ]; then
-	(sleep 5 && touch "${CAVEDB_WORKER_MSG_DIR}"/*) &
+	(sleep 5 && find "${CAVEDB_WORKER_MSG_DIR}" -type f -exec touch {} \;) &
 fi
 
-inotifywait -q --format '%f' -m "${CAVEDB_WORKER_MSG_DIR}" --event close | while read MSG_FILENAME ; do
-	echo "Received message '${MSG_FILENAME}'"
-
+inotifywait -q --format '%f' -m "${CAVEDB_WORKER_MSG_DIR}" --event close | while read -r MSG_FILENAME ; do
 	if [ "${MSG_FILENAME}" = "" ] ; then
 		continue
-	elif [ "${MSG_FILENAME}" == "generate:global" ] || [[ "${MSG_FILENAME}" =~ ^generate:[0-9]+$ ]] ; then
+	fi
+
+	MSG_FULLPATH="${CAVEDB_WORKER_MSG_DIR}"/"${MSG_FILENAME}"
+	if [ ! -f "${MSG_FULLPATH}" ] ; then
+		echo "Ignoring message ${MSG_FULLPATH} since it no longer exist"
+		continue
+	fi
+
+	echo "Beginning to process message '${MSG_FILENAME}'"
+
+	if [ "${MSG_FILENAME}" == "generate:global" ] || [[ "${MSG_FILENAME}" =~ ^generate:[0-9]+$ ]] ; then
 		BULLETIN_ID=${MSG_FILENAME//generate:/}
 		BASE_DIR="${CAVEDB_DATA_BASE_DIR}"/bulletins/bulletin_"${BULLETIN_ID}"
 		LOCK_FILE="${BASE_DIR}"/build-in-progress.lock
@@ -53,7 +61,15 @@ inotifywait -q --format '%f' -m "${CAVEDB_WORKER_MSG_DIR}" --event close | while
 		HOME="${CAVEDB_DATA_BASE_DIR}" /usr/local/cavedbmanager/cavedb/scripts/backup-data.sh
 	else
 		echo "Ignoring unknown message ${MSG_FILENAME}"
+		rm -f "${MSG_FULLPATH}"
+		continue
 	fi
 
-	rm -f "${CAVEDB_WORKER_MSG_DIR}"/"${MSG_FILENAME}"
+	rm -f "${MSG_FULLPATH}"
+
+	echo "Finished processing message '${MSG_FILENAME}'"
+
+	# Touch all messages queued (if any) since we may have a long running job and may not
+	# be notified by inotifywait.
+	find "${CAVEDB_WORKER_MSG_DIR}" -type f -exec touch {} \;
 done
