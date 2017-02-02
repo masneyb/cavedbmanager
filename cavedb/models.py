@@ -181,7 +181,7 @@ class Bulletin(models.Model):
         base_url = '%sbulletin/%s' % (settings.MEDIA_URL, self.id)
         if self.is_document_build_in_process():
             return 'Documents are currently being regenerated. ' + \
-                   'Please check back in about 10 minutes. ' + \
+                   'Please refresh the page in a few minutes. ' + \
                    'It will take longer if some of the GIS maps need to be regenerated.'
 
         regen_url = '%sbulletin/%s/generate' % (settings.MEDIA_URL, self.id)
