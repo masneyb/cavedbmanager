@@ -14,12 +14,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# This implements a very simple way to pass messages between different
+# containers on the same host. Each container mounts a common worker
+# volume and a message can be passed to the worker by writing an empty
+# file with the message name as the filename. The worker script uses
+# inotifywait to watch for new files that are written. This is so that
+# the cron and web containers can notify the worker node about jobs
+# that need to run. If there are multiple worker nodes in the future,
+# then a proper messaging system (such as RabbitMQ) will need to be
+# used, but this will work for the simple use case.
+
 echo "Beginning to read jobs from ${CAVEDB_WORKER_MSG_DIR}"
 
 # See if there are any queued jobs. If so, touch them so that inotify
 # will pick them up.
 if [ ! -z "$(ls -A "${CAVEDB_WORKER_MSG_DIR}")" ]; then
-	(sleep 5 && find "${CAVEDB_WORKER_MSG_DIR}" -type f -exec touch {} \;) &
+	(sleep 5 && find "${CAVEDB_WORKER_MSG_DIR}" -type f | head -n 1 | xargs -iblah touch blah) &
 fi
 
 inotifywait -q --format '%f' -m "${CAVEDB_WORKER_MSG_DIR}" --event close | while read -r MSG_FILENAME ; do
@@ -29,7 +39,6 @@ inotifywait -q --format '%f' -m "${CAVEDB_WORKER_MSG_DIR}" --event close | while
 
 	MSG_FULLPATH="${CAVEDB_WORKER_MSG_DIR}"/"${MSG_FILENAME}"
 	if [ ! -f "${MSG_FULLPATH}" ] ; then
-		echo "Ignoring message ${MSG_FULLPATH} since it no longer exist"
 		continue
 	fi
 
@@ -60,9 +69,7 @@ inotifywait -q --format '%f' -m "${CAVEDB_WORKER_MSG_DIR}" --event close | while
 
 		HOME="${CAVEDB_DATA_BASE_DIR}" /usr/local/cavedbmanager/cavedb/scripts/backup-data.sh
 	else
-		echo "Ignoring unknown message ${MSG_FILENAME}"
-		rm -f "${MSG_FULLPATH}"
-		continue
+		echo "Received unknown message ${MSG_FILENAME}"
 	fi
 
 	rm -f "${MSG_FULLPATH}"
@@ -71,5 +78,5 @@ inotifywait -q --format '%f' -m "${CAVEDB_WORKER_MSG_DIR}" --event close | while
 
 	# Touch all messages queued (if any) since we may have a long running job and may not
 	# be notified by inotifywait.
-	find "${CAVEDB_WORKER_MSG_DIR}" -type f -exec touch {} \;
+	find "${CAVEDB_WORKER_MSG_DIR}" -type f | head -n 1 | xargs -iblah touch blah
 done
