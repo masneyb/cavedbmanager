@@ -1,3 +1,4 @@
+* Photo page numbers in PDF index can be wrong. Missing \phantomsection?
 * Maybe change topnumber to 2 and dbtopnumber to 1
 * Caves with large number of entrances (such as CCC) cause the entrance block
   to run off the page.
