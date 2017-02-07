@@ -80,7 +80,7 @@ inotifywait -q --format '%f' -m "${CAVEDB_WORKER_MSG_DIR}" --event close | while
 
 	rm -f "${MSG_FULLPATH}"
 
-	if [ "${RET}" != "0" } ; then
+	if [ "${RET}" != "0" ] ; then
 		echo "Process returned non-zero exit status of ${RET}"
 	fi
 
