@@ -33,5 +33,5 @@ fi
 
 pg_dump > "${CAVEDB_DATA_BASE_DIR}"/cavedb.sql
 
-git add ./* .gitignore .gitconfig
+git add ./* .gitignore .gitconfig || true
 git commit -m "Data backed up by $0" -a
