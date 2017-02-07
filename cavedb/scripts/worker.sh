@@ -44,6 +44,8 @@ inotifywait -q --format '%f' -m "${CAVEDB_WORKER_MSG_DIR}" --event close | while
 
 	echo "Beginning to process message '${MSG_FILENAME}'"
 
+	RET=0
+
 	if [ "${MSG_FILENAME}" == "generate:global" ] || [[ "${MSG_FILENAME}" =~ ^generate:[0-9]+$ ]] ; then
 		BULLETIN_ID=${MSG_FILENAME//generate:/}
 		BASE_DIR="${CAVEDB_DATA_BASE_DIR}"/bulletins/bulletin_"${BULLETIN_ID}"
@@ -54,25 +56,33 @@ inotifywait -q --format '%f' -m "${CAVEDB_WORKER_MSG_DIR}" --event close | while
 
 		touch "${LOCK_FILE}"
 		python /usr/local/cavedbmanager/cavedb/scripts/generate_single_bulletin.py "${BULLETIN_ID}" 2>&1 | tee "${BUILD_LOG}"
+		RET=$?
 		rm -f "${LOCK_FILE}"
 	elif [ "${MSG_FILENAME}" == "generate:all" ] ; then
 		echo "Generating documents for all bulletins"
 
 		python /usr/local/cavedbmanager/cavedb/scripts/generate_all_bulletins.py
+		RET=$?
 	elif [ "${MSG_FILENAME}" == "elevation_dem_update" ] ; then
 		echo "Updating elevations based on DEMs"
 
 		LOG_FILE="${CAVEDB_DATA_BASE_DIR}"/elevation-dem-update.log
 		python /usr/local/cavedbmanager/cavedb/scripts/elevation_dem_update.py "${CAVEDB_DEM_PATH}" 2>&1 | tee "${LOG_FILE}"
+		RET=$?
 	elif [ "${MSG_FILENAME}" == "backup" ] ; then
 		echo "Backing up data"
 
 		HOME="${CAVEDB_DATA_BASE_DIR}" /usr/local/cavedbmanager/cavedb/scripts/backup-data.sh
+		RET=$?
 	else
 		echo "Received unknown message ${MSG_FILENAME}"
 	fi
 
 	rm -f "${MSG_FULLPATH}"
+
+	if [ "${RET}" != "0" } ; then
+		echo "Process returned non-zero exit status of ${RET}"
+	fi
 
 	echo "Finished processing message '${MSG_FILENAME}'"
 
