@@ -2,11 +2,11 @@ FROM alpine:3.4
 
 MAINTAINER Brian Masney <masneyb@onstation.org>
 
+ENV TZ=America/New_York
+
 RUN apk add --update-cache dcron tzdata && \
     ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && echo ${TZ} > /etc/timezone && \
     rm -rf /var/cache/apk/*
-
-ENV TZ=America/New_York
 
 COPY conf/crontab /etc/crontabs/root
 
