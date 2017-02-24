@@ -478,7 +478,7 @@ class LatexCommon(cavedb.docgen_common.Common):
         elif entrance.coord_acquision == 'Filled In':
             self.__writeln(r'\textit{Entrance is filled in; coordinates are an estimate.} \\*')
         else:
-            self.__writeln(r'\textit{Unknown coordinate acquisition method.} \\*')
+            self.__writeln(r'\textit{Coordinates acquired off of a topo map.} \\*')
 
         return has_coordinates
 
