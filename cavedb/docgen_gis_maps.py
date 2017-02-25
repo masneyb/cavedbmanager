@@ -39,7 +39,7 @@ class GisMaps(cavedb.docgen_gis_common.GisCommon):
             if self.overall_extents['gishash']:
                 buildscr += create_map(mapfile, localfile, self.overall_extents)
 
-            for extents in self.region_extents.values():
+            for extents in list(self.region_extents.values()):
                 localfile = get_region_gis_map(self.bulletin.id, extents['id'], gismap)
                 buildscr += create_map(mapfile, localfile, extents)
 

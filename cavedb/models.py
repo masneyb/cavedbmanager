@@ -52,7 +52,7 @@ class GisMap(models.Model):
     map_label = models.CharField(max_length=255, null=True, blank=True)
     show_all_regions_map = models.BooleanField(default=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:
@@ -86,7 +86,7 @@ class GisLayer(models.Model):
     source = models.CharField(max_length=80)
     notes = models.TextField(blank=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.description
 
     class Meta:
@@ -102,11 +102,11 @@ class UtmZone(models.Model):
                                        null=True)
     mod_date = models.DateTimeField("Modification Date", auto_now=True, editable=False, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         if self.utm_north:
-            return u'%sN' % (self.utm_zone)
+            return '%sN' % (self.utm_zone)
         else:
-            return u'%sS' % (self.utm_zone)
+            return '%sS' % (self.utm_zone)
 
     class Meta:
         ordering = ('utm_zone',)
@@ -150,7 +150,7 @@ class Bulletin(models.Model):
                                        null=True)
     mod_date = models.DateTimeField("Modification Date", auto_now=True, editable=False, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.short_name
 
     def get_bulletin_mod_date(self):
@@ -287,8 +287,8 @@ class BulletinRegion(models.Model):
                                        null=True)
     mod_date = models.DateTimeField("Modification Date", auto_now=True, editable=False, null=True)
 
-    def __unicode__(self):
-        return u'%s - %s' % (self.bulletin.short_name, self.region_name)
+    def __str__(self):
+        return '%s - %s' % (self.bulletin.short_name, self.region_name)
 
     class Meta:
         verbose_name = 'region'
@@ -321,7 +321,7 @@ class BulletinGisLineplot(models.Model):
                                        null=True)
     mod_date = models.DateTimeField("Modification Date", auto_now=True, editable=False, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.shp_filename
 
     class Meta:
@@ -339,7 +339,7 @@ class BulletinChapter(models.Model):
                                        null=True)
     mod_date = models.DateTimeField("Modification Date", auto_now=True, editable=False, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.chapter_title
 
     class Meta:
@@ -360,8 +360,8 @@ class BulletinSection(models.Model):
                                        null=True)
     mod_date = models.DateTimeField("Modification Date", auto_now=True, editable=False, null=True)
 
-    def __unicode__(self):
-        return u'%s - %s' % (self.section_title, self.section_subtitle)
+    def __str__(self):
+        return '%s - %s' % (self.section_title, self.section_subtitle)
 
     class Meta:
         verbose_name = 'section'
@@ -384,8 +384,8 @@ class BulletinSectionReference(models.Model):
                                        null=True)
     mod_date = models.DateTimeField("Modification Date", auto_now=True, editable=False, null=True)
 
-    def __unicode__(self):
-        return u'%s,%s,%s,%s,%s,%s,%s,%s,%s' % \
+    def __str__(self):
+        return '%s,%s,%s,%s,%s,%s,%s,%s,%s' % \
                (self.author, self.title, self.book, self.volume, self.number, self.pages, \
                 self.url, self.date, self.extra)
 
@@ -408,7 +408,7 @@ class BulletinAttachment(models.Model):
                                        null=True)
     mod_date = models.DateTimeField("Modification Date", auto_now=True, editable=False, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         #pylint: disable=no-member
         return self.attachment.path
 
@@ -425,7 +425,7 @@ class County(models.Model):
                                        null=True)
     mod_date = models.DateTimeField("Modification Date", auto_now=True, editable=False, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.county_name
 
     class Meta:
@@ -441,7 +441,7 @@ class TopoQuad(models.Model):
                                        null=True)
     mod_date = models.DateTimeField("Modification Date", auto_now=True, editable=False, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.quad_name
 
     def show_counties(self):
@@ -513,12 +513,12 @@ class FeaturePhoto(models.Model):
                                        null=True)
     mod_date = models.DateTimeField("Modification Date", auto_now=True, editable=False, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         #pylint: disable=no-member
         if self.caption:
-            return u'%s - %s' % (self.filename.path, self.caption)
+            return '%s - %s' % (self.filename.path, self.caption)
         else:
-            return u'%s %s' % (self.filename.path, self.type)
+            return '%s %s' % (self.filename.path, self.type)
 
     photoTypeDict = {}
     for i in range(0, len(PHOTO_TYPE_CHOICES)):
@@ -541,8 +541,8 @@ class FeatureReferencedMap(models.Model):
                                        null=True)
     mod_date = models.DateTimeField("Modification Date", auto_now=True, editable=False, null=True)
 
-    def __unicode__(self):
-        return u'%s' % (self.map)
+    def __str__(self):
+        return '%s' % (self.map)
 
     class Meta:
         ordering = ('feature', 'map', )
@@ -571,7 +571,7 @@ class FeatureAttachment(models.Model):
                                        null=True)
     mod_date = models.DateTimeField("Modification Date", auto_now=True, editable=False, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         #pylint: disable=no-member
         return self.attachment.path
 
@@ -605,7 +605,7 @@ class FeatureGisLineplot(models.Model):
                                        null=True)
     mod_date = models.DateTimeField("Modification Date", auto_now=True, editable=False, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.shp_filename
 
     class Meta:
@@ -649,11 +649,11 @@ class FeatureEntrance(models.Model):
                                        null=True)
     mod_date = models.DateTimeField("Modification Date", auto_now=True, editable=False, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         if self.entrance_name:
             return self.entrance_name
         else:
-            return u'Entrance'
+            return 'Entrance'
 
 
     class Meta:
@@ -678,8 +678,8 @@ class FeatureReference(models.Model):
     mod_date = models.DateTimeField("Modification Date", auto_now=True, editable=False, null=True)
 
 
-    def __unicode__(self):
-        return u'%s,%s,%s,%s,%s,%s,%s,%s,%s' % \
+    def __str__(self):
+        return '%s,%s,%s,%s,%s,%s,%s,%s,%s' % \
                (self.author, self.title, self.book, self.volume, self.number, self.pages, \
                 self.url, self.date, self.extra)
 
@@ -746,8 +746,8 @@ class Feature(models.Model):
                                        null=True)
     mod_date = models.DateTimeField("Modification Date", auto_now=True, editable=False, null=True)
 
-    def __unicode__(self):
-        return u'%s (%s)' % (self.name, self.survey_id)
+    def __str__(self):
+        return '%s (%s)' % (self.name, self.survey_id)
 
     class Meta:
         ordering = ["name"]
@@ -761,6 +761,6 @@ class CaveUserProfile(models.Model):
     can_download_gis_maps = models.BooleanField(default=True)
     can_generate_docs = models.BooleanField(default=False)
 
-    def __unicode__(self):
-        return u'%s Profile' % (self.user)
+    def __str__(self):
+        return '%s Profile' % (self.user)
 

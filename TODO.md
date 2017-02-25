@@ -11,8 +11,6 @@
   - mv "$NEWCD/Surface Photos/Cave Hollow-Arbogast System Surface Photo - 2 of 2.jpg" "$NEWCD/Surface Photos/Rufus Maxwell - AT Bonnifield - Abraham Bonnifield.jpg"
 * Combine hillshade and topo maps. Make hillshade maps a bit more colorful.
   See http://blog.mastermaps.com/2012/07 for examples.
-* Migrate from Python 2.7 to Python 3.
-* Upgrade from Django 1.8 to Django 1.10 (or later if available).
 * Add units field to length and depth on web interface
 * Automatically generate the survey ID field
 * Add 11 reasons a cave can be significant to WVASS

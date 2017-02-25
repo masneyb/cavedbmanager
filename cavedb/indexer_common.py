@@ -49,7 +49,7 @@ class IndexerCommon(object):
     def __add_term(self, search_term, index_terms):
         self.__sorted_terms.append(search_term)
 
-        search_term_digest = hashlib.md5(search_term).hexdigest()
+        search_term_digest = hashlib.md5(search_term.encode('UTF-8')).hexdigest()
         self.__term_to_digest[search_term] = search_term_digest
         self.__digest_to_index[search_term_digest] = self.get_index_str(search_term, index_terms)
 
@@ -63,7 +63,7 @@ class IndexerCommon(object):
                 inputstr = inputstr.replace('%s%s' % (term, suffix),
                                             '%s%s' % (digest, suffix))
 
-        for digest, replacement in self.__digest_to_index.items():
+        for digest, replacement in list(self.__digest_to_index.items()):
             inputstr = inputstr.replace(digest, replacement)
 
         return inputstr

@@ -40,7 +40,7 @@ class Shp(cavedb.docgen_gis_common.GisCommon):
                   (self.shp_dir, cavedb.docgen_gis_common.REGION_EXTENTS_SHP_LAYER_NAME)
         with open(csv_filename, 'w') as output:
             output.write('region_name,wkt\n')
-            for region_id, extents in self.region_extents.items():
+            for region_id, extents in list(self.region_extents.items()):
                 extents = self.region_extents[region_id]
 
                 if not extents['minx']:

@@ -55,19 +55,19 @@ inotifywait -q --format '%f' -m "${CAVEDB_WORKER_MSG_DIR}" --event close | while
 		echo "Generating bulletin documents for bulletin_id ${BULLETIN_ID}"
 
 		touch "${LOCK_FILE}"
-		python /usr/local/cavedbmanager/cavedb/scripts/generate_single_bulletin.py "${BULLETIN_ID}" 2>&1 | tee "${BUILD_LOG}"
+		/usr/local/cavedbmanager/cavedb/scripts/generate_single_bulletin.py "${BULLETIN_ID}" 2>&1 | tee "${BUILD_LOG}"
 		RET=$?
 		rm -f "${LOCK_FILE}"
 	elif [ "${MSG_FILENAME}" == "generate:all" ] ; then
 		echo "Generating documents for all bulletins"
 
-		python /usr/local/cavedbmanager/cavedb/scripts/generate_all_bulletins.py
+		/usr/local/cavedbmanager/cavedb/scripts/generate_all_bulletins.py
 		RET=$?
 	elif [ "${MSG_FILENAME}" == "elevation_dem_update" ] ; then
 		echo "Updating elevations based on DEMs"
 
 		LOG_FILE="${CAVEDB_DATA_BASE_DIR}"/elevation-dem-update.log
-		python /usr/local/cavedbmanager/cavedb/scripts/elevation_dem_update.py "${CAVEDB_DEM_PATH}" 2>&1 | tee "${LOG_FILE}"
+		/usr/local/cavedbmanager/cavedb/scripts/elevation_dem_update.py "${CAVEDB_DEM_PATH}" 2>&1 | tee "${LOG_FILE}"
 		RET=$?
 	elif [ "${MSG_FILENAME}" == "backup" ] ; then
 		echo "Backing up data"

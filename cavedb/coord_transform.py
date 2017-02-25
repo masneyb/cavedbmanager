@@ -24,7 +24,7 @@ class TransformedCoordinate(object):
 
         if src_datum:
             self.in_srs = osgeo.osr.SpatialReference()
-            self.in_srs.SetWellKnownGeogCS(src_datum.encode('ascii'))
+            self.in_srs.SetWellKnownGeogCS(src_datum)
         else:
             self.in_srs = None
 

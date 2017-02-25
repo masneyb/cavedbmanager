@@ -78,7 +78,7 @@ def write_build_scripts(bulletin_id, outputter):
     with open(build_script_file, 'w') as output:
         output.write('#!/bin/bash -ev\n')
         output.write(build_script)
-    os.chmod(build_script_file, 0755)
+    os.chmod(build_script_file, 0o755)
 
 
 def write_region(region, outputter):
@@ -298,7 +298,7 @@ def get_region_gis_hash(region_id):
                            (feature.name, feature.feature_type, feature.is_significant, \
                             entrance.entrance_name, entrance.utmzone, \
                             nad83_utm[1], nad83_utm[0], wgs84_lon_lat[1], wgs84_lon_lat[0])
-            md5hash.update(entranceinfo)
+            md5hash.update(entranceinfo.encode('UTF-8'))
 
     return md5hash.hexdigest() if has_entrances else None
 
@@ -310,7 +310,7 @@ def get_all_regions_gis_hash(bulletin_id):
     for region in cavedb.models.BulletinRegion.objects.filter(bulletin__id=bulletin_id):
         gis_region_hash = get_region_gis_hash(region.id)
         if gis_region_hash:
-            md5.update(gis_region_hash)
+            md5.update(gis_region_hash.encode('UTF-8'))
             has_entrances = True
 
     return md5.hexdigest() if has_entrances else None

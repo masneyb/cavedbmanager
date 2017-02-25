@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # Copyright 2017 Brian Masney <masneyb@onstation.org>
 #
 # Licensed under the Apache License, Version 2.0 (the 'License');
@@ -77,8 +79,8 @@ def process_dem(filepath, all_entrances):
         entrance = cavedb.models.FeatureEntrance.objects.get(pk=entrance_id)
 
         if entrance.elevation_ft != dem_elevation_int:
-            print 'entrance id: %s, new_elevation=%s, old_elevation=%s' % \
-                  (entrance_id, dem_elevation_int, entrance.elevation_ft)
+            print('entrance id: %s, new_elevation=%s, old_elevation=%s' % \
+                  (entrance_id, dem_elevation_int, entrance.elevation_ft))
 
             entrance.elevation_ft = dem_elevation_int
             entrance.save()
@@ -98,7 +100,7 @@ def process_all_dems(dem_dir, all_entrances):
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
-        print 'usage: elevation_dem_update.py <path to DEM directory>'
+        print('usage: elevation_dem_update.py <path to DEM directory>')
         sys.exit(1)
 
     django.setup()

@@ -17,8 +17,8 @@ from mimetypes import guess_type
 from time import strftime
 from os.path import isfile, getsize
 from curses.ascii import isalpha
-from django.core.servers.basehttp import FileWrapper
-from django.http import HttpResponseRedirect, HttpResponse, Http404
+from wsgiref.util import FileWrapper
+from django.http import FileResponse, HttpResponseRedirect, Http404
 from django.conf import settings
 import cavedb.docgen_todo_txt
 import cavedb.docgen_text
@@ -177,15 +177,15 @@ def do_show_bulletin_attachment(request, bulletin_id, localfile, remotefile):
         mimetype = "application/octet-stream"
 
     try:
-        wrapper = FileWrapper(file(localfile))
-        response = HttpResponse(wrapper, content_type=mimetype)
+        wrapper = FileWrapper(open(localfile, 'rb'))
+        response = FileResponse(wrapper, content_type=mimetype)
 
         if remotefile and (mimetype is None or not mimetype.startswith('image')):
             response['Content-Disposition'] = 'attachment; filename=' + remotefile
 
         response['Content-Length'] = getsize(localfile)
     except IOError:
-        print >> sys.stderr, 'Cannot find %s\n' % (localfile)
+        print('Cannot find %s\n' % (localfile), file=sys.stderr)
         raise Http404
 
     return response
@@ -199,7 +199,7 @@ def get_bulletin_base_name(bulletin_id):
     base = ''
     for char in bulletins[0].short_name.lower().encode('ascii'):
         if isalpha(char):
-            base += char
+            base += chr(char)
         else:
             base += '_'
 

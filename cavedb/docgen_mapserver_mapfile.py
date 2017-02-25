@@ -56,12 +56,12 @@ class MapserverMapfile(cavedb.docgen_common.Common):
 
     def gis_lineplot(self, lineplot, lineplot_type, shpfilename):
         if lineplot_type == 'underground':
-            for gis_options in self.gis_maps.values():
+            for gis_options in list(self.gis_maps.values()):
                 write_lineplot(gis_options, lineplot, shpfilename)
 
 
     def close(self):
-        for gis_options in self.gis_maps.values():
+        for gis_options in list(self.gis_maps.values()):
             write_mapserver_footer(gis_options)
             gis_options['fd'].close()
 

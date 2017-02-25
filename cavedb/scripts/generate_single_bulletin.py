@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # Copyright 2017 Brian Masney <masneyb@onstation.org>
 #
 # Licensed under the Apache License, Version 2.0 (the 'License');
@@ -32,7 +34,7 @@ def do_build_bulletin(bulletin_id):
     else:
         bulletin = cavedb.models.Bulletin.objects.get(pk=bulletin_id)
         if bulletin is None:
-            print 'Bulletin %s not found' % (bulletin_id)
+            print('Bulletin %s not found' % (bulletin_id))
             sys.exit(1)
 
         cavedb.generate_docs.write_bulletin_files(bulletin)
@@ -42,7 +44,7 @@ def do_build_bulletin(bulletin_id):
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
-        print 'usage: generate_single_doc.py <bulletin ID>'
+        print('usage: generate_single_doc.py <bulletin ID>')
         sys.exit(1)
 
     do_build_bulletin(sys.argv[1])
