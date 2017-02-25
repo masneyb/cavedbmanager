@@ -46,7 +46,7 @@ shellcheck:
 	shellcheck sample-bulletin/populate-sample-bulletin.sh
 
 test:
-	python -m unittest discover
+	python3 -m unittest discover
 
 ci: test lint
 
