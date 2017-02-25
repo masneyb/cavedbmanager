@@ -31,7 +31,8 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(cavedb.utils.convert_lat_lon_to_decimal('-39 11 22'), '-39.18944444444444')
 
         self.assertEqual(cavedb.utils.convert_lat_lon_to_decimal('39 11 22.4'), '39.18955555555555')
-        self.assertEqual(cavedb.utils.convert_lat_lon_to_decimal('-39 11 22.4'), '-39.18955555555555')
+        self.assertEqual(cavedb.utils.convert_lat_lon_to_decimal('-39 11 22.4'),
+                         '-39.18955555555555')
 
         self.assertEqual(cavedb.utils.convert_lat_lon_to_decimal('39 11.34567'), '39.1890945')
         self.assertEqual(cavedb.utils.convert_lat_lon_to_decimal('-39 11.34567'), '-39.1890945')
