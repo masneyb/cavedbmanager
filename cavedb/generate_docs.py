@@ -15,6 +15,7 @@
 import hashlib
 import os
 import os.path
+from shutil import copyfile
 from zipfile import ZipFile
 import csv
 from django.conf import settings
@@ -108,9 +109,7 @@ def add_gis_lineplot(lineplot, gisdir, lineplot_type, outputter):
             base = name
 
         gisfile_name = '%s/%s' % (gisdir, base)
-        gisfile = open(gisfile_name, 'w')
-        gisfile.write(zipfile.read(name))
-        gisfile.close()
+        copyfile(zipfile, gisfile_name)
 
     zipfile.close()
 
