@@ -35,7 +35,7 @@ if [ "$?" != "0" ] ; then
 		./sample-bulletin/populate-sample-bulletin.sh
 		chown -R www-data:www-data "${CAVEDB_DATA_BASE_DIR}"
 
-		echo "Finised populating sample bulletin data."
+		echo "Finished populating sample bulletin data."
 	fi
 fi
 
