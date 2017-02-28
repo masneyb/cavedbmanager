@@ -14,13 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# To run from the command line:
-#
-#   cd /path/to/cavedbmanager
-#   DJANGO_SETTINGS_MODULE=cavedb.settings \
-#     PYTHONPATH=. python \
-#     ./cavedb/scripts/generate_all_bulletins.py
-
 import django
 import cavedb.utils
 import cavedb.views

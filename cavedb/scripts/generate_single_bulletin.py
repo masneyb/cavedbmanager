@@ -14,13 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# To run:
-#
-#   cd /path/to/cavedbmanager
-#   DJANGO_SETTINGS_MODULE=cavedb.settings \
-#     PYTHONPATH=. \
-#     python ./cavedb/scripts/generate_single_bulletin.py <bulletin id>
-
 import sys
 import django
 import cavedb.generate_docs

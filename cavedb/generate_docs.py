@@ -108,7 +108,7 @@ def add_gis_lineplot(lineplot, gisdir, lineplot_type, outputter):
             base = name
 
         gisfile_name = '%s/%s' % (gisdir, base)
-        gisfile = open(gisfile_name, 'w')
+        gisfile = open(gisfile_name, 'wb')
         gisfile.write(zipfile.read(name))
         gisfile.close()
 

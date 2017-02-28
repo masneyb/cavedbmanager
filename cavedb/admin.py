@@ -31,7 +31,6 @@ class CavedbCharFormField(forms.CharField):
         if data is None:
             return data
 
-        data = data.encode('UTF-8')
         data = data.replace("—", "--")
         data = data.replace("“", "\"")
         data = data.replace("”", "\"")

@@ -15,14 +15,7 @@
 # limitations under the License.
 
 # Script to update the elevations of the feature entrances based on
-# the elevations in the Digital Elevation Models (DEM). It can be ran
-# from the command line with:
-#
-#   cd /path/to/cavedbmanager
-#   DJANGO_SETTINGS_MODULE=cavedb.settings \
-#     PYTHONPATH=. \
-#     python ./cavedb/scripts/elevation_dem_update.py \
-#     /usr/local/postgis-data-importer/download/us_wv/dem/
+# the elevations in the Digital Elevation Models (DEM).
 
 import math
 import os
