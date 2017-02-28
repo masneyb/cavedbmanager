@@ -4,6 +4,7 @@
 * Fix latex escaping
 * Support markdown on text area input fields. Current latex code embedded in
   Tucker County descriptions: \textbf{}, \textit{}, \subsection*{}
+* Add SHA of GIS lineplots to GIS hashcode
 * DVD ZIP file (from finalize-tucker-county-cd):
   - wget -O "$NEWCD/Surface Photos/Drainage Tunnel Near Spruce Lick Run - Masney.jpg" http://farm3.static.flickr.com/2631/4137642653_e95627df1c_b.jpg 
   - wget -O "$NEWCD/Surface Photos/Cross Bedded Limestone Outcrop Along Otter Creek - Masney.jpg" http://farm3.static.flickr.com/2336/3537779054_697ce259bb_b.jpg
