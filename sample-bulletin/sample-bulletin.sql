@@ -38,3 +38,6 @@ INSERT INTO cavedb_featurereference VALUES (1,1,'Masney, Brian','Exploration of 
 INSERT INTO cavedb_featurereference VALUES (2,2,'','Antarctica','CIA World Fact Book','','','','https://www.cia.gov','','','2016-02-07 20:00:00','2016-02-07 20:00:00');
 INSERT INTO cavedb_featurereference VALUES (3,3,'','Pacific Ocean','CIA World Factbook','','','','https://www.cia.gov','','','2016-02-07 20:00:00','2016-02-07 20:00:00');
 alter sequence cavedb_featurereference_id_seq restart with 5;
+
+INSERT INTO cavedb_featuregislineplot VALUES (1, 1, 'feature_attachments/1/gis_lineplot/powerline_shapefile.zip', 'shots3d', 'Power Line Cave Lineplot', 'NAD83', 'UTM', '2017-02-27 13:04:49.34062-05', '2017-02-27 13:04:49.340654-05');
+alter sequence cavedb_featuregislineplot_id_seq restart with 5;
