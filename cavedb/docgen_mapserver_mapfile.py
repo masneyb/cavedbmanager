@@ -227,6 +227,17 @@ def write_lineplot(gis_options, lineplot, shpfilename):
         mapfile.write('      "units=m"\n')
         mapfile.write('      "no_defs"\n')
         mapfile.write('    END\n')
+    elif lineplot.coord_sys == 'UTM' and \
+         (lineplot.datum == 'NAD83' or lineplot.datum == 'WGS84'):
+        mapfile.write('    PROJECTION\n')
+        mapfile.write('      "proj=utm"\n')
+        mapfile.write('      "zone=17"\n')
+        mapfile.write('      "ellps=GRS80"\n')
+        mapfile.write('      "datum=NAD27"\n')
+        mapfile.write('      "towgs84=0,0,0,0,0,0,0"\n')
+        mapfile.write('      "units=m"\n')
+        mapfile.write('      "no_defs"\n')
+        mapfile.write('    END\n')
     elif lineplot.coord_sys == 'LATLON' and \
          (lineplot.datum == 'NAD83' or lineplot.datum == 'WGS84'):
         mapfile.write('    PROJECTION\n')
