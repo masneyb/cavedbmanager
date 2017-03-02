@@ -12,17 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# A not so efficient indexer. This class takes as input a list of strings
-# that will be indexed. At a high level:
-#
-# - Take the input string, and go through the list of indexed terms, from
-#   longest to shortest, and replace each occurance with the MD5 digest of
-#   the message term.
-# - Once this has been done, go through all of the MD5 digests, and replace
-#   each occurance with the proper latex \index{} code.
-#
-# See tests/test_latex_indexer.py for an example.
-
 import cavedb.indexer_common
 
 class IndexerLatex(cavedb.indexer_common.IndexerCommon):
