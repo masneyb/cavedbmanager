@@ -16,9 +16,9 @@
 # that will be indexed. At a high level:
 #
 # - Take the input string, and go through the list of indexed terms, from
-#   longest to shortest, and replace each occurance with the MD5 digest of
+#   longest to shortest, and replace each occurance with the sha256 digest of
 #   the message term.
-# - Once this has been done, go through all of the MD5 digests, and replace
+# - Once this has been done, go through all of the sha256 digests, and replace
 #   each occurance with the proper latex \index{} code.
 #
 # See tests/test_latex_indexer.py for an example.
@@ -49,7 +49,7 @@ class IndexerCommon(object):
     def __add_term(self, search_term, index_terms):
         self.__sorted_terms.append(search_term)
 
-        search_term_digest = hashlib.md5(search_term.encode('UTF-8')).hexdigest()
+        search_term_digest = hashlib.sha256(search_term.encode('UTF-8')).hexdigest()
         self.__term_to_digest[search_term] = search_term_digest
         self.__digest_to_index[search_term_digest] = self.get_index_str(search_term, index_terms)
 
