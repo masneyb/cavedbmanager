@@ -27,12 +27,15 @@ class TestUtils(unittest.TestCase):
         self.assertAlmostEqual(cavedb.utils.convert_lat_lon_to_decimal('39.123456'), '39.123456')
         self.assertAlmostEqual(cavedb.utils.convert_lat_lon_to_decimal('-39.123456'), '-39.123456')
 
-        self.assertAlmostEqual(cavedb.utils.convert_lat_lon_to_decimal('39 11 22'), '39.18944444444444')
-        self.assertAlmostEqual(cavedb.utils.convert_lat_lon_to_decimal('-39 11 22'), '-39.18944444444444')
+        self.assertAlmostEqual(cavedb.utils.convert_lat_lon_to_decimal('39 11 22'),
+                               '39.18944444444444')
+        self.assertAlmostEqual(cavedb.utils.convert_lat_lon_to_decimal('-39 11 22'),
+                               '-39.18944444444444')
 
-        self.assertAlmostEqual(cavedb.utils.convert_lat_lon_to_decimal('39 11 22.4'), '39.18955555555555')
+        self.assertAlmostEqual(cavedb.utils.convert_lat_lon_to_decimal('39 11 22.4'),
+                               '39.18955555555555')
         self.assertAlmostEqual(cavedb.utils.convert_lat_lon_to_decimal('-39 11 22.4'),
-                         '-39.18955555555555')
+                               '-39.18955555555555')
 
         self.assertAlmostEqual(cavedb.utils.convert_lat_lon_to_decimal('39 11.34567'), '39.1890945')
         self.assertAlmostEqual(cavedb.utils.convert_lat_lon_to_decimal('-39 11.34567'), '-39.1890945')
