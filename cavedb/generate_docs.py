@@ -300,6 +300,12 @@ def get_region_gis_hash(region_id):
                             nad83_utm[1], nad83_utm[0], wgs84_lon_lat[1], wgs84_lon_lat[0])
             hasher.update(entranceinfo.encode('UTF-8'))
 
+        for lineplot in cavedb.models.FeatureGisLineplot.objects \
+             .filter(feature__id=feature.id):
+            zipfile_name = '%s/%s' % (settings.MEDIA_ROOT, lineplot.attach_zip)
+            with open(zipfile_name, 'rb') as istr:
+                hasher.update(istr.read())
+
     return hasher.hexdigest() if has_entrances else None
 
 
