@@ -47,7 +47,7 @@ services:
     ulimits:
       nofile: 20480
     volumes:
-      - ./docker-volumes/cavedb-worker-fifo:/var/run/cavedb-worker:z
+      - ./docker-volumes/cavedb-worker:/var/run/cavedb-worker:z
       - ./docker-volumes/cavedbmanager-data:/usr/local/cavedbmanager-data:z
       - ./docker-volumes/postgis-data-importer-downloads:/usr/local/postgis-data-importer/download:z
   web:
@@ -101,7 +101,7 @@ services:
       - "8443:443"
     volumes:
       - ./docker-volumes/cavedb-ssl:/etc/cavedb-ssl:Z
-      - ./docker-volumes/cavedb-worker-fifo:/var/run/cavedb-worker:z
+      - ./docker-volumes/cavedb-worker:/var/run/cavedb-worker:z
       - ./docker-volumes/cavedbmanager-data:/usr/local/cavedbmanager-data:z
   cron:
     build:
@@ -109,12 +109,10 @@ services:
       dockerfile: Dockerfile.cron
     depends_on:
       - worker
-    environment:
-      - CAVEDB_WORKER_FIFO=/var/run/cavedb-worker/cavedb-worker.fifo
     networks:
       - cron_private
     volumes:
-      - ./docker-volumes/cavedb-worker-fifo:/var/run/cavedb-worker:z
+      - ./docker-volumes/cavedb-worker:/var/run/cavedb-worker:z
 networks:
   web_public:
   db_private:
