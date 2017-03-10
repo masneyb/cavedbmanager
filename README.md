@@ -2,8 +2,8 @@
 
 [![Build Status](https://travis-ci.org/masneyb/cavedbmanager.svg?branch=master)](https://travis-ci.org/masneyb/cavedbmanager)
 
-This project simplifies the data management for a state and/or county cave
-survey. It eliminates the need for the manual duplication of data, which will
+This project simplifies the data management for a state and/or county-wide cave
+survey by eliminating the need for the manual duplication of data, which will
 help to save time and minimize errors. The system dynamically generates
 the following types of files based on the data that you upload to the database:
 
@@ -74,9 +74,9 @@ and you should see the generated documents.
 
 Note: During initial startup, it will download about 2-3 GB of data, and it will
 transform some of the GIS data. On my laptop with an i7 processor, it takes about
-15 minutes to complete. About 3 GB of data will be stored in the docker-volumes/
-directory outside the container and will be mounted inside the containers
-as volumes.
+15 minutes to complete. This data will be stored in the docker-volumes/
+directory outside the container and will be mounted inside the containers as
+volumes.
 
 
 ## Publications
