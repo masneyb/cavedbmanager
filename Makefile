@@ -51,5 +51,8 @@ test:
 ci: test lint
 
 
+ctags:
+	ctags -R cavedb/
+
 clean:
 	find . -name "*.pyc" -delete
