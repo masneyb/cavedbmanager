@@ -13,54 +13,58 @@
 # limitations under the License.
 
 import unittest
-import cavedb.coord_transform
+from cavedb.coord_transform import TransformedCoordinate
 
 class TestTransformedCoordinate(unittest.TestCase):
     def test_from_utm_nad27(self):
-        transformer = cavedb.coord_transform.TransformedCoordinate('NAD27', 17, 1, 602346, \
-                                                                   4388874, None, None)
-        self.assertEqual(transformer.get_utm_nad27(), (602346, 4388874))
-        self.assertAlmostEqual(transformer.get_utm_nad83(), (602362.2488997985, 4389092.512418542))
-        self.assertAlmostEqual(transformer.get_lon_lat_wgs84(), (-79.80697562078743, 39.64550098182764))
+        transformer = TransformedCoordinate('NAD27', 17, 1, 602346, 4388874, None, None)
+        self.assertEqual(transformer.get_utm_nad27(),
+                         (602346, 4388874))
+        self.assertAlmostEqual(transformer.get_utm_nad83(),
+                               (602362.2488997985, 4389092.512418542))
+        self.assertAlmostEqual(transformer.get_lon_lat_wgs84(),
+                               (-79.80697562078743, 39.64550098182764))
 
 
     def test_from_utm_nad83(self):
-        transformer = cavedb.coord_transform.TransformedCoordinate('NAD83', 17, 1, \
-                                                                   602362, 4389092, None, None)
-        self.assertAlmostEqual(transformer.get_utm_nad27(), (602345.751114615, 4388873.487573433))
-        self.assertEqual(transformer.get_utm_nad83(), (602362, 4389092))
-        self.assertAlmostEqual(transformer.get_lon_lat_wgs84(), (-79.80697860044248, 39.6454963964772))
+        transformer = TransformedCoordinate('NAD83', 17, 1, 602362, 4389092, None, None)
+        self.assertAlmostEqual(transformer.get_utm_nad27(),
+                               (602345.751114615, 4388873.487573433))
+        self.assertEqual(transformer.get_utm_nad83(),
+                         (602362, 4389092))
+        self.assertAlmostEqual(transformer.get_lon_lat_wgs84(),
+                               (-79.80697860044248, 39.6454963964772))
 
 
     def test_from_lat_lon_wgs84(self):
-        transformer = cavedb.coord_transform.TransformedCoordinate('WGS84', 17, 1, \
-                                                                   None, None, -79.80697562078743, \
-                                                                   39.64550098182764)
-        self.assertAlmostEqual(transformer.get_utm_nad27(), (602346.0000000328, 4388873.999999977))
-        self.assertAlmostEqual(transformer.get_utm_nad83(), (602362.2489011667, 4389092.512315645))
-        self.assertAlmostEqual(transformer.get_lon_lat_wgs84(), (-79.80697562078743, 39.64550098182764))
+        transformer = TransformedCoordinate('WGS84', 17, 1, None, None,
+                                            -79.80697562078743, 39.64550098182764)
+        self.assertAlmostEqual(transformer.get_utm_nad27(),
+                               (602346.0000000328, 4388873.999999977))
+        self.assertAlmostEqual(transformer.get_utm_nad83(),
+                               (602362.2489011667, 4389092.512315645))
+        self.assertAlmostEqual(transformer.get_lon_lat_wgs84(),
+                               (-79.80697562078743, 39.64550098182764))
 
 
     def test_from_lat_lon_wgs84_no_utm(self):
-        transformer = cavedb.coord_transform.TransformedCoordinate('WGS84', None, None, \
-                                                                   None, None, -79.80697562078743, \
-                                                                   39.64550098182764)
+        transformer = TransformedCoordinate('WGS84', None, None, None, None,
+                                            -79.80697562078743, 39.64550098182764)
         self.assertEqual(transformer.get_utm_nad27(), (None, None))
         self.assertEqual(transformer.get_utm_nad83(), (None, None))
-        self.assertAlmostEqual(transformer.get_lon_lat_wgs84(), (-79.80697562078743, 39.64550098182764))
+        self.assertAlmostEqual(transformer.get_lon_lat_wgs84(),
+                               (-79.80697562078743, 39.64550098182764))
 
 
     def test_from_none(self):
-        transformer = cavedb.coord_transform.TransformedCoordinate('WGS84', 17, 1, \
-                                                                   None, None, None, None)
+        transformer = TransformedCoordinate('WGS84', 17, 1, None, None, None, None)
         self.assertEqual(transformer.get_utm_nad27(), (None, None))
         self.assertEqual(transformer.get_utm_nad83(), (None, None))
         self.assertEqual(transformer.get_lon_lat_wgs84(), (None, None))
 
 
     def test_from_none2(self):
-        transformer = cavedb.coord_transform.TransformedCoordinate(None, None, None, \
-                                                                   None, None, None, None)
+        transformer = TransformedCoordinate(None, None, None, None, None, None, None)
         self.assertEqual(transformer.get_utm_nad27(), (None, None))
         self.assertEqual(transformer.get_utm_nad83(), (None, None))
         self.assertEqual(transformer.get_lon_lat_wgs84(), (None, None))
@@ -70,7 +74,7 @@ class TestTransformedCoordinate(unittest.TestCase):
         """Custom `assertAlmostEqual()` which tests the contents of tuples"""
         if isinstance(first, tuple):
             if len(first) != len(second):
-                self.fail('First and second tuples are of different lengths (%d vs %d)' % \
+                self.fail('First and second tuples are of different lengths (%d vs %d)' %
                           (len(first), len(second)))
             for first_, second_ in zip(first, second):
                 super().assertAlmostEqual(first_, second_, **kwargs)
