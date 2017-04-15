@@ -764,3 +764,5 @@ class CaveUserProfile(models.Model):
     def __str__(self):
         return '%s Profile' % (self.user)
 
+# create a user's profile on access if none exists
+User.caveuserprofile = property(lambda u: CaveUserProfile.objects.get_or_create(user=u)[0])
