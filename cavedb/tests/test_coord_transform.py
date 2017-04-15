@@ -68,7 +68,7 @@ class TestTransformedCoordinate(unittest.TestCase):
 
     def assertAlmostEqual(self, first, second, **kwargs):
         """Custom `assertAlmostEqual()` which tests the contents of tuples"""
-        if type(first) == tuple:
+        if isinstance(first, tuple):
             if len(first) != len(second):
                 self.fail('First and second tuples are of different lengths (%d vs %d)' % \
                           (len(first), len(second)))
