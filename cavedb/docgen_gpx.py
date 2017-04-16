@@ -29,7 +29,7 @@ class Gpx(cavedb.docgen_common.Common):
         cavedb.docgen_common.create_base_directory(self.gpx_filename)
         self.gpxfile = open(self.gpx_filename, 'w')
 
-        self.gpxfile.write('<?xml version="1.0" encoding="US-ASCII"?>\n')
+        self.gpxfile.write('<?xml version="1.0" encoding="UTF-8"?>\n')
         self.gpxfile.write('<gpx xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' + \
                            'xmlns="http://www.topografix.com/GPX/1/1" version="1.1" ' + \
                            'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' + \

@@ -29,7 +29,7 @@ class Kml(cavedb.docgen_common.Common):
         cavedb.docgen_common.create_base_directory(self.kml_filename)
         self.kmlfile = open(self.kml_filename, 'w')
 
-        self.kmlfile.write('<?xml version="1.0" encoding="US-ASCII"?>\n')
+        self.kmlfile.write('<?xml version="1.0" encoding="UTF-8"?>\n')
         self.kmlfile.write('<kml xmlns="http://earth.google.com/kml/2.2">\n')
         self.kmlfile.write('<Document>\n')
         self.kmlfile.write('<name>%s</name>\n' % escape(self.metadata_name))
