@@ -32,17 +32,16 @@ class Kml(cavedb.docgen_common.Common):
         self.kmlfile.write('<?xml version="1.0" encoding="US-ASCII"?>\n')
         self.kmlfile.write('<kml xmlns="http://earth.google.com/kml/2.2">\n')
         self.kmlfile.write('<Document>\n')
-        self.kmlfile.write('<name>%s</name>\n' % (self.metadata_name))
+        self.kmlfile.write('<name>%s</name>\n' % escape(self.metadata_name))
 
 
     def begin_region(self, region, gis_region_hash):
         self.kmlfile.write('<Folder id="%s">\n' % (region.id))
-        self.kmlfile.write('<name>%s</name>\n' % (region.region_name))
+        self.kmlfile.write('<name>%s</name>\n' % escape(region.region_name))
 
 
     def feature_entrance(self, feature, entrance, coordinates):
-        self.kmlfile.write('<Placemark id="%s" xmlns="http://earth.google.com/kml/2.2">\n' % \
-                           (feature.id))
+        self.kmlfile.write('<Placemark id="%s">\n' % feature.id)
 
         self.kmlfile.write('<name>%s</name>' % \
                            (escape(cavedb.docgen_common.get_entrance_name(feature, entrance))))
@@ -53,7 +52,7 @@ class Kml(cavedb.docgen_common.Common):
         if feature.depth_ft:
             self.kmlfile.write('Depth: %s\'<br/>\n' % (feature.depth_ft))
         if feature.description:
-            self.kmlfile.write(escape(feature.description))
+            self.kmlfile.write(feature.description)
         self.kmlfile.write(']]>')
         self.kmlfile.write('</description>\n')
 
