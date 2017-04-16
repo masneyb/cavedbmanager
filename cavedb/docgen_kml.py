@@ -47,12 +47,14 @@ class Kml(cavedb.docgen_common.Common):
         self.kmlfile.write('<name>%s</name>' % \
                            (escape(cavedb.docgen_common.get_entrance_name(feature, entrance))))
         self.kmlfile.write('<description>')
+        self.kmlfile.write('<![CDATA[')
         if feature.length_ft:
             self.kmlfile.write('Length: %s\'<br/>\n' % (feature.length_ft))
         if feature.depth_ft:
             self.kmlfile.write('Depth: %s\'<br/>\n' % (feature.depth_ft))
         if feature.description:
             self.kmlfile.write(escape(feature.description))
+        self.kmlfile.write(']]>')
         self.kmlfile.write('</description>\n')
 
         wgs84_lon_lat = coordinates.get_lon_lat_wgs84()
