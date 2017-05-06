@@ -122,9 +122,24 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'ckeditor',
     'cavedb',
 )
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'Custom',
+        'toolbar_Custom': [
+            ['Undo', 'Redo'],
+            ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript'],
+            ['NumberedList', 'BulletedList'],
+            ['Outdent', 'Indent', 'Blockquote'],
+            ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+            ['Image', 'Table', 'HorizontalRule', 'PageBreak'],
+            ['RemoveFormat', 'Source']
+        ]
+    },
+}
 
 QUEUE_STRATEGY = cavedb.worker_queue.msg_dir
 

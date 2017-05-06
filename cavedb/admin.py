@@ -20,6 +20,7 @@ from django.contrib import admin
 from django.db import models
 from django import forms
 from django.contrib.auth.models import User
+from ckeditor.fields import RichTextField, RichTextFormField
 import cavedb.models
 import cavedb.perms
 import cavedb.middleware
@@ -67,7 +68,8 @@ class CavedbModelAdmin(BaseModelAdmin):
     def formfield_for_dbfield(self, db_field, **kwargs):
         if isinstance(db_field, cavedb.models.LatLonField):
             kwargs['form_class'] = CavedbLatLonFormField
-        elif isinstance(db_field, models.CharField) or isinstance(db_field, models.TextField):
+        elif not isinstance(db_field, RichTextField) and \
+             (isinstance(db_field, models.CharField) or isinstance(db_field, models.TextField)):
             kwargs['form_class'] = CavedbCharFormField
 
         return super(CavedbModelAdmin, self).formfield_for_dbfield(db_field, **kwargs)

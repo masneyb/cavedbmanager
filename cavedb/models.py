@@ -19,6 +19,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
+from ckeditor.fields import RichTextField
 from cavedb.middleware import get_request_uri, get_valid_bulletins
 import cavedb.docgen_all
 import cavedb.perms
@@ -137,7 +138,7 @@ class Bulletin(models.Model):
                                    verbose_name='Map #2 for the color bulletin')
     color_map3 = models.ForeignKey(GisMap, blank=True, null=True, related_name='color_map3', \
                                    verbose_name='Map #3 for the color bulletin')
-    title_page = models.TextField(blank=True, null=True)
+    title_page = RichTextField(config_name='default', blank=True, null=True)
     preamble_page = models.TextField(blank=True, null=True)
     contributor_page = models.TextField(blank=True, null=True)
     toc_footer = models.TextField(blank=True, null=True)
