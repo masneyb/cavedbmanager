@@ -20,7 +20,7 @@ from django.contrib import admin
 from django.db import models
 from django import forms
 from django.contrib.auth.models import User
-from ckeditor.fields import RichTextField, RichTextFormField
+from ckeditor.fields import RichTextField
 import cavedb.models
 import cavedb.perms
 import cavedb.middleware
