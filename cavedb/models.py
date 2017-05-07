@@ -750,6 +750,8 @@ class Feature(models.Model):
         return '%s (%s)' % (self.name, self.survey_id)
 
     class Meta:
+        verbose_name = 'Cave or Karst Feature'
+        verbose_name_plural = 'Caves and Karst Features'
         ordering = ["name"]
 
 
