@@ -33,6 +33,7 @@ EMAIL_HOST = os.environ.get('EMAIL_HOST', None)
 EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', None)
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', None)
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', None)
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 INSTALL_ROOT = os.path.abspath(os.path.dirname(__file__))
