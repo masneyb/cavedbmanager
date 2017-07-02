@@ -66,4 +66,3 @@ urlpatterns = [
     url(r'^cavedb/feature_attachments/(?P<feature_id>\d+)/gis_lineplot/(?P<filename>[\w\d\s\&\._-]+)$',
         cavedb.views.show_feature_gis_lineplot),
 ]
-

@@ -149,4 +149,3 @@ def get_entrance_name(feature, ent):
         return '%s - %s' % (feature.name, ent.entrance_name)
     else:
         return feature.name
-

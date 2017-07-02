@@ -308,4 +308,3 @@ class GisMapAdmin(CavedbModelAdmin, admin.ModelAdmin):
     ]
 
 admin.site.register(cavedb.models.GisMap, GisMapAdmin)
-

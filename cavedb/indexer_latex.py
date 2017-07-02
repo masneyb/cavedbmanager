@@ -37,4 +37,3 @@ class IndexerLatex(cavedb.indexer_common.IndexerCommon):
 
             file_handle.write('%% %s\t%s\t%s\n' % (term, digest, replacement))
         file_handle.write('\n')
-

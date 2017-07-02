@@ -49,4 +49,3 @@ class ThreadLocals(object):
                 valid_bulletins.append(bulletin_id.id)
 
         THREAD_LOCALS.valid_bulletins = valid_bulletins
-

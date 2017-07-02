@@ -1042,4 +1042,3 @@ def get_color_gis_map_names(bulletin):
         ret.append(bulletin.color_map3)
 
     return ret
-
