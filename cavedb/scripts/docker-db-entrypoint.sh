@@ -14,14 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-POSTGRES_BIN=/usr/lib/postgresql/9.5/bin/postgres
+POSTGRES_BIN=/usr/lib/postgresql/9.6/bin/postgres
 POSTGRES_UID=postgres
 POSTGRES_GID=postgres
 
 chown -R "${POSTGRES_UID}":"${POSTGRES_GID}" "${PGDATA}"
 
 if [ -z "$(ls -A "${PGDATA}")" ]; then
-	gosu "${POSTGRES_UID}" /usr/lib/postgresql/9.5/bin/initdb
+	gosu "${POSTGRES_UID}" /usr/lib/postgresql/9.6/bin/initdb
 
 	echo "listen_addresses='*'" >> "${PGDATA}"/postgresql.conf
 	echo "host all all 0.0.0.0/0 md5" >> "${PGDATA}"/pg_hba.conf

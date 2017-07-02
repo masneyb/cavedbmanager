@@ -22,16 +22,19 @@ POSTGIS_DATA_IMPORTER_BASE_DIR=/usr/local/postgis-data-importer
 # Create the tables in the new database. It will prompt you to create a
 # Django admin user that you will use to log into the website.
 "${SAMPLE_DIR}"/../manage.py migrate auth
-"${SAMPLE_DIR}"/../manage.py migrate
+"${SAMPLE_DIR}"/../manage.py migrate --fake
+"${SAMPLE_DIR}"/../manage.py makemigrations cavedb
+"${SAMPLE_DIR}"/../manage.py migrate --fake-initial
 
 if [ "${WEB_ADMIN_USER}" != "" ] ; then
+	echo "Creating user based on environment variables"
 	echo "from django.contrib.auth.models import User; User.objects.create_superuser('${WEB_ADMIN_USER}', '${WEB_ADMIN_EMAIL}', '${WEB_ADMIN_PASS}')" | "${SAMPLE_DIR}"/../manage.py shell
 else
 	"${SAMPLE_DIR}"/../manage.py createsuperuser
 fi
 
 # Set a user profile for the django user added by the step above:
-echo "insert into cavedb_caveuserprofile values (1, 1, true, true, true);" | psql "${DBNAME}"
+echo "insert into cavedb_caveuserprofile values (1, true, true, true, 1);" | psql "${DBNAME}"
 
 # Create empty data directory
 mkdir -p "${CAVEDB_DATA_BASE_DIR}"/gis_maps/

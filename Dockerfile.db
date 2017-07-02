@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM debian:stretch
 
 MAINTAINER Brian Masney <masneyb@onstation.org>
 
@@ -6,9 +6,9 @@ ENV TZ=America/New_York
 RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && echo ${TZ} > /etc/timezone
 
 RUN apt-get update && \
-    apt-get install --no-install-recommends -y gosu postgis postgresql-9.5 \
-                                               postgresql-9.5-postgis-2.2 \
-                                               postgresql-9.5-postgis-scripts && \
+    apt-get install --no-install-recommends -y gosu postgis postgresql-9.6 \
+                                               postgresql-9.6-postgis-2.3 \
+                                               postgresql-9.6-postgis-scripts && \
     rm -rf /usr/share/doc /usr/share/man && \
     (rm /var/lib/apt/lists/* || true) && \
     apt-get clean
