@@ -77,7 +77,7 @@ class TestTransformedCoordinate(unittest.TestCase):
                 self.fail('First and second tuples are of different lengths (%d vs %d)' %
                           (len(first), len(second)))
             for first_, second_ in zip(first, second):
-                super().assertAlmostEqual(first_, second_, **kwargs)
+                super().assertAlmostEqual(first_, second_, places=5, **kwargs)
         else:
             super().assertAlmostEqual(first, second, **kwargs)
 
