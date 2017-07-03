@@ -21,10 +21,9 @@ POSTGIS_DATA_IMPORTER_BASE_DIR=/usr/local/postgis-data-importer
 
 # Create the tables in the new database. It will prompt you to create a
 # Django admin user that you will use to log into the website.
-"${SAMPLE_DIR}"/../manage.py migrate auth
-"${SAMPLE_DIR}"/../manage.py migrate --fake
+"${SAMPLE_DIR}"/../manage.py migrate
 "${SAMPLE_DIR}"/../manage.py makemigrations cavedb
-"${SAMPLE_DIR}"/../manage.py migrate --fake-initial
+"${SAMPLE_DIR}"/../manage.py migrate cavedb
 
 if [ "${WEB_ADMIN_USER}" != "" ] ; then
 	echo "Creating user based on environment variables"
