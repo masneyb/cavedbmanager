@@ -44,6 +44,9 @@ services:
       - PYTHONPATH=/usr/local/cavedbmanager
     networks:
       - db_private
+      # The web_public network can be removed after the initial run and all of the sample
+      # GIS data has been downloaded.
+      - web_public
     ulimits:
       nofile: 20480
     volumes:
