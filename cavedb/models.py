@@ -259,6 +259,8 @@ class Bulletin(models.Model):
 
 # Restrict the list of choices to items that are underneath the current bulletin
 class BulletinChoice(models.ForeignKey):
+    #pylint: disable=abstract-method
+
     def formfield(self, **kwargs):
         #pylint: disable=protected-access
 
@@ -297,6 +299,8 @@ class BulletinRegion(models.Model):
 
 # Only show the user the regions that they are allowed to see.
 class RegionChoice(models.ForeignKey):
+    #pylint: disable=abstract-method
+
     def formfield(self, **kwargs):
         #pylint: disable=protected-access
 
