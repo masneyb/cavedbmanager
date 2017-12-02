@@ -16,23 +16,26 @@
 
 import sys
 import django
-import cavedb.generate_docs
 import cavedb.utils
 
 def do_build_bulletin(bulletin_id):
     django.setup()
 
+    from cavedb.generate_docs import write_global_bulletin_files
+    from cavedb.generate_docs import write_bulletin_files
+    from cavedb.generate_docs import run_buildscript
+
     if bulletin_id == cavedb.utils.GLOBAL_BULLETIN_ID:
-        cavedb.generate_docs.write_global_bulletin_files()
+        write_global_bulletin_files()
     else:
         bulletin = cavedb.models.Bulletin.objects.get(pk=bulletin_id)
         if bulletin is None:
             print('Bulletin %s not found' % (bulletin_id))
             sys.exit(1)
 
-        cavedb.generate_docs.write_bulletin_files(bulletin)
+        write_bulletin_files(bulletin)
 
-    cavedb.generate_docs.run_buildscript(bulletin_id)
+    run_buildscript(bulletin_id)
 
 
 if __name__ == '__main__':
