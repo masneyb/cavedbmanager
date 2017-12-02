@@ -621,7 +621,9 @@ class FeatureEntrance(models.Model):
     )
 
     feature = models.ForeignKey('Feature')
-    entrance_name = models.CharField(max_length=64, blank=True, null=True, db_index=True)
+    entrance_name = models.CharField(max_length=64, blank=True, null=True, db_index=True, \
+                                     help_text='You should enter an entrance name only if the ' +
+                                     'feature has multiple entrances.')
     county = models.ForeignKey(County, db_index=True)
     quad = models.ForeignKey(TopoQuad, db_index=True, blank=True, null=True)
     coord_acquision = models.CharField('Coord Acquired By', max_length=64, \
