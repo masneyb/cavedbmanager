@@ -88,8 +88,8 @@ class Dvd(cavedb.docgen_common.Common):
             ret += 'mkdir "%s/include_on_dvd/"\n' % (self.dvd_tmp_dir)
             ret += 'mv "%s" "%s/include_on_dvd/"\n' % (readme_file, self.dvd_tmp_dir)
 
-        for toplevel_dir in list(self.files.keys()):
-            for photo_type in list(self.files[toplevel_dir].keys()):
+        for toplevel_dir in self.files:
+            for photo_type in self.files[toplevel_dir]:
                 dvd_dir = '%s/%s/%s' % \
                           (self.dvd_tmp_dir, toplevel_dir, self.phototypes[photo_type][0])
                 ret += 'mkdir -p "%s"\n' % (dvd_dir)
