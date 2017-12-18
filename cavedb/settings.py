@@ -112,6 +112,8 @@ TEMPLATES = [
     },
 ]
 
+DATA_UPLOAD_MAX_NUMBER_FIELD = int(os.environ.get('DATA_UPLOAD_MAX_NUMBER_FIELD', '1000'))
+DATA_UPLOAD_MAX_MEMORY_SIZE = int(os.environ.get('DATA_UPLOAD_MAX_MEMORY_SIZE', '2621440'))
 
 WSGI_APPLICATION = 'cavedb.wsgi.application'
 
