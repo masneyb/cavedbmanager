@@ -1005,17 +1005,11 @@ def reference_to_string(ref):
 
 
 def get_bw_photo_filename(photo):
-    if photo.secondary_filename:
-        return photo.secondary_filename.path
-
     return photo.filename.path
 
 
 def get_color_photo_filename(photo):
-    if photo.filename:
-        return photo.filename.path
-
-    return photo.secondary_filename.path
+    return photo.filename.path
 
 
 def get_bw_gis_map_names(bulletin):

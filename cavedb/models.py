@@ -496,9 +496,6 @@ class FeaturePhoto(models.Model):
     filename = models.FileField('Primary Photo (color if you have it)', \
                                 upload_to=feature_photo_upload_to, \
                                  validators=[photo_filename_validator])
-    secondary_filename = models.FileField('Optional Secondary Photo (b/w)', \
-                                          upload_to=feature_photo_upload_to, null=True, \
-                                          blank=True, validators=[photo_filename_validator])
     type = models.CharField(max_length=64, choices=PHOTO_TYPE_CHOICES)
     caption = models.CharField(max_length=255, null=True, blank=True)
     people_shown = models.CharField(max_length=255, null=True, blank=True)
