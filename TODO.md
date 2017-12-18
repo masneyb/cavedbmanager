@@ -2,6 +2,7 @@
   to run off the page.
 * Ability to tail the build log from the web interface
 * Fix latex escaping
+* Add ability to add KML files to the GIS lineplot section.
 * Support markdown on text area input fields. Current latex code embedded in
   Tucker County descriptions: \textbf{}, \textit{}, \subsection*{}
 * DVD ZIP file (from finalize-tucker-county-cd):
