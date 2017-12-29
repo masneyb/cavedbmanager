@@ -5,6 +5,7 @@ services:
       context: .
       dockerfile: Dockerfile.db
     environment:
+      - LC_CTYPE=C.UTF-8
       - PGDATA=/var/lib/postgresql
       - PGUSER=root
       - PGPASSWORD=root
@@ -34,6 +35,7 @@ services:
       # Command Line Applications from
       # https://www.lizardtech.com/gis-tools/tools-and-utilities
       #- MRSID_DECODE_BINARY=/usr/local/cavedbmanager-data/GeoExpressCLUtils-9.5.0.4326-linux64/bin/mrsidgeodecode
+      - LC_CTYPE=C.UTF-8
       - PGHOST=postgresql
       - PGPORT=5432
       - PGDATABASE=cavedb
@@ -81,6 +83,7 @@ services:
       #- EMAIL_HOST_PASSWORD=pass
       # A self signed certificate will be automatically generated for you if the SSL_* files below
       # do not exist. Be sure to update the conf/nginx-app.conf file if you change these paths.
+      - LC_CTYPE=C.UTF-8
       - SSL_COMBINED_CERTS=/etc/cavedb-ssl/ssl-combined-certs.pem
       - SSL_KEY=/etc/cavedb-ssl/ssl.key
       - PGHOST=postgresql
@@ -112,6 +115,8 @@ services:
       dockerfile: Dockerfile.cron
     depends_on:
       - worker
+    environment:
+      - LC_CTYPE=C.UTF-8
     networks:
       - cron_private
     volumes:
