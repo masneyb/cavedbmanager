@@ -522,8 +522,8 @@ class FeaturePhoto(models.Model):
         return '%s %s' % (self.filename.path, self.type)
 
     photoTypeDict = {}
-    for i in range(0, len(PHOTO_TYPE_CHOICES)):
-        photoTypeDict[PHOTO_TYPE_CHOICES[i][0]] = i
+    for i, photoType in enumerate(PHOTO_TYPE_CHOICES):
+        photoTypeDict[photoType[0]] = i
 
     def get_photo_type_descr(self):
         return self.PHOTO_TYPE_CHOICES[self.photoTypeDict[self.type]][1]
@@ -577,8 +577,8 @@ class FeatureAttachment(models.Model):
         return self.attachment.path
 
     attachmentTypeDict = {}
-    for i in range(0, len(ATTACHMENT_TYPE_CHOICES)):
-        attachmentTypeDict[ATTACHMENT_TYPE_CHOICES[i][0]] = i
+    for i, attachmentType in enumerate(ATTACHMENT_TYPE_CHOICES):
+        attachmentTypeDict[attachmentType[0]] = i
 
     def get_attachment_type_descr(self):
         #pylint: disable=no-member
