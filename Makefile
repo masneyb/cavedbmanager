@@ -21,6 +21,7 @@ dockerBuildBase:
 	docker build --file Dockerfile.base --tag cavedbmanager_base:latest .
 
 dockerRun: dockerBuildBase
+	mkdir -p docker-volumes/var-lib-postgresql docker-volumes/postgis-data-importer-downloads docker-volumes/cavedb-ssl docker-volumes/cavedb-worker docker-volumes/cavedbmanager-data
 	docker-compose up --build
 
 dockerStop:
