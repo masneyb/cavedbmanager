@@ -18,8 +18,8 @@
 sleep 5
 
 # Check if the database exists.
-psql -lqt root | awk '{print $1}' | grep -qw "${CAVEDB_GIS_DBNAME}"
-if [ "$?" != "0" ] ; then
+DB=$(psql -lqt root | awk '{print $1}' | grep -w "${CAVEDB_GIS_DBNAME}")
+if [ "${DB}" = "" ] ; then
 	echo "Downloading and transforming GIS data. This may take awhile..."
 
 	pushd "${POSTGIS_IMPORTER_BASE_DIR}"
@@ -32,9 +32,6 @@ if [ "$?" != "0" ] ; then
 
 	if [ "${POSTGIS_IMPORTER_SAMPLE_PATCHFILE:-}" != "" ] ; then
 		patch -p1 < /usr/local/cavedbmanager/"${POSTGIS_IMPORTER_SAMPLE_PATCHFILE}"
-		if [ "$?" != "0" ] ; then
-			exit 1
-		fi
 	fi
 
 	make
