@@ -62,15 +62,15 @@ class CavedbLatLonFormField(forms.CharField):
 class CavedbModelAdmin(BaseModelAdmin):
     def __init__(self, model, admin_site):
         #pylint: disable=too-many-function-args
-        super(CavedbModelAdmin, self).__init__(model, admin_site)
+        BaseModelAdmin.__init__(model, admin_site)
 
-    def formfield_for_dbfield(self, db_field, **kwargs):
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
         if isinstance(db_field, cavedb.models.LatLonField):
             kwargs['form_class'] = CavedbLatLonFormField
-        elif isinstance(db_field, models.CharField) or isinstance(db_field, models.TextField):
+        elif isinstance(db_field, (models.CharField, models.TextField)):
             kwargs['form_class'] = CavedbCharFormField
 
-        return super(CavedbModelAdmin, self).formfield_for_dbfield(db_field, **kwargs)
+        return super(CavedbModelAdmin, self).formfield_for_dbfield(db_field, request, **kwargs)
 
 
 class UtmZoneAdmin(CavedbModelAdmin, admin.ModelAdmin):
