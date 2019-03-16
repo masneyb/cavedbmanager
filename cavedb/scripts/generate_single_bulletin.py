@@ -17,15 +17,15 @@
 import sys
 import django
 
+django.setup()
+
+import cavedb.utils
+
+from cavedb.generate_docs import write_global_bulletin_files
+from cavedb.generate_docs import write_bulletin_files
+from cavedb.generate_docs import run_buildscript
+
 def do_build_bulletin(bulletin_id):
-    django.setup()
-
-    import cavedb.utils
-
-    from cavedb.generate_docs import write_global_bulletin_files
-    from cavedb.generate_docs import write_bulletin_files
-    from cavedb.generate_docs import run_buildscript
-
     if bulletin_id == cavedb.utils.GLOBAL_BULLETIN_ID:
         write_global_bulletin_files()
     else:

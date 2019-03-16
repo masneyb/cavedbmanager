@@ -24,6 +24,11 @@ import sys
 import osgeo.gdal
 import django
 
+django.setup()
+
+import cavedb.coord_transform
+import cavedb.models
+
 def get_all_entrances(coord_transformer):
     all_entrances = []
 
@@ -80,11 +85,6 @@ def process_dem(filepath, all_entrances):
 
 
 def process_all_dems(dem_dir, all_entrances):
-    django.setup()
-
-    import cavedb.coord_transform
-    import cavedb.models
-
     for filename in os.listdir(dem_dir):
         filepath = '%s/%s' % (dem_dir, filename)
 
