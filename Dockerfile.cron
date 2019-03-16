@@ -1,19 +1,17 @@
-FROM alpine:3.6
+FROM ubuntu:18.04
 
 MAINTAINER Brian Masney <masneyb@onstation.org>
 
 ENV TZ=America/New_York
 
-RUN apk add --update-cache dcron tzdata && \
-    ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && echo ${TZ} > /etc/timezone && \
-    rm -rf /var/cache/apk/*
-
-COPY conf/crontab /etc/crontabs/root
-
 VOLUME ["/var/run/cavedb-worker"]
 
-# dcron fails with this error if it is the entrypoint:
-# setpgid: Operation not permitted
-# Calling it from a shell fixes the issue.
+RUN apt-get update && apt-get -y install cron
 
-ENTRYPOINT ["/bin/sh", "-c", "/usr/sbin/crond -f"]
+COPY conf/crontab /etc/cron.d/cavedbmanager
+
+RUN chmod 0644 /etc/cron.d/cavedbmanager && \
+    crontab /etc/cron.d/cavedbmanager && \
+    touch /var/log/cron.log
+
+CMD cron && tail -f /var/log/cron.log

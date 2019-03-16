@@ -6,7 +6,7 @@ RUN apt-get update && \
     apt-get install --no-install-recommends -y ca-certificates curl gdal-bin git gosu \
                                                inotify-tools mapserver-bin patch postgis \
                                                postgresql-client texlive texlive-latex-extra \
-                                               ttf-freefont unzip zip && \
+                                               fonts-freefont-ttf unzip zip && \
     rm -rf /usr/share/doc /usr/share/man && \
     (rm /var/lib/apt/lists/* || true) && \
     apt-get clean

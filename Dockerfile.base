@@ -1,4 +1,4 @@
-FROM debian:stretch
+FROM ubuntu:18.04
 
 MAINTAINER Brian Masney <masneyb@onstation.org>
 

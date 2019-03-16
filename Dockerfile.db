@@ -1,4 +1,4 @@
-FROM debian:stretch
+FROM ubuntu:18.04
 
 MAINTAINER Brian Masney <masneyb@onstation.org>
 
@@ -6,9 +6,9 @@ ENV TZ=America/New_York
 RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && echo ${TZ} > /etc/timezone
 
 RUN apt-get update && \
-    apt-get install --no-install-recommends -y gosu postgis postgresql-9.6 \
-                                               postgresql-9.6-postgis-2.3 \
-                                               postgresql-9.6-postgis-scripts && \
+    apt-get install --no-install-recommends -y gosu postgis postgresql-10 \
+                                               postgresql-10-postgis-2.4 \
+                                               postgresql-10-postgis-2.4-scripts && \
     rm -rf /usr/share/doc /usr/share/man && \
     (rm /var/lib/apt/lists/* || true) && \
     apt-get clean
