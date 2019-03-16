@@ -65,7 +65,7 @@ The project can be started by running:
 This will use [Docker Compose](https://www.docker.com/products/docker-compose)
 to build and start several containers.
 
-Open [http://localhost:8000](http://localhost:8000) in your web browser.
+Open [http://localhost:8443](http://localhost:8443) in your web browser.
 The default credentials are admin / password (see
 [docker-compose.yml](docker-compose.yml). Once logged in, click on the Bulletins
 link on the main page, then click on the generate link in the documents column.
