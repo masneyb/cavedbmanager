@@ -60,7 +60,7 @@ in the [screenshots](screenshots) directory.
 
 The project can be started by running:
 
-    make dockerRun
+    sudo --preserve-env=PWD make dockerRun
 
 This will use [Docker Compose](https://www.docker.com/products/docker-compose)
 to build and start several containers.

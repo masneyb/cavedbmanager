@@ -1,4 +1,4 @@
-version: '2'
+version: "3"
 services:
   postgresql:
     build:
@@ -14,12 +14,12 @@ services:
     networks:
       - db_private
     volumes:
-      - ./docker-volumes/var-lib-postgresql:/var/lib/postgresql:Z
+      - var-lib-postgresql:/var/lib/postgresql:Z
   worker:
     build:
       context: .
       dockerfile: Dockerfile.worker
-    depends_on:
+    links:
       - postgresql
     entrypoint:
       - ./cavedb/scripts/docker-worker-entrypoint.sh
@@ -52,14 +52,14 @@ services:
     ulimits:
       nofile: 20480
     volumes:
-      - ./docker-volumes/cavedb-worker:/var/run/cavedb-worker:z
-      - ./docker-volumes/cavedbmanager-data:/usr/local/cavedbmanager-data:z
-      - ./docker-volumes/postgis-data-importer-downloads:/usr/local/postgis-data-importer/download:z
+      - cavedb-worker:/var/run/cavedb-worker:z
+      - cavedbmanager-data:/usr/local/cavedbmanager-data:z
+      - postgis-data-importer-downloads:/usr/local/postgis-data-importer/download:z
   web:
     build:
       context: .
       dockerfile: Dockerfile.web
-    depends_on:
+    links:
       - postgresql
       - worker
     entrypoint:
@@ -106,21 +106,54 @@ services:
       - "8000:80"
       - "8443:443"
     volumes:
-      - ./docker-volumes/cavedb-ssl:/etc/cavedb-ssl:Z
-      - ./docker-volumes/cavedb-worker:/var/run/cavedb-worker:z
-      - ./docker-volumes/cavedbmanager-data:/usr/local/cavedbmanager-data:z
+      - cavedb-ssl:/etc/cavedb-ssl:Z
+      - cavedb-worker:/var/run/cavedb-worker:z
+      - cavedbmanager-data:/usr/local/cavedbmanager-data:z
   cron:
     build:
       context: .
       dockerfile: Dockerfile.cron
-    depends_on:
+    links:
       - worker
     environment:
       - LC_CTYPE=C.UTF-8
     networks:
       - cron_private
     volumes:
-      - ./docker-volumes/cavedb-worker:/var/run/cavedb-worker:z
+      - cavedb-worker:/var/run/cavedb-worker:z
+
+volumes:
+  var-lib-postgresql:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/docker-volumes/var-lib-postgresql
+  postgis-data-importer-downloads:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/docker-volumes/postgis-data-importer-downloads
+  cavedb-ssl:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/docker-volumes/cavedb-ssl
+  cavedb-worker:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/docker-volumes/cavedb-worker
+  cavedbmanager-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/docker-volumes/cavedbmanager-data
+
 networks:
   web_public:
   db_private:
