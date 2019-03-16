@@ -61,8 +61,8 @@ class CavedbLatLonFormField(forms.CharField):
 
 class CavedbModelAdmin(BaseModelAdmin):
     def __init__(self, model, admin_site):
-        #pylint: disable=too-many-function-args
-        BaseModelAdmin.__init__(model, admin_site)
+        #pylint: disable=too-many-function-args,useless-super-delegation
+        super(CavedbModelAdmin, self).__init__(model, admin_site)
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         if isinstance(db_field, cavedb.models.LatLonField):
