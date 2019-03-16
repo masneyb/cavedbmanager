@@ -18,6 +18,7 @@ import django
 
 django.setup()
 
+# pylint: disable=wrong-import-position
 import cavedb.utils
 import cavedb.views
 

@@ -19,6 +19,7 @@ import django
 
 django.setup()
 
+# pylint: disable=wrong-import-position
 import cavedb.utils
 
 from cavedb.generate_docs import write_global_bulletin_files

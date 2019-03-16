@@ -26,6 +26,7 @@ import django
 
 django.setup()
 
+# pylint: disable=wrong-import-position
 import cavedb.coord_transform
 import cavedb.models
 
