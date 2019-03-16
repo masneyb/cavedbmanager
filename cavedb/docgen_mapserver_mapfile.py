@@ -46,12 +46,12 @@ class MapserverMapfile(cavedb.docgen_common.Common):
         self.gis_maps[gismap.name] = gis_options
 
 
-    def gis_layer(self, layer):
-        for gismap_basename in layer.maps.all():
+    def gis_layer(self, gislayer):
+        for gismap_basename in gislayer.maps.all():
             if gismap_basename.name not in self.gis_maps:
                 continue
 
-            write_layer(self.gis_maps[gismap_basename.name], layer)
+            write_layer(self.gis_maps[gismap_basename.name], gislayer)
 
 
     def gis_lineplot(self, lineplot, lineplot_type, shpfilename):

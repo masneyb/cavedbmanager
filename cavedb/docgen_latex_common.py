@@ -133,7 +133,7 @@ class LatexCommon(cavedb.docgen_common.Common):
 
     def __show_region_gis_maps(self, region):
         map_names = self.get_gis_map_names()
-        if region.show_gis_map and len(map_names) > 0:
+        if region.show_gis_map and map_names:
             for map_pos, map_name in enumerate(map_names):
                 if map_pos > 0:
                     self.__writeln(r'\vspace*{8ex}')
@@ -413,7 +413,7 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.__writeln(r'{\Large \bfseries \uppercase{' + escape(feature.name) + r'} } \\*')
 
         alt_names = cavedb.utils.comma_split(feature.alternate_names)
-        if len(alt_names) > 0:
+        if alt_names:
             self.__writeln(r'{\large \bfseries (' + escape(', '.join(alt_names)) + r')} \\[2ex]')
 
         self.__writeln(r'\end{centering}')
@@ -590,7 +590,7 @@ class LatexCommon(cavedb.docgen_common.Common):
             if photo.type == 'entrance_picture' and not ent_page_ref:
                 ent_page_ref = r'\pageref{photo' + str(photo.id) + r'}'
 
-        if map_page_ref == '' and len(self.feature_attrs['refmaps']) > 0:
+        if map_page_ref == '' and self.feature_attrs['refmaps']:
             map_page_ref = r'\pageref{photo' + str(self.feature_attrs['refmaps'][0].map.id) + r'}'
 
         for alias in cavedb.utils.get_all_feature_alt_names(feature):

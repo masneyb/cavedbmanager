@@ -105,8 +105,8 @@ class UtmZone(models.Model):
     def __str__(self):
         if self.utm_north:
             return '%sN' % (self.utm_zone)
-        else:
-            return '%sS' % (self.utm_zone)
+
+        return '%sS' % (self.utm_zone)
 
     class Meta:
         ordering = ('utm_zone',)
@@ -190,9 +190,9 @@ class Bulletin(models.Model):
         if mtime is None:
             if not cavedb.perms.is_bulletin_generation_allowed(self.id):
                 return ''
-            else:
-                return 'This bulletin has not been generated yet. ' + \
-                       'You can <a href="%s">generate</a> one now.' % (regen_url)
+
+            return 'This bulletin has not been generated yet. ' + \
+                   'You can <a href="%s">generate</a> one now.' % (regen_url)
         else:
             if cavedb.perms.is_bulletin_generation_allowed(self.id):
                 gen_txt = 'You can <a href="%s">generate</a> another one with the latest data.' % \
@@ -273,8 +273,8 @@ class BulletinChoice(models.ForeignKey):
         if matches:
             return super(BulletinChoice, self).formfield(queryset=self.rel.to._default_manager \
                       .complex_filter({'bulletin__id': matches.group(1)}))
-        else:
-            return super(BulletinChoice, self).formfield(**kwargs)
+
+        return super(BulletinChoice, self).formfield(**kwargs)
 
 
 class BulletinRegion(models.Model):
@@ -518,8 +518,8 @@ class FeaturePhoto(models.Model):
         #pylint: disable=no-member
         if self.caption:
             return '%s - %s' % (self.filename.path, self.caption)
-        else:
-            return '%s %s' % (self.filename.path, self.type)
+
+        return '%s %s' % (self.filename.path, self.type)
 
     photoTypeDict = {}
     for i in range(0, len(PHOTO_TYPE_CHOICES)):
@@ -655,8 +655,8 @@ class FeatureEntrance(models.Model):
     def __str__(self):
         if self.entrance_name:
             return self.entrance_name
-        else:
-            return 'Entrance'
+
+        return 'Entrance'
 
 
     class Meta:
