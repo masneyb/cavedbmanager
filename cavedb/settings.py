@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import os
+import django
 import cavedb.worker_queue
 
 def get_boolean(name, default_val):
@@ -141,3 +142,5 @@ GIS_CONNECTION = 'dbname=%s' % (os.environ.get('CAVEDB_GIS_DBNAME', None))
 GIS_FONTS_LIST = 'opensymbol /usr/share/fonts/truetype/freefont/FreeSansBold.ttf'
 # Fedora-based systems
 #GIS_FONTS_LIST = 'opensymbol /usr/share/fonts/gnu-free/FreeSansBold.ttf'
+
+django.setup()
