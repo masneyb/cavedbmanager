@@ -16,10 +16,11 @@
 
 import sys
 import django
-import cavedb.utils
 
 def do_build_bulletin(bulletin_id):
     django.setup()
+
+    import cavedb.utils
 
     from cavedb.generate_docs import write_global_bulletin_files
     from cavedb.generate_docs import write_bulletin_files

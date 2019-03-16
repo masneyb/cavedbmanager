@@ -23,8 +23,6 @@ import struct
 import sys
 import osgeo.gdal
 import django
-import cavedb.coord_transform
-import cavedb.models
 
 def get_all_entrances(coord_transformer):
     all_entrances = []
@@ -82,6 +80,11 @@ def process_dem(filepath, all_entrances):
 
 
 def process_all_dems(dem_dir, all_entrances):
+    django.setup()
+
+    import cavedb.coord_transform
+    import cavedb.models
+
     for filename in os.listdir(dem_dir):
         filepath = '%s/%s' % (dem_dir, filename)
 
@@ -96,5 +99,4 @@ if __name__ == '__main__':
         print('usage: elevation_dem_update.py <path to DEM directory>')
         sys.exit(1)
 
-    django.setup()
     process_all_dems(sys.argv[1], get_all_entrances(lambda coord: coord.get_utm_nad83()))

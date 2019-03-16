@@ -15,10 +15,11 @@
 # limitations under the License.
 
 import django
-import cavedb.utils
-import cavedb.views
 
 django.setup()
+
+import cavedb.utils
+import cavedb.views
 
 for bulletin in cavedb.models.Bulletin.objects.all():
     cavedb.views.queue_bulletin_generation(bulletin.id)
