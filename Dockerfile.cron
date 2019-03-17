@@ -8,10 +8,8 @@ VOLUME ["/var/run/cavedb-worker"]
 
 RUN apt-get update && apt-get -y install cron
 
-COPY conf/crontab /etc/cron.d/cavedbmanager
+COPY conf/crontab /etc/crontab.template
 
-RUN chmod 0644 /etc/cron.d/cavedbmanager && \
-    crontab /etc/cron.d/cavedbmanager && \
-    touch /var/log/cron.log
+COPY cavedb/scripts/docker-cron-entrypoint.sh /docker-cron-entrypoint.sh
 
-CMD cron && tail -f /var/log/cron.log
+ENTRYPOINT ["/docker-cron-entrypoint.sh"]

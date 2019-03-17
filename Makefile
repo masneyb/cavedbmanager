@@ -39,6 +39,7 @@ pylint:
 shellcheck:
 	shellcheck cavedb/scripts/backup-data.sh
 	shellcheck cavedb/scripts/create-self-signed-https-certificate.sh
+	shellcheck cavedb/scripts/docker-cron-entrypoint.sh
 	shellcheck cavedb/scripts/docker-web-entrypoint.sh
 	shellcheck cavedb/scripts/docker-worker-entrypoint.sh
 	shellcheck cavedb/scripts/worker.sh

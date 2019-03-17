@@ -116,6 +116,7 @@ services:
     links:
       - worker
     environment:
+      - CAVEDB_WORKER_MSG_DIR=/var/run/cavedb-worker
       - LC_CTYPE=C.UTF-8
     networks:
       - cron_private
