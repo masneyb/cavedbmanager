@@ -1,6 +1,6 @@
 # vim: set fileencoding=utf-8
 #
-# Copyright 2007-2017 Brian Masney <masneyb@onstation.org>
+# Copyright 2007-2019 Brian Masney <masneyb@onstation.org>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
