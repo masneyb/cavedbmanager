@@ -34,9 +34,7 @@ lint: pylint shellcheck
 
 
 pylint:
-	pylint3 --load-plugins pylint_django \
-	       --disable=missing-docstring,locally-disabled cavedb/*.py \
-	       cavedb/scripts/*.py cavedb/tests/*.py
+	pylint3 cavedb/*.py cavedb/scripts/*.py cavedb/tests/*.py
 
 shellcheck:
 	shellcheck cavedb/scripts/backup-data.sh
