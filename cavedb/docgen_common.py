@@ -17,9 +17,8 @@ import os.path
 from django.conf import settings
 import cavedb.utils
 
+# pylint: disable=no-self-use,too-many-public-methods
 class Common(object):
-    # pylint: disable=too-many-public-methods
-
     def __init__(self):
         pass
 
@@ -113,17 +112,14 @@ class Common(object):
 
 
     def generate_buildscript(self):
-        #pylint: disable=no-self-use
         return None
 
 
     def create_html_download_urls(self):
-        #pylint: disable=no-self-use
         return None
 
 
     def create_url(self, url_suffix, description, localfile):
-        #pylint: disable=no-self-use
         if not url_suffix:
             return None
 
