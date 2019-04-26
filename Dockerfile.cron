@@ -6,7 +6,8 @@ ENV TZ=America/New_York
 
 VOLUME ["/var/run/cavedb-worker"]
 
-RUN apt-get update && apt-get -y install cron
+RUN apt-get update && apt-get -y install cron tzdata && \
+    ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && echo ${TZ} > /etc/timezone
 
 COPY conf/crontab /etc/crontab.template
 
