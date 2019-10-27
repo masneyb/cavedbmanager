@@ -14,7 +14,7 @@ services:
     networks:
       - db_private
     volumes:
-      - var-lib-postgresql:/var/lib/postgresql
+      - var-lib-postgresql:/var/lib/postgresql:Z
   worker:
     build:
       context: .
@@ -52,9 +52,9 @@ services:
     ulimits:
       nofile: 20480
     volumes:
-      - cavedb-worker:/var/run/cavedb-worker
-      - cavedbmanager-data:/usr/local/cavedbmanager-data
-      - postgis-data-importer-downloads:/usr/local/postgis-data-importer/download
+      - cavedb-worker:/var/run/cavedb-worker:z
+      - cavedbmanager-data:/usr/local/cavedbmanager-data:z
+      - postgis-data-importer-downloads:/usr/local/postgis-data-importer/download:z
   web:
     build:
       context: .
@@ -106,9 +106,9 @@ services:
       - "8000:80"
       - "8443:443"
     volumes:
-      - cavedb-ssl:/etc/cavedb-ssl
-      - cavedb-worker:/var/run/cavedb-worker
-      - cavedbmanager-data:/usr/local/cavedbmanager-data
+      - cavedb-ssl:/etc/cavedb-ssl:z
+      - cavedb-worker:/var/run/cavedb-worker:z
+      - cavedbmanager-data:/usr/local/cavedbmanager-data:z
   cron:
     build:
       context: .
@@ -121,7 +121,7 @@ services:
     networks:
       - cron_private
     volumes:
-      - cavedb-worker:/var/run/cavedb-worker
+      - cavedb-worker:/var/run/cavedb-worker:z
 
 volumes:
   var-lib-postgresql:
