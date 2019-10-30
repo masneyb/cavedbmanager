@@ -42,10 +42,12 @@ mkdir -p "${CAVEDB_DATA_BASE_DIR}"/gis_maps/
 cp "${SAMPLE_DIR}"/legend.png "${CAVEDB_DATA_BASE_DIR}"/gis_maps/
 
 # Symlink in mapserver files
-ln -s "${POSTGIS_DATA_IMPORTER_BASE_DIR}"/download/us_wv/aerial/USDA-2014/2014.map "${CAVEDB_DATA_BASE_DIR}"/gis_maps/
-ln -s "${POSTGIS_DATA_IMPORTER_BASE_DIR}"/download/us_wv/aerial/SAMB-2003/JPG/2003.map "${CAVEDB_DATA_BASE_DIR}"/gis_maps/
-ln -s "${POSTGIS_DATA_IMPORTER_BASE_DIR}"/download/us_wv/hillshade/hillshade.map "${CAVEDB_DATA_BASE_DIR}"/gis_maps/
-touch "${CAVEDB_DATA_BASE_DIR}"/gis_maps/topo.map
+if [ ! -f "${CAVEDB_DATA_BASE_DIR}"/gis_maps/topo.map ] ; then
+	ln -s "${POSTGIS_DATA_IMPORTER_BASE_DIR}"/download/us_wv/aerial/USDA-2014/2014.map "${CAVEDB_DATA_BASE_DIR}"/gis_maps/
+	ln -s "${POSTGIS_DATA_IMPORTER_BASE_DIR}"/download/us_wv/aerial/SAMB-2003/JPG/2003.map "${CAVEDB_DATA_BASE_DIR}"/gis_maps/
+	ln -s "${POSTGIS_DATA_IMPORTER_BASE_DIR}"/download/us_wv/hillshade/hillshade.map "${CAVEDB_DATA_BASE_DIR}"/gis_maps/
+	touch "${CAVEDB_DATA_BASE_DIR}"/gis_maps/topo.map
+fi
 
 # Install the West Virginia base data. This is for the GIS layers, counties,
 # topo quads, topo quad / county relationships, and UTM zones for the entire
