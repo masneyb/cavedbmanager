@@ -52,6 +52,9 @@ urlpatterns = [
     url(r'^cavedb/bulletin/(?P<bulletin_id>\d+)/dvd$', cavedb.views.show_dvd),
     url(r'^cavedb/bulletin/(?P<bulletin_id>\d+)/log$', cavedb.views.show_log),
 
+    url(r'^cavedb/statewide_docs/(?P<doc_type>\d+)/(?P<filename>[\w\d\s\&\._-]+)$',
+        cavedb.views.show_statewide_doc),
+
     url(r'^cavedb/bulletin_attachments/(?P<bulletin_id>\d+)/cover/(?P<filename>[\w\d\s\&\._-]+)$',
         cavedb.views.show_bulletin_cover),
     url(r'^cavedb/bulletin_attachments/(?P<bulletin_id>\d+)/attachments/(?P<filename>[\w\d\s\&\._-]+)$',

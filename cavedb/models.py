@@ -421,6 +421,50 @@ class BulletinAttachment(models.Model):
         verbose_name = 'attachment'
 
 
+class StatewideDocType(models.Model):
+    description = models.CharField(max_length=255, null=False, blank=False)
+
+    create_date = models.DateTimeField("Creation Date", auto_now_add=True, editable=False, \
+                                       null=True)
+    mod_date = models.DateTimeField("Modification Date", auto_now=True, editable=False, null=True)
+
+    def __str__(self):
+        return self.description
+
+    class Meta:
+        ordering = ('description', )
+        verbose_name = 'Statewide Document Type'
+
+
+def statewide_doc_upload_to(instance, filename):
+    return 'statewide_docs/%s/%s' % (instance.doc_type.id, cavedb.utils.sanitize_filename(filename))
+
+
+class StatewideDoc(models.Model):
+    doc_type = models.ForeignKey(StatewideDocType, verbose_name='Type')
+    doc = models.FileField(upload_to=statewide_doc_upload_to)
+    author = models.CharField(max_length=255, null=True, blank=True)
+    title = models.CharField(max_length=255, null=True, blank=True)
+    volume = models.IntegerField(null=True, blank=True)
+    number = models.IntegerField(null=True, blank=True)
+    pages = models.IntegerField(null=True, blank=True)
+    url = models.CharField(max_length=255, null=True, blank=True)
+    date = models.CharField(max_length=255, null=True, blank=True)
+    extra = models.CharField(max_length=255, null=True, blank=True)
+
+    create_date = models.DateTimeField("Creation Date", auto_now_add=True, editable=False, \
+                                       null=True)
+    mod_date = models.DateTimeField("Modification Date", auto_now=True, editable=False, null=True)
+
+    def __str__(self):
+        #pylint: disable=no-member
+        return self.doc.path
+
+    class Meta:
+        ordering = ('doc_type', 'volume', 'number', 'date', )
+        verbose_name = 'Statewide Document'
+
+
 class County(models.Model):
     county_name = models.CharField(max_length=80, unique=True)
     survey_short_name = models.CharField(max_length=80, unique=True, null=True, blank=True)

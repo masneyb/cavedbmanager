@@ -37,6 +37,12 @@ import cavedb.models
 import cavedb.perms
 import cavedb.utils
 
+def show_statewide_doc(request, doc_type, filename):
+    localfile = '%s/statewide_docs/%s/%s' % \
+                    (settings.MEDIA_ROOT, doc_type, filename)
+    return do_show_bulletin_attachment(request, None, localfile, filename)
+
+
 def show_pdf(request, bulletin_id):
     localfile = cavedb.docgen_latex_letter_bw.get_pdf_filename(bulletin_id)
     remotefile = get_bulletin_remote_file(bulletin_id, 'pdf')
@@ -166,7 +172,7 @@ def show_feature_gis_lineplot(request, feature_id, filename):
 
 def do_show_bulletin_attachment(request, bulletin_id, localfile, remotefile):
     #pylint: disable=unused-argument
-    if not cavedb.perms.is_bulletin_allowed(bulletin_id):
+    if bulletin_id is not None and not cavedb.perms.is_bulletin_allowed(bulletin_id):
         raise Http404
 
     if not isfile(localfile):

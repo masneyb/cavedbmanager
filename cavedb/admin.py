@@ -159,6 +159,23 @@ class BulletinAdmin(CavedbModelAdmin, admin.ModelAdmin):
 admin.site.register(cavedb.models.Bulletin, BulletinAdmin)
 
 
+class StatewideDocTypeAdmin(CavedbModelAdmin, admin.ModelAdmin):
+    save_on_top = True
+    list_display = ('description', 'create_date', 'mod_date')
+    list_filter = ['description', 'create_date', 'mod_date']
+
+admin.site.register(cavedb.models.StatewideDocType, StatewideDocTypeAdmin)
+
+
+class StatewideDocAdmin(CavedbModelAdmin, admin.ModelAdmin):
+    save_on_top = True
+    list_display = ('doc_type', 'doc', 'title', 'volume', 'number', 'date', 'create_date',
+                    'mod_date')
+    list_filter = ['doc_type', 'create_date', 'mod_date']
+
+admin.site.register(cavedb.models.StatewideDoc, StatewideDocAdmin)
+
+
 class CountyAdmin(CavedbModelAdmin, admin.ModelAdmin):
     save_on_top = True
     list_display = ('county_name', 'survey_short_name', 'create_date', 'mod_date')

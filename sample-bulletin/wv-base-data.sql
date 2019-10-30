@@ -662,3 +662,10 @@ INSERT INTO cavedb_utmzone VALUES (1,17,true,'2008-08-08 22:12:27','2008-08-08 2
 INSERT INTO cavedb_utmzone VALUES (2,18,true,'2013-04-08 19:33:29','2013-04-08 19:33:29');
 
 alter sequence cavedb_utmzone_id_seq restart with 5;
+
+INSERT INTO cavedb_statewidedoctype (id, description, create_date, mod_date) VALUES (1, 'The Karst Kaver', '2019-10-27 06:00:00.000000-04', '2019-10-27 06:00:00.000000-04');
+INSERT INTO cavedb_statewidedoctype (id, description, create_date, mod_date) VALUES (2, 'The West Virginia Caver', '2019-10-27 06:00:00.000000-04', '2019-10-27 06:00:00.000000-04');
+INSERT INTO cavedb_statewidedoctype (id, description, create_date, mod_date) VALUES (3, 'WVASS Bulletins', '2019-10-27 06:00:00.000000-04', '2019-10-27 06:00:00.000000-04');
+INSERT INTO cavedb_statewidedoctype (id, description, create_date, mod_date) VALUES (4, 'WVASS Monographs', '2019-10-27 06:00:00.000000-04', '2019-10-27 06:00:00.000000-04');
+
+alter sequence cavedb_statewidedoctype_id_seq restart with 5;
