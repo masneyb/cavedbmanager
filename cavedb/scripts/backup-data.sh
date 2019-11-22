@@ -31,6 +31,8 @@ if [ ! -f .gitconfig ] ; then
 	git config --global user.name "Backups"
 fi
 
+/usr/local/cavedbmanager/cavedb/scripts/generate_index_txt.py
+
 pg_dump > "${CAVEDB_DATA_BASE_DIR}"/cavedb.sql
 
 git add ./* .gitignore .gitconfig || true
