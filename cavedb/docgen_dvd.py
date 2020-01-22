@@ -107,7 +107,7 @@ class Dvd(cavedb.docgen_common.Common):
                             photo_num = photo_num + 1
 
                         if 'author' in photo_meta:
-                            destfile += ' - %s' % (photo_meta['author'])
+                            destfile += ' - %s' % (photo_meta['author'].replace('/', '-'))
 
                         extpos = photo_meta['src'].rfind('.')
                         destfile += photo_meta['src'][extpos:]
