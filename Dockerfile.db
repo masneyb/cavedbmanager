@@ -6,7 +6,8 @@ ENV TZ=America/New_York
 RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && echo ${TZ} > /etc/timezone
 
 # Remove /var/lib/postgresql so that a new one will be initialized in the entrypoint.
-RUN apt-get update && \
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt-get update && \
     apt-get install --no-install-recommends -y gosu postgis postgresql-10 \
                                                postgresql-10-postgis-2.4 \
                                                postgresql-10-postgis-2.4-scripts && \

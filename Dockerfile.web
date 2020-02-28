@@ -2,7 +2,8 @@ FROM cavedbmanager_base
 
 MAINTAINER Brian Masney <masneyb@onstation.org>
 
-RUN apt-get update && \
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt-get update && \
     apt-get install --no-install-recommends -y nginx ssl-cert supervisor uwsgi \
                                                uwsgi-plugin-python3 && \
     rm -rf /usr/share/doc /usr/share/man && \
