@@ -51,8 +51,12 @@ class EntranceCsv(cavedb.docgen_common.Common):
         lat_lon_wgs84 = coordinates.get_lon_lat_wgs84()
         utm_nad83 = coordinates.get_utm_nad83()
 
-        self.csvwriter.writerow([feature.id, entrance.id,
-                                 feature.survey_county.survey_short_name + feature.survey_id,
+        if feature.survey_id:
+            survey_id = feature.survey_county.survey_short_name + feature.survey_id
+        else
+            survey_id = ""
+
+        self.csvwriter.writerow([feature.id, entrance.id, survey_id,
                                  name, feature.alternate_names, feature.feature_type,
                                  entrance.coord_acquision, lat_lon_wgs84[0],
                                  lat_lon_wgs84[1], entrance.utmzone, utm_nad83[0], utm_nad83[1],
