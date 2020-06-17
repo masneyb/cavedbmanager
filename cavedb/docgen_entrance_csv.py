@@ -53,7 +53,7 @@ class EntranceCsv(cavedb.docgen_common.Common):
 
         if feature.survey_id:
             survey_id = feature.survey_county.survey_short_name + feature.survey_id
-        else
+        else:
             survey_id = ""
 
         self.csvwriter.writerow([feature.id, entrance.id, survey_id,
