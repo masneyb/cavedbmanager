@@ -855,7 +855,9 @@ class LatexCommon(cavedb.docgen_common.Common):
 
                 self.__writeln(r'\parindent 2ex')
 
-                self.__writeln(self.__index_and_escape(section.section_data))
+                if (section.section_data):
+                    self.__writeln(escapeSimple(convert_quotes(self.indexer.generate_index(section.section_data.strip()))))
+
                 self.__writeln(r'')
 
                 self.__writeln(r'\parindent 0ex')
@@ -941,6 +943,19 @@ def escape(inputstr):
     return inputstr.replace('#', '\\#') \
                    .replace('$', '\\$') \
                    .replace('&', '\\&')
+
+
+def escapeSimple(inputstr):
+    if not inputstr:
+        return ""
+
+    inputstr = inputstr.strip()
+
+    # - \ with \textbackslash in some cases
+    # - _ with \textunderscore
+    # - _ with \textunderscore
+    return inputstr.replace('#', '\\#') \
+                   .replace('$', '\\$')
 
 
 def none_to_empty(inputstr):
