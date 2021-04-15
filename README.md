@@ -87,14 +87,17 @@ The [docker-compose file](docker-compose.yml) sets up four containers:
   [uWSGI](https://uwsgi-docs.readthedocs.io/en/latest/), 
   [supervisord](http://supervisord.org/), and [Django](https://www.djangoproject.com/).
   Only the [Django Admin Site](https://docs.djangoproject.com/en/3.1/ref/contrib/admin/)
-  is used at the moment to make generating the pages easy.
+  is used at the moment to make generating the pages easy. Note that the base Docker
+  image `cavedbmanager_base` is defined in [Dockerfile.base](Dockerfile.base).
 - A [database container](Dockerfile.db) that runs
   [PostgreSQL](https://www.postgresql.org/) and [PostGIS](https://postgis.net/).
 - A [worker container](Dockerfile.worker) that builds GIS maps, PDFs, and other
-  artifacts. Some notable technologies used include [Mapserver](https://mapserver.org/),
-  [GDAL](https://gdal.org/), and [LaTeX / TeX Live](https://tug.org/texlive/).
-  Messages are passed to this container by writing new files as messages
-  into a shared directory. The [worker.sh script](cavedb/scripts/worker.sh) uses
+  artifacts. Note that the base Docker image `cavedbmanager_base` is defined in
+  [Dockerfile.base](Dockerfile.base). Some notable technologies used include
+  [Mapserver](https://mapserver.org/), [GDAL](https://gdal.org/), and
+  [LaTeX / TeX Live](https://tug.org/texlive/). Messages are passed to this
+  container by writing new files as messages into a shared directory. The
+  [worker.sh script](cavedb/scripts/worker.sh) uses
   [inotify](https://www.man7.org/linux/man-pages/man7/inotify.7.html) to watch for
   new files that are created in a shared directory. The files are empty and the
   message is in the filename. See cron container for an example. If this needs to
