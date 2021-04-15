@@ -79,6 +79,26 @@ directory outside the container and will be mounted inside the containers as
 volumes.
 
 
+## Architecture
+
+The [docker-compose file](docker-compose.yml) sets up four different containers
+on different network segments:
+
+- [A webserver container](Dockerfile.web) running Django that's on a
+  public-facing network segment. This is the only container that has access to
+  the Internet.
+- A [PostgreSQL database container](Dockerfile.db).
+- A [worker container](Dockerfile.worker) that builds GIS maps, PDFs, and other
+  artifacts. Messages are passed to this container by writing new files as messages
+  into a shared directory. The [worker.sh script](cavedb/scripts/worker.sh) uses
+  [inotify](https://www.man7.org/linux/man-pages/man7/inotify.7.html) to watch for
+  new files that are created in that shared directory. The files are empty and the
+  message is in the filename. See cron container for an example.
+- A [cron container](Dockerfile.cron) schedules periodic jobs. See the
+  [crontab file](conf/crontab) for an example of how the cron container passes
+  messages to the worker container.
+
+
 ## Publications
 
 This system was used to publish the book:
