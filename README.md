@@ -81,22 +81,35 @@ volumes.
 
 ## Architecture
 
-The [docker-compose file](docker-compose.yml) sets up four different containers
-on different network segments:
+The [docker-compose file](docker-compose.yml) sets up four containers:
 
-- [A webserver container](Dockerfile.web) running Django that's on a
-  public-facing network segment. This is the only container that has access to
-  the Internet.
-- A [PostgreSQL database container](Dockerfile.db).
+- [A webserver container](Dockerfile.web) that runs [nginx](https://nginx.org/),
+  [uWSGI](https://uwsgi-docs.readthedocs.io/en/latest/), 
+  [supervisord](http://supervisord.org/), and [Django](https://www.djangoproject.com/).
+  Only the [Django Admin Site](https://docs.djangoproject.com/en/3.1/ref/contrib/admin/)
+  is used at the moment to make generating the pages easy.
+- A [database container](Dockerfile.db) that runs
+  [PostgreSQL](https://www.postgresql.org/) and [PostGIS](https://postgis.net/).
 - A [worker container](Dockerfile.worker) that builds GIS maps, PDFs, and other
-  artifacts. Messages are passed to this container by writing new files as messages
+  artifacts. Some notable technologies used include [Mapserver](https://mapserver.org/),
+  [GDAL](https://gdal.org/), and [LaTeX / TeX Live](https://tug.org/texlive/).
+  Messages are passed to this container by writing new files as messages
   into a shared directory. The [worker.sh script](cavedb/scripts/worker.sh) uses
   [inotify](https://www.man7.org/linux/man-pages/man7/inotify.7.html) to watch for
-  new files that are created in that shared directory. The files are empty and the
-  message is in the filename. See cron container for an example.
+  new files that are created in a shared directory. The files are empty and the
+  message is in the filename. See cron container for an example. If this needs to
+  run across multiple systems, then a real messaging system like
+  [RabbitMQ](https://www.rabbitmq.com/) can be used instead.
 - A [cron container](Dockerfile.cron) schedules periodic jobs. See the
   [crontab file](conf/crontab) for an example of how the cron container passes
-  messages to the worker container.
+  messages to the worker container. The [docker-compose file](docker-compose.yml)
+  lists /var/run/cavedb-worker as a shared directory for multiple containers.
+
+See the note at the bottom of the [docker-compose file](docker-compose.yml) for
+instructions on how to change the networking so that the webserver container is
+the only one that has access to the Internet to increase the security of the
+application. The Internet is enabled by default so that the sample data can be
+downloaded.
 
 
 ## Publications
