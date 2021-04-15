@@ -111,8 +111,3 @@ This system was used to publish the book:
 
 This book is available for sale to [NSS members](http://caves.org/) through
 the [West Virginia Speleological Survey](http://www.wvass.org/).
-
-
-## Contact
-
-Brian Masney <masneyb@onstation.org>

@@ -1,7 +1,5 @@
 FROM ubuntu:18.04
 
-MAINTAINER Brian Masney <masneyb@onstation.org>
-
 ENV PYTHONUNBUFFERED 1
 
 ENV TZ=America/New_York

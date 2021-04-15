@@ -1,7 +1,5 @@
 FROM ubuntu:18.04
 
-MAINTAINER Brian Masney <masneyb@onstation.org>
-
 ENV TZ=America/New_York
 
 RUN export DEBIAN_FRONTEND=noninteractive && \

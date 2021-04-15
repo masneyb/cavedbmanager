@@ -1,7 +1,5 @@
 FROM cavedbmanager_base
 
-MAINTAINER Brian Masney <masneyb@onstation.org>
-
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get install --no-install-recommends -y nginx ssl-cert supervisor uwsgi \
