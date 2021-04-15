@@ -60,10 +60,10 @@ in the [screenshots](screenshots) directory.
 
 The project can be started by running:
 
-    make podmanRun
+    sudo --preserve-env=PWD make dockerRun
 
-This will use [podman-compose](https://github.com/containers/podman-compose)
-to build and start several containers as a non-root user.
+This will use [Docker Compose](https://www.docker.com/products/docker-compose)
+to build and start several containers.
 
 Open [https://localhost:8443](https://localhost:8443) in your web browser.
 The default credentials are admin / password (see

@@ -17,15 +17,15 @@ run:
 runRemote:
 	./manage.py runserver 0.0.0.0:8000
 
-podmanBuildBase:
-	podman build --file Dockerfile.base --tag cavedbmanager_base:latest .
+dockerBuildBase:
+	docker build --file Dockerfile.base --tag cavedbmanager_base:latest .
 
-podmanRun: podmanBuildBase
+dockerRun: dockerBuildBase
 	mkdir -p docker-volumes/var-lib-postgresql docker-volumes/postgis-data-importer-downloads docker-volumes/cavedb-ssl docker-volumes/cavedb-worker docker-volumes/cavedbmanager-data
-	podman-compose up --build
+	docker-compose up --build
 
-podmanStop:
-	podman-compose down
+dockerStop:
+	docker-compose down
 
 diffsettings:
 	./manage.py diffsettings --all
