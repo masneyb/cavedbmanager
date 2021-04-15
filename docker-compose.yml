@@ -31,7 +31,7 @@ services:
       - DJANGO_SETTINGS_MODULE=cavedb.settings
       # Uncomment the following if you would like to use the 2003 aerial imagery.
       # This is the latest publicly available imagery available that is available
-      # with the leaves off the trees. Requires downloading the GeoExpress
+      # for WV with the leaves off the trees. Requires downloading the GeoExpress
       # Command Line Applications from
       # https://www.lizardtech.com/gis-tools/tools-and-utilities
       #- MRSID_DECODE_BINARY=/usr/local/cavedbmanager-data/GeoExpressCLUtils-9.5.0.4326-linux64/bin/mrsidgeodecode
@@ -46,9 +46,6 @@ services:
       - PYTHONPATH=/usr/local/cavedbmanager
     networks:
       - db_private
-      # The web_public network can be removed after the initial run and all of the sample
-      # GIS data has been downloaded.
-      - web_public
     ulimits:
       nofile: 20480
     volumes:
@@ -158,6 +155,10 @@ volumes:
 networks:
   web_public:
   db_private:
-    internal: true
+    # Note that by default the db_private network has access to the Internet. Once the initial
+    # sample data is downloaded, stop the docker-compose services, uncomment the internal flag
+    # below to increase the overall security of the application by not allowing the backend
+    # services to have access to the Internet.
+    #internal: true
   cron_private:
     internal: true
