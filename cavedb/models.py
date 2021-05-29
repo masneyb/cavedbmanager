@@ -521,7 +521,7 @@ class FeaturePhoto(models.Model):
     )
 
     ROTATE_CHOICES = (
-        (0, 0), (90, 90),
+        (0, 0), (90, 90), (180, 180), (270, 270),
     )
 
     feature = models.ForeignKey('Feature')
