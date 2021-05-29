@@ -19,8 +19,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.worker
-    links:
-      - postgresql
     entrypoint:
       - ./cavedb/scripts/docker-worker-entrypoint.sh
     environment:
@@ -56,9 +54,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.web
-    links:
-      - postgresql
-      - worker
     entrypoint:
       - ./cavedb/scripts/docker-web-entrypoint.sh
     environment:
@@ -110,8 +105,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.cron
-    links:
-      - worker
     environment:
       - CAVEDB_WORKER_MSG_DIR=/var/run/cavedb-worker
       - LC_CTYPE=C.UTF-8
