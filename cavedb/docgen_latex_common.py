@@ -631,13 +631,13 @@ class LatexCommon(cavedb.docgen_common.Common):
 
         if photo.scale == 'fullpage':
             if photo.caption:
-                graphic_opts += r',height=0.9\textheight,width=\textwidth'
+                graphic_opts += r',totalheight=0.9\textheight,height=0.9\textheight,width=\textwidth'
             else:
-                graphic_opts += r',height=\textheight,width=\textwidth'
+                graphic_opts += r',totalheight=\textheight,height=\textheight,width=\textwidth'
         elif photo.scale == 'halfpage':
-            graphic_opts += r',height=0.4\textheight,width=\textwidth'
+            graphic_opts += r',totalheight=0.4\textheight,height=0.4\textheight,width=\textwidth'
         else:
-            graphic_opts += r',height=.4\textheight,width=\columnwidth'
+            graphic_opts += r',totalheight=.4\textheight,height=.4\textheight,width=\columnwidth'
 
         self.__writeln(r'\begin{figure' + figure_opts + '}[tp]')
         self.__writeln(r'\phantomsection')
