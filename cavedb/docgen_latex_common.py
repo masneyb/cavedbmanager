@@ -552,7 +552,7 @@ class LatexCommon(cavedb.docgen_common.Common):
         self.__write_paragraphs('\n\n{ \\bf History:} ', feature.history, None)
 
         if feature.source:
-            self.__write(r' \textit{(' + feature.source.strip() + r')}')
+            self.__write(r' \textit{(' + escape(feature.source.strip()) + r')}')
 
         self.__writeln(r'')
         self.__writeln(r'')
