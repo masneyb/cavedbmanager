@@ -31,10 +31,13 @@ class Gpx(cavedb.docgen_common.Common):
         name = cavedb.docgen_common.get_entrance_name(feature, entrance)
 
         wgs84_lon_lat = coordinates.get_lon_lat_wgs84()
+        if not wgs84_lon_lat[1] or not wgs84_lon_lat[0]:
+            return
 
         self.gpxfile.write('  <wpt lat="%s" lon="%s">\n' % \
                            (wgs84_lon_lat[1], wgs84_lon_lat[0]))
-        self.gpxfile.write('    <ele>%s</ele>\n' % (entrance.elevation_ft))
+        if entrance.elevation_ft:
+            self.gpxfile.write('    <ele>%s</ele>\n' % (entrance.elevation_ft))
         self.gpxfile.write('    <name>%s</name>\n' % (escape(name)))
         self.gpxfile.write('    <cmt>%s</cmt>\n' % (feature.feature_type))
         self.gpxfile.write('    <desc>%s</desc>\n' % (escape(name)))
