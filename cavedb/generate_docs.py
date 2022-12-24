@@ -63,7 +63,7 @@ def write_build_scripts(bulletin_id, outputter):
 
     build_script = outputter.generate_buildscript()
 
-    with open(build_script_file, 'w') as output:
+    with open(build_script_file, 'w', encoding='utf-8') as output:
         output.write('#!/bin/bash -ev\n')
         output.write(build_script)
     os.chmod(build_script_file, 0o755)
@@ -86,21 +86,18 @@ def add_gis_lineplot(lineplot, gisdir, lineplot_type, outputter):
     if not os.path.isdir(gisdir):
         os.makedirs(gisdir)
 
-    zipfile = ZipFile(zipfile_name, "r")
-    for name in zipfile.namelist():
-        if name.endswith('/'):
-            continue
+    with ZipFile(zipfile_name, "r") as zipfile:
+        for name in zipfile.namelist():
+            if name.endswith('/'):
+                continue
 
-        base = os.path.basename(name)
-        if base == '':
-            base = name
+            base = os.path.basename(name)
+            if base == '':
+                base = name
 
-        gisfile_name = '%s/%s' % (gisdir, base)
-        gisfile = open(gisfile_name, 'wb')
-        gisfile.write(zipfile.read(name))
-        gisfile.close()
-
-    zipfile.close()
+            gisfile_name = '%s/%s' % (gisdir, base)
+            with open(gisfile_name, 'wb') as gisfile:
+                gisfile.write(zipfile.read(name))
 
     outputter.gis_lineplot(lineplot, lineplot_type, '%s/%s' % (gisdir, lineplot.shp_filename))
 
@@ -127,29 +124,26 @@ def write_gis_sections(bulletin_id, outputter):
 
     # Write out a CSV file that contains a description of all of the lineplots
     # These lineplots will be included with the SHP ZIP file.
-    csvfile = open('%s/lineplots.csv' % (lineplots_dir), 'w')
-    csvwriter = csv.writer(csvfile, delimiter=',')
-    csvwriter.writerow(['id', 'type', 'description', 'datum', 'coordinate_system'])
+    with open('%s/lineplots.csv' % (lineplots_dir), 'w', encoding='utf-8') as csvfile:
+        csvwriter = csv.writer(csvfile, delimiter=',')
+        csvwriter.writerow(['id', 'type', 'description', 'datum', 'coordinate_system'])
 
-    # Expand cave and surface lineplots
-    for lineplot in cavedb.models.BulletinGisLineplot.objects.filter(bulletin__id=bulletin_id):
-        gisdir = '%s/bulletin_lineplot_%s' % (lineplots_dir, lineplot.id)
-        add_gis_lineplot(lineplot, gisdir, 'surface', outputter)
+        # Expand cave and surface lineplots
+        for lineplot in cavedb.models.BulletinGisLineplot.objects.filter(bulletin__id=bulletin_id):
+            gisdir = '%s/bulletin_lineplot_%s' % (lineplots_dir, lineplot.id)
+            add_gis_lineplot(lineplot, gisdir, 'surface', outputter)
 
-        csvwriter.writerow(['bulletin_%s' % (lineplot.id), 'surface', lineplot.description, \
-                            lineplot.datum, lineplot.coord_sys])
+            csvwriter.writerow(['bulletin_%s' % (lineplot.id), 'surface', lineplot.description, \
+                                lineplot.datum, lineplot.coord_sys])
 
+        for lineplot in cavedb.models.FeatureGisLineplot.objects \
+           .filter(feature__bulletin_region__bulletin__id=bulletin_id):
 
-    for lineplot in cavedb.models.FeatureGisLineplot.objects \
-       .filter(feature__bulletin_region__bulletin__id=bulletin_id):
+            gisdir = '%s/feature_lineplot_%s' % (lineplots_dir, lineplot.id)
+            add_gis_lineplot(lineplot, gisdir, 'underground', outputter)
 
-        gisdir = '%s/feature_lineplot_%s' % (lineplots_dir, lineplot.id)
-        add_gis_lineplot(lineplot, gisdir, 'underground', outputter)
-
-        csvwriter.writerow(['feature_%s' % (lineplot.id), 'underground', lineplot.description, \
-                            lineplot.datum, lineplot.coord_sys])
-
-    csvfile.close()
+            csvwriter.writerow(['feature_%s' % (lineplot.id), 'underground', lineplot.description, \
+                                lineplot.datum, lineplot.coord_sys])
 
     outputter.end_gis_layers()
 
@@ -174,7 +168,7 @@ def get_chapters_and_sections(bulletin_id):
     return chapters
 
 
-class FeatureTodoAnalyzer(object):
+class FeatureTodoAnalyzer():
     def __init__(self, feature):
         self.missing_str = ''
         self.missing_coord = False

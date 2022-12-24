@@ -13,7 +13,7 @@
 
 import hashlib
 
-class IndexerCommon(object):
+class IndexerCommon():
     def __init__(self, terms):
         self.__sorted_terms = []
         self.__term_to_digest = {}

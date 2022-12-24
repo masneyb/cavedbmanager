@@ -9,7 +9,7 @@ DB=$(psql -lqt root | awk '{print $1}' | grep -w "${CAVEDB_GIS_DBNAME}")
 if [ "${DB}" = "" ] ; then
 	echo "Downloading and transforming GIS data. This may take awhile..."
 
-	pushd "${POSTGIS_IMPORTER_BASE_DIR}"
+	pushd "${POSTGIS_IMPORTER_BASE_DIR}" || exit 1
 
 	mkdir -p download/us_wv download/us_wv/hillshade download/us_wv/aerial \
 	         download/us_wv/aerial/USDA-2014 download/us_wv/aerial/SAMB-2003 \
@@ -23,7 +23,7 @@ if [ "${DB}" = "" ] ; then
 
 	make
 
-	popd
+	popd || exit 1
 
 	echo "Finished downloading and transforming GIS data."
 fi

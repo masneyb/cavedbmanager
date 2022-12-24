@@ -39,19 +39,39 @@ ADMIN_SITE_HEADER = os.environ.get('CAVEDB_SITE_HEADER', 'My Cave Database')
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.environ.get('PGDATABASE', 'cavedb'),
         # By default, get the other database connection parameters from the
         # environment variables PGHOST, PGPORT, PGUSER, PGPASSWORD.
+        'OPTIONS': {
+            'client_encoding': 'utf-8'
+        }
     }
 }
 
-TEST_RUNNER = 'django.test.runner.DiscoverRunner'
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
-TIME_ZONE = 'America/New_York'
-USE_TZ = False
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
 
 LANGUAGE_CODE = 'en-us'
+TIME_ZONE = 'America/New_York'
+USE_I18N = True
+USE_L10N = True
+USE_TZ = True
+
 SITE_ID = 1
 
 # Specifies where the application is deployed
@@ -63,19 +83,17 @@ MEDIA_URL = CONTEXT_PATH + 'cavedb/'
 
 STATIC_URL = '/static/'
 STATIC_ROOT = 'cavedb/static/'
-STATICFILES_DIRS = (os.path.join(os.path.dirname(__file__), 'static'),)
 
 SECRET_KEY = os.environ.get('CAVEDB_SECRET_KEY', 'FIXME_CHANGE_THIS_SECRET_KEY')
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.security.SecurityMiddleware',
     'cavedb.middleware.ThreadLocals',
 )
 
@@ -114,7 +132,6 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     'cavedb',
 )
 

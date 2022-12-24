@@ -6,7 +6,7 @@ from django.conf import settings
 import cavedb.utils
 
 # pylint: disable=no-self-use,too-many-public-methods
-class Common(object):
+class Common():
     def __init__(self):
         pass
 

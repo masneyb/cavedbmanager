@@ -1,12 +1,14 @@
-FROM ubuntu:18.04
+FROM ubuntu:22.04
 
 ENV TZ=America/New_York
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
-    apt-get -y install cron tzdata && \
+    apt-get -y install cron locales tzdata && \
+    echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
     ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
-    echo ${TZ} > /etc/timezone
+    dpkg-reconfigure -f noninteractive locales tzdata && \
+    apt-get clean
 
 VOLUME ["/var/run/cavedb-worker"]
 

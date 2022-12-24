@@ -37,7 +37,7 @@ def get_output_base_dir(bulletin_id):
 def get_file_size(filename):
     try:
         size = getsize(filename)
-        if size is 0:
+        if size == 0:
             return 0
     except OSError:
         return 'UNKNOWN'

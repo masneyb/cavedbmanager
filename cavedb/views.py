@@ -159,7 +159,7 @@ def show_feature_gis_lineplot(request, feature_id, filename):
 
 
 def do_show_bulletin_attachment(request, bulletin_id, localfile, remotefile):
-    #pylint: disable=unused-argument
+    # pylint: disable=consider-using-with,disable=unused-argument
     if bulletin_id is not None and not cavedb.perms.is_bulletin_allowed(bulletin_id):
         raise Http404
 
@@ -178,11 +178,11 @@ def do_show_bulletin_attachment(request, bulletin_id, localfile, remotefile):
             response['Content-Disposition'] = 'attachment; filename=' + remotefile
 
         response['Content-Length'] = getsize(localfile)
-    except IOError:
-        print('Cannot find %s\n' % (localfile), file=sys.stderr)
-        raise Http404
 
-    return response
+        return response
+    except IOError as ex:
+        print('Cannot find %s\n' % (localfile), file=sys.stderr)
+        raise Http404 from ex
 
 
 def get_bulletin_base_name(bulletin_id):
@@ -191,9 +191,9 @@ def get_bulletin_base_name(bulletin_id):
         raise Http404
 
     base = ''
-    for char in bulletins[0].short_name.lower().encode('ascii'):
+    for char in bulletins[0].short_name.lower():
         if isalpha(char):
-            base += chr(char)
+            base += char
         else:
             base += '_'
 
@@ -201,7 +201,7 @@ def get_bulletin_base_name(bulletin_id):
         base = 'bulletin_%s' % (bulletin_id)
 
     mtime = bulletins[0].get_bulletin_mod_date()
-    if mtime != None:
+    if mtime is not None:
         disp_date = strftime("%Y%m%d-%H%M%S", mtime)
     else:
         disp_date = "UNKNOWN"
@@ -230,7 +230,7 @@ def generate_bulletin(request, bulletin_id):
 def queue_bulletin_generation(bulletin_id):
     build_lock_file = cavedb.utils.get_build_lock_file(bulletin_id)
     cavedb.docgen_common.create_base_directory(build_lock_file)
-    with open(build_lock_file, 'w') as output:
+    with open(build_lock_file, 'w', encoding='utf-8') as output:
         output.write('')
 
     settings.QUEUE_STRATEGY('generate:%s' % (bulletin_id))

@@ -11,9 +11,10 @@ class Text(cavedb.docgen_common.Common):
 
 
     def open(self, all_regions_gis_hash):
+        # pylint: disable=consider-using-with
         filename = get_text_filename(self.bulletin.id)
         cavedb.docgen_common.create_base_directory(filename)
-        self.textfile = open(filename, 'w')
+        self.textfile = open(filename, 'w', encoding='utf-8')
 
         if self.bulletin.title_page:
             self.textfile.write('%s\n\n' % (self.bulletin.title_page))

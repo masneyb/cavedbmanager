@@ -14,6 +14,7 @@ class MapserverMapfile(cavedb.docgen_common.Common):
 
 
     def gis_map(self, gismap):
+        # pylint: disable=consider-using-with
         shpdir = cavedb.docgen_gis_common.get_bulletin_shp_directory(self.bulletin.id)
 
         gis_options = {}
@@ -27,7 +28,7 @@ class MapserverMapfile(cavedb.docgen_common.Common):
 
         cavedb.docgen_common.create_base_directory(gis_options['path'])
 
-        gis_options['fd'] = open(gis_options['path'], 'w')
+        gis_options['fd'] = open(gis_options['path'], 'w', encoding='utf-8')
 
         write_mapserver_header(gis_options)
 
@@ -54,7 +55,7 @@ class MapserverMapfile(cavedb.docgen_common.Common):
             gis_options['fd'].close()
 
         fonts_list = get_mapserver_fonts_list(self.bulletin.id)
-        with open(fonts_list, "w") as output:
+        with open(fonts_list, "w", encoding='utf-8') as output:
             output.write(settings.GIS_FONTS_LIST)
 
 
@@ -215,8 +216,7 @@ def write_lineplot(gis_options, lineplot, shpfilename):
         mapfile.write('      "units=m"\n')
         mapfile.write('      "no_defs"\n')
         mapfile.write('    END\n')
-    elif lineplot.coord_sys == 'UTM' and \
-         (lineplot.datum == 'NAD83' or lineplot.datum == 'WGS84'):
+    elif lineplot.coord_sys == 'UTM' and lineplot.datum in ('NAD83', 'WGS84'):
         mapfile.write('    PROJECTION\n')
         mapfile.write('      "proj=utm"\n')
         mapfile.write('      "zone=17"\n')
@@ -226,8 +226,7 @@ def write_lineplot(gis_options, lineplot, shpfilename):
         mapfile.write('      "units=m"\n')
         mapfile.write('      "no_defs"\n')
         mapfile.write('    END\n')
-    elif lineplot.coord_sys == 'LATLON' and \
-         (lineplot.datum == 'NAD83' or lineplot.datum == 'WGS84'):
+    elif lineplot.coord_sys == 'LATLON' and lineplot.datum in ('NAD83', 'WGS84'):
         mapfile.write('    PROJECTION\n')
         mapfile.write('      "proj=longlat"\n')
         mapfile.write('      "ellps=WGS84"\n')

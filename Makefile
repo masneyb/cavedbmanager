@@ -34,7 +34,7 @@ lint: pylint shellcheck
 
 
 pylint:
-	pylint3 cavedb/*.py cavedb/scripts/*.py cavedb/tests/*.py
+	pylint cavedb/*.py cavedb/scripts/*.py cavedb/tests/*.py
 
 shellcheck:
 	shellcheck cavedb/scripts/backup-data.sh
@@ -46,7 +46,7 @@ shellcheck:
 	shellcheck sample-bulletin/populate-sample-bulletin.sh
 
 test:
-	python3 -m unittest discover
+	python3 -Wa manage.py test
 
 ci: test lint
 

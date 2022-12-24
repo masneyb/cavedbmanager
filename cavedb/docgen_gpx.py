@@ -14,8 +14,9 @@ class Gpx(cavedb.docgen_common.Common):
 
 
     def open(self, all_regions_gis_hash):
+        # pylint: disable=consider-using-with
         cavedb.docgen_common.create_base_directory(self.gpx_filename)
-        self.gpxfile = open(self.gpx_filename, 'w')
+        self.gpxfile = open(self.gpx_filename, 'w', encoding='utf-8')
 
         self.gpxfile.write('<?xml version="1.0" encoding="UTF-8"?>\n')
         self.gpxfile.write('<gpx xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' + \

@@ -5,6 +5,7 @@
 
 import threading
 from django.contrib.auth.models import AnonymousUser
+from django.utils.deprecation import MiddlewareMixin
 
 THREAD_LOCALS = threading.local()
 
@@ -17,7 +18,7 @@ def get_request_uri():
 def get_valid_bulletins():
     return getattr(THREAD_LOCALS, 'valid_bulletins', [])
 
-class ThreadLocals(object):
+class ThreadLocals(MiddlewareMixin):
     #pylint: disable=too-few-public-methods
 
     # Middleware that gets various objects from the

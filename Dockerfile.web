@@ -4,8 +4,6 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get install --no-install-recommends -y nginx ssl-cert supervisor uwsgi \
                                                uwsgi-plugin-python3 && \
-    rm -rf /usr/share/doc /usr/share/man && \
-    (rm /var/lib/apt/lists/* || true) && \
     apt-get clean && \
     echo "daemon off;" >> /etc/nginx/nginx.conf && \
     mkdir -m 0700 /var/run/uwsgi/ && \

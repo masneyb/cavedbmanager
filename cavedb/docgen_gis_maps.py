@@ -59,7 +59,7 @@ def get_existing_hashcode(outfile, hashcode_file):
     if not os.path.exists(hashcode_file):
         return None
 
-    with open(hashcode_file, 'r') as infile:
+    with open(hashcode_file, 'r', encoding='utf-8') as infile:
         actual_hashcode = infile.read(1024)
         return actual_hashcode.replace('\n', '').replace('\r', '')
 

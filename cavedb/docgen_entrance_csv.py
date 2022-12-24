@@ -14,8 +14,9 @@ class EntranceCsv(cavedb.docgen_common.Common):
 
 
     def open(self, all_regions_gis_hash):
+        # pylint: disable=consider-using-with
         cavedb.docgen_common.create_base_directory(self.filename)
-        self.csvfile = open(self.filename, 'w')
+        self.csvfile = open(self.filename, 'w', encoding='utf-8')
         self.csvwriter = csv.writer(self.csvfile, delimiter=',')
 
         self.csvwriter.writerow(['internal_id', 'locid', 'survey_id', 'name', 'alternate_names',
@@ -36,7 +37,7 @@ class EntranceCsv(cavedb.docgen_common.Common):
         else:
             gislbl_pri = 8
 
-        lat_lon_wgs84 = coordinates.get_lon_lat_wgs84()
+        lon_lat_wgs84 = coordinates.get_lon_lat_wgs84()
         utm_nad83 = coordinates.get_utm_nad83()
 
         if feature.survey_id:
@@ -46,8 +47,8 @@ class EntranceCsv(cavedb.docgen_common.Common):
 
         self.csvwriter.writerow([feature.id, entrance.id, survey_id,
                                  name, feature.alternate_names, feature.feature_type,
-                                 entrance.coord_acquision, lat_lon_wgs84[0],
-                                 lat_lon_wgs84[1], entrance.utmzone, utm_nad83[0], utm_nad83[1],
+                                 entrance.coord_acquision, lon_lat_wgs84[0],
+                                 lon_lat_wgs84[1], entrance.utmzone, utm_nad83[0], utm_nad83[1],
                                  entrance.elevation_ft, feature.bulletin_region.region_name,
                                  feature.survey_county.county_name,
                                  entrance.quad.quad_name if entrance.quad else '',

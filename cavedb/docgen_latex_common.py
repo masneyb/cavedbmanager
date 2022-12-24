@@ -47,8 +47,9 @@ class LatexCommon(cavedb.docgen_common.Common):
 
 
     def open(self, all_regions_gis_hash):
+        # pylint: disable=consider-using-with
         cavedb.docgen_common.create_base_directory(self.filename)
-        self.file_handle = open(self.filename, 'w')
+        self.file_handle = open(self.filename, 'w', encoding='utf-8')
 
         self.__show_document_header()
 
@@ -352,7 +353,7 @@ class LatexCommon(cavedb.docgen_common.Common):
     # Note: You must override this method in a subclass
     def get_gis_map_names(self):
         #pylint: disable=no-self-use
-        return None
+        return ""
 
     def __write(self, line):
         self.file_handle.write(line.replace('\r', ''))
@@ -439,12 +440,12 @@ class LatexCommon(cavedb.docgen_common.Common):
                            '%.0f' % (utm_nad83[1]) + r'N ' + \
                            '%.0f' % (utm_nad83[0]) + r'E \\*')
 
-        lat_lon_wgs84 = coordinates.get_lon_lat_wgs84()
-        if lat_lon_wgs84[0]:
+        lon_lat_wgs84 = coordinates.get_lon_lat_wgs84()
+        if lon_lat_wgs84[0]:
             has_coordinates = True
             self.__writeln(r'WGS84 Lat/Lon: \hfill ' + \
-                           decimal_degrees_to_ddmmss_str(lat_lon_wgs84[1]) + r' / ' + \
-                           decimal_degrees_to_ddmmss_str(lat_lon_wgs84[0]) + r' \\*')
+                           decimal_degrees_to_ddmmss_str(lon_lat_wgs84[1]) + r' / ' + \
+                           decimal_degrees_to_ddmmss_str(lon_lat_wgs84[0]) + r' \\*')
 
         if entrance.elevation_ft:
             self.__write('Elevation: {:,}'.format(entrance.elevation_ft) + '\'')
@@ -617,10 +618,11 @@ class LatexCommon(cavedb.docgen_common.Common):
     # Note: You must override this method in a subclass
     def get_photo_filename(self, photo):
         #pylint: disable=no-self-use,unused-argument
-        return None
+        return ''
 
 
     def __show_feature_photo(self, feature, photo):
+        # pylint: disable=line-too-long
         if self.num_in_pdf % 48 == 0:
             self.__writeln(r'\clearpage')
 
@@ -823,6 +825,7 @@ class LatexCommon(cavedb.docgen_common.Common):
 
 
     def __write_chapters(self, is_appendix):
+        # pylint: disable=line-too-long
         for chapter_and_sections in self.chapters:
             chapter = chapter_and_sections['chapter']
             if chapter.is_appendix != is_appendix:
@@ -843,8 +846,8 @@ class LatexCommon(cavedb.docgen_common.Common):
 
                 self.__writeln(r'\parindent 2ex')
 
-                if (section.section_data):
-                    self.__writeln(escapeSimple(convert_quotes(self.indexer.generate_index(section.section_data.strip()))))
+                if section.section_data:
+                    self.__writeln(escape_simple(convert_quotes(self.indexer.generate_index(section.section_data.strip()))))
 
                 self.__writeln(r'')
 
@@ -933,7 +936,7 @@ def escape(inputstr):
                    .replace('&', '\\&')
 
 
-def escapeSimple(inputstr):
+def escape_simple(inputstr):
     if not inputstr:
         return ""
 

@@ -15,8 +15,8 @@ echo "Beginning to read jobs from ${CAVEDB_WORKER_MSG_DIR}"
 
 # See if there are any queued jobs. If so, touch them so that inotify
 # will pick them up.
-if [ ! -z "$(ls -A "${CAVEDB_WORKER_MSG_DIR}")" ]; then
-	(sleep 5 && find "${CAVEDB_WORKER_MSG_DIR}" -type f | head -n 1 | xargs -iblah touch blah) &
+if [ -n "$(ls -A "${CAVEDB_WORKER_MSG_DIR}")" ]; then
+	(sleep 5 && find "${CAVEDB_WORKER_MSG_DIR}" -type f | head -n 1 | xargs -Iblah touch blah) &
 fi
 
 inotifywait -q --format '%f' -m "${CAVEDB_WORKER_MSG_DIR}" --event close | while read -r MSG_FILENAME ; do
@@ -75,5 +75,5 @@ inotifywait -q --format '%f' -m "${CAVEDB_WORKER_MSG_DIR}" --event close | while
 
 	# Touch all messages queued (if any) since we may have a long running job and may not
 	# be notified by inotifywait.
-	find "${CAVEDB_WORKER_MSG_DIR}" -type f | head -n 1 | xargs -iblah touch blah
+	find "${CAVEDB_WORKER_MSG_DIR}" -type f | head -n 1 | xargs -Iblah touch blah
 done

@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:22.04
 
 ENV PYTHONUNBUFFERED 1
 
@@ -6,11 +6,11 @@ ENV TZ=America/New_York
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
-    apt-get install --no-install-recommends -y make postgresql-client python3 python3-dateutil \
-                                               python3-django python3-gdal python3-pil \
-                                               python3-psycopg2 python3-pylint-django \
+    apt-get install --no-install-recommends -y locales make postgresql-client python3 \
+                                               python3-dateutil python3-django python3-gdal \
+                                               python3-pil python3-psycopg2 python3-pylint-django \
                                                shellcheck && \
-    rm -rf /usr/share/doc /usr/share/man && \
-    (rm /var/lib/apt/lists/* || true) && \
-    apt-get clean && \
-    ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && echo ${TZ} > /etc/timezone
+    echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
+    ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
+    dpkg-reconfigure -f noninteractive locales tzdata && \
+    apt-get clean

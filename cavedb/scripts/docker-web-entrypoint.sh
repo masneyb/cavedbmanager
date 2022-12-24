@@ -7,7 +7,7 @@ sleep 5
 # Check if the database exists.
 DB=$(psql -lqt root | awk '{print $1}' | grep -w "${PGDATABASE}")
 if [ "${DB}" == "" ] ; then
-	createdb "${PGDATABASE}"
+	createdb -E utf8 "${PGDATABASE}"
 
 	BACKUP_FILE="${CAVEDB_DATA_BASE_DIR}"/cavedb.sql
 	if [ -f "${BACKUP_FILE}" ] ; then

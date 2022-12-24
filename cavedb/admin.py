@@ -3,35 +3,15 @@
 from django.contrib.admin.options import BaseModelAdmin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib import admin
-from django.db import models
 from django import forms
 from django.contrib.auth.models import User
 import cavedb.models
 import cavedb.perms
 import cavedb.middleware
 
-class CavedbCharFormField(forms.CharField):
-    def clean(self, value):
-        data = super(CavedbCharFormField, self).clean(value)
-
-        if data is None:
-            return data
-
-        data = data.replace("—", "--")
-        data = data.replace("“", "\"")
-        data = data.replace("”", "\"")
-        data = data.replace("’", "'")
-        data = data.replace("‘", "'")
-
-        try:
-            return data.encode('ascii')
-        except:
-            raise forms.ValidationError('All data must be in ASCII format')
-
-
 class CavedbLatLonFormField(forms.CharField):
-    def __init__(self, *args, **kwargs):
-        super(CavedbLatLonFormField, self).__init__( \
+    def __init__(self, **kwargs):
+        super().__init__(
                  help_text='You can specify the latitude and longitude in one of the ' + \
                            'following formats: dd mm ss[.frac secs], dd mm.frac mins or ' + \
                             'dd.frac degrees. The coordinate will be automatically converted ' + \
@@ -40,23 +20,23 @@ class CavedbLatLonFormField(forms.CharField):
     def clean(self, value):
         try:
             return cavedb.utils.convert_lat_lon_to_decimal(value)
-        except:
+        except Exception as ex:
+            print(ex)
             raise forms.ValidationError('Invalid coordinate. Supported values are ' + \
-                                        'dd mm ss[.frac sec], dd mm.[ss] and dd.[decimal degrees]')
+                                        'dd mm ss[.frac sec], dd mm.[ss] and ' + \
+                                        'dd.[decimal degrees]') from ex
 
 
 class CavedbModelAdmin(BaseModelAdmin):
     def __init__(self, model, admin_site):
         #pylint: disable=too-many-function-args,useless-super-delegation
-        super(CavedbModelAdmin, self).__init__(model, admin_site)
+        super().__init__(model, admin_site)
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         if isinstance(db_field, cavedb.models.LatLonField):
             kwargs['form_class'] = CavedbLatLonFormField
-        elif isinstance(db_field, (models.CharField, models.TextField)):
-            kwargs['form_class'] = CavedbCharFormField
 
-        return super(CavedbModelAdmin, self).formfield_for_dbfield(db_field, request, **kwargs)
+        return super().formfield_for_dbfield(db_field, request, **kwargs)
 
 
 class UtmZoneAdmin(CavedbModelAdmin, admin.ModelAdmin):
@@ -120,7 +100,7 @@ class BulletinAdmin(CavedbModelAdmin, admin.ModelAdmin):
 
     def has_change_permission(self, request, obj=None):
         if not obj:
-            return super(BulletinAdmin, self).has_change_permission(request, obj)
+            return super().has_change_permission(request, obj)
 
         return cavedb.perms.is_bulletin_allowed(obj.id)
 
@@ -128,9 +108,7 @@ class BulletinAdmin(CavedbModelAdmin, admin.ModelAdmin):
         return self.has_change_permission(request, obj)
 
     def get_queryset(self, request):
-        return super(BulletinAdmin, self) \
-                  .get_queryset(request) \
-                  .filter(id__in=cavedb.middleware.get_valid_bulletins())
+        return super().get_queryset(request).filter(id__in=cavedb.middleware.get_valid_bulletins())
 
     class Media:
         def __init__(self):
@@ -244,7 +222,7 @@ class FeatureAdmin(CavedbModelAdmin, admin.ModelAdmin):
 
     def has_change_permission(self, request, obj=None):
         if not obj:
-            return super(FeatureAdmin, self).has_change_permission(request, obj)
+            return super().has_change_permission(request, obj)
 
         return cavedb.perms.is_bulletin_allowed(obj.bulletin_region.bulletin.id)
 
@@ -252,8 +230,7 @@ class FeatureAdmin(CavedbModelAdmin, admin.ModelAdmin):
         return self.has_change_permission(request, obj)
 
     def get_queryset(self, request):
-        return super(FeatureAdmin, self) \
-                  .get_queryset(request) \
+        return super().get_queryset(request) \
                   .filter(bulletin_region__bulletin__in=cavedb.middleware.get_valid_bulletins())
 
     class Media:

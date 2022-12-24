@@ -13,8 +13,8 @@ import cavedb.models
 def generate_bulletins():
     attachment_filename = os.path.join(settings.MEDIA_ROOT, 'bulletin_attachments', 'index.txt')
     bulletin_filename = os.path.join(settings.MEDIA_ROOT, 'bulletins', 'index.txt')
-    with open(attachment_filename, 'w') as attachment_index, \
-         open(bulletin_filename, 'w') as bulletin_index:
+    with open(attachment_filename, 'w', encoding='utf-8') as attachment_index, \
+         open(bulletin_filename, 'w', encoding='utf-8') as bulletin_index:
         attachment_index.write('ID\tBulletin Name\r\n')
         bulletin_index.write('ID\tBulletin Name\r\n')
 
@@ -26,7 +26,7 @@ def generate_bulletins():
 
 def generate_features():
     filename = os.path.join(settings.MEDIA_ROOT, 'feature_attachments', 'index.txt')
-    with open(filename, 'w') as output:
+    with open(filename, 'w', encoding='utf-8') as output:
         output.write('ID\tBulletin\tName\r\n')
 
         for feature in cavedb.models.Feature.objects.all():
@@ -36,7 +36,7 @@ def generate_features():
 
 def generate_statewide_docs():
     filename = os.path.join(settings.MEDIA_ROOT, 'statewide_docs', 'index.txt')
-    with open(filename, 'w') as output:
+    with open(filename, 'w', encoding='utf-8') as output:
         output.write('ID\tDescription\r\n')
 
         for doc_type in cavedb.models.StatewideDocType.objects.all():

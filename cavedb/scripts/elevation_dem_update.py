@@ -45,8 +45,7 @@ def process_dem(filepath, all_entrances):
     nodata = band.GetNoDataValue()
 
     for (entrance_id, xcoord, ycoord) in all_entrances:
-        if not (top_left_x <= xcoord and xcoord <= bottom_right_x and \
-                bottom_right_y <= ycoord and ycoord <= top_left_y):
+        if not (top_left_x <= xcoord <= bottom_right_x and bottom_right_y <= ycoord <= top_left_y):
             continue
 
         down_row = int(math.ceil((top_left_y - ycoord) / abs(res_y)))

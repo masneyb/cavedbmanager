@@ -1,9 +1,4 @@
-FROM ubuntu:18.04
-
-# Workaround the following error:
-#     podman[135882]: chfn: PAM: System error
-#     podman[135882]: adduser: `/usr/bin/chfn -f PostgreSQL administrator postgres' returned error code 1. Exiting.
-RUN ln -s -f /bin/true /usr/bin/chfn
+FROM ubuntu:22.04
 
 ENV TZ=America/New_York
 RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && echo ${TZ} > /etc/timezone
@@ -11,11 +6,13 @@ RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && echo ${TZ} > /etc/timezo
 # Remove /var/lib/postgresql so that a new one will be initialized in the entrypoint.
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
-    apt-get install --no-install-recommends -y gosu postgis postgresql-10 \
-                                               postgresql-10-postgis-2.4 \
-                                               postgresql-10-postgis-2.4-scripts && \
-    rm -rf /usr/share/doc /usr/share/man /var/lib/postgresql/* && \
-    (rm /var/lib/apt/lists/* || true) && \
+    apt-get install --no-install-recommends -y gosu locales postgis postgresql-14 \
+                                               postgresql-14-postgis-3 \
+                                               postgresql-14-postgis-3-scripts && \
+    rm -rf /var/lib/postgresql/* && \
+    echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
+    ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \
+    dpkg-reconfigure -f noninteractive locales tzdata && \
     apt-get clean
 
 COPY cavedb/scripts/docker-db-entrypoint.sh /docker-db-entrypoint.sh

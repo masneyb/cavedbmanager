@@ -13,8 +13,9 @@ class Mxf(cavedb.docgen_common.Common):
 
 
     def open(self, all_regions_gis_hash):
+        # pylint: disable=consider-using-with
         cavedb.docgen_common.create_base_directory(self.filename)
-        self.mxffile = open(self.filename, 'w')
+        self.mxffile = open(self.filename, 'w', encoding='utf-8')
 
 
     def close(self):

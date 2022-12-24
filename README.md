@@ -58,6 +58,11 @@ in the [screenshots](screenshots) directory.
 
 ## Installation
 
+Fedora users can install docker-compose with:
+
+    sudo dnf install docker-compose podman-docker
+    sudo systemctl enable --now podman.socket
+
 The project can be started by running:
 
     sudo --preserve-env=PWD make dockerRun

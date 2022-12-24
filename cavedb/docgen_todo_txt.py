@@ -11,9 +11,10 @@ class TodoTxt(cavedb.docgen_common.Common):
 
 
     def open(self, all_regions_gis_hash):
+        # pylint: disable=consider-using-with
         filename = get_todo_txt_filename(self.bulletin.id)
         cavedb.docgen_common.create_base_directory(filename)
-        self.todofile = open(filename, 'w')
+        self.todofile = open(filename, 'w', encoding='utf-8')
 
         self.todofile.write('%s\n\n' % (self.bulletin.bulletin_name))
 

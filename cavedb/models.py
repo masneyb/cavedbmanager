@@ -7,6 +7,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils.html import mark_safe
 from cavedb.middleware import get_request_uri, get_valid_bulletins
 import cavedb.docgen_all
 import cavedb.perms
@@ -114,17 +115,23 @@ class Bulletin(models.Model):
     color_front_cover_image = models.ImageField(upload_to=bulletin_upload_to, blank=True, null=True)
     back_cover_image = models.ImageField(upload_to=bulletin_upload_to, blank=True, null=True)
     bw_map1 = models.ForeignKey(GisMap, blank=True, null=True, related_name='bw_map1', \
-                                verbose_name='Map #1 for the B&W bulletin')
+                                verbose_name='Map #1 for the B&W bulletin',
+                                on_delete=models.PROTECT)
     bw_map2 = models.ForeignKey(GisMap, blank=True, null=True, related_name='bw_map2', \
-                                verbose_name='Map #2 for the B&W bulletin')
+                                verbose_name='Map #2 for the B&W bulletin',
+                                on_delete=models.PROTECT)
     bw_map3 = models.ForeignKey(GisMap, blank=True, null=True, related_name='bw_map3', \
-                                verbose_name='Map #3 for the B&W bulletin')
+                                verbose_name='Map #3 for the B&W bulletin',
+                                on_delete=models.PROTECT)
     color_map1 = models.ForeignKey(GisMap, blank=True, null=True, related_name='color_map1', \
-                                   verbose_name='Map #1 for the color bulletin')
+                                   verbose_name='Map #1 for the color bulletin',
+                                   on_delete=models.PROTECT)
     color_map2 = models.ForeignKey(GisMap, blank=True, null=True, related_name='color_map2', \
-                                   verbose_name='Map #2 for the color bulletin')
+                                   verbose_name='Map #2 for the color bulletin',
+                                   on_delete=models.PROTECT)
     color_map3 = models.ForeignKey(GisMap, blank=True, null=True, related_name='color_map3', \
-                                   verbose_name='Map #3 for the color bulletin')
+                                   verbose_name='Map #3 for the color bulletin',
+                                   on_delete=models.PROTECT)
     title_page = models.TextField(blank=True, null=True)
     preamble_page = models.TextField(blank=True, null=True)
     contributor_page = models.TextField(blank=True, null=True)
@@ -179,22 +186,22 @@ class Bulletin(models.Model):
             if not cavedb.perms.is_bulletin_generation_allowed(self.id):
                 return ''
 
-            return 'This bulletin has not been generated yet. ' + \
-                   'You can <a href="%s">generate</a> one now.' % (regen_url)
+            return mark_safe('This bulletin has not been generated yet. ' + \
+                             'You can <a href="%s">generate</a> one now.' % (regen_url))
+
+        if cavedb.perms.is_bulletin_generation_allowed(self.id):
+            gen_txt = 'You can <a href="%s">generate</a> another one with the latest data.' % \
+                      (regen_url)
         else:
-            if cavedb.perms.is_bulletin_generation_allowed(self.id):
-                gen_txt = 'You can <a href="%s">generate</a> another one with the latest data.' % \
-                          (regen_url)
-            else:
-                gen_txt = ''
+            gen_txt = ''
 
-            return 'The documents were generated on %s. %s<br/><br/>\n' % \
-                   (mtime, gen_txt) + \
-                   cavedb.docgen_all.get_bulletin_download_links(self) + \
-                   '<a href="%s/log">Build Log</a> [%s]' % \
-                   (base_url, \
-                    cavedb.utils.get_file_size(cavedb.utils.get_build_log_filename(self.id)))
+        ret = 'The documents were generated on %s. %s<br/><br/>\n' % \
+              (mtime, gen_txt) + \
+              cavedb.docgen_all.get_bulletin_download_links(self) + \
+              '<a href="%s/log">Build Log</a> [%s]' % \
+              (base_url, cavedb.utils.get_file_size(cavedb.utils.get_build_log_filename(self.id)))
 
+        return mark_safe(ret)
 
     generate_doc_links.short_description = 'Documents'
     generate_doc_links.allow_tags = True
@@ -234,7 +241,7 @@ class Bulletin(models.Model):
 
             ret += '<br/>\n'
 
-        return ret
+        return mark_safe(ret)
 
 
     show_maps.short_description = "GIS Maps"
@@ -259,14 +266,14 @@ class BulletinChoice(models.ForeignKey):
         regex = re.compile(r'.*?bulletin\\/(\d+)\\/')
         matches = regex.match(get_request_uri())
         if matches:
-            return super(BulletinChoice, self).formfield(queryset=self.rel.to._default_manager \
+            return super().formfield(queryset=self.remote_field.model._default_manager \
                       .complex_filter({'bulletin__id': matches.group(1)}))
 
-        return super(BulletinChoice, self).formfield(**kwargs)
+        return super().formfield(**kwargs)
 
 
 class BulletinRegion(models.Model):
-    bulletin = models.ForeignKey(Bulletin)
+    bulletin = models.ForeignKey(Bulletin, on_delete=models.PROTECT)
     region_name = models.CharField(max_length=64)
     map_region_name = models.CharField(max_length=64, blank=True, null=True)
     introduction = models.TextField(blank=True, null=True)
@@ -292,7 +299,7 @@ class RegionChoice(models.ForeignKey):
     def formfield(self, **kwargs):
         #pylint: disable=protected-access
 
-        return super(RegionChoice, self).formfield(queryset=self.rel.to._default_manager \
+        return super().formfield(queryset=self.remote_field.model._default_manager \
                    .complex_filter({'bulletin__id__in': get_valid_bulletins()}))
 
 
@@ -302,7 +309,7 @@ def gis_lineplot_upload_to(instance, filename):
 
 
 class BulletinGisLineplot(models.Model):
-    bulletin = models.ForeignKey(Bulletin)
+    bulletin = models.ForeignKey(Bulletin, on_delete=models.PROTECT)
     attach_zip = models.FileField("Lineplot ZIP File", upload_to=gis_lineplot_upload_to)
     shp_filename = models.CharField("SHP File Name", max_length=80)
     description = models.CharField(max_length=255, null=True, blank=True)
@@ -322,7 +329,7 @@ class BulletinGisLineplot(models.Model):
 
 
 class BulletinChapter(models.Model):
-    bulletin = models.ForeignKey(Bulletin)
+    bulletin = models.ForeignKey(Bulletin, on_delete=models.PROTECT)
     chapter_title = models.CharField(max_length=64)
     is_appendix = models.BooleanField('Appendix', null=False, default=False)
     sort_order = models.IntegerField()
@@ -340,8 +347,8 @@ class BulletinChapter(models.Model):
 
 
 class BulletinSection(models.Model):
-    bulletin = models.ForeignKey(Bulletin)
-    bulletin_chapter = BulletinChoice(BulletinChapter)
+    bulletin = models.ForeignKey(Bulletin, on_delete=models.PROTECT)
+    bulletin_chapter = BulletinChoice(BulletinChapter, on_delete=models.PROTECT)
     section_title = models.CharField(max_length=64, blank=True, null=True)
     section_subtitle = models.CharField(max_length=64, blank=True, null=True)
     sort_order = models.IntegerField()
@@ -361,7 +368,7 @@ class BulletinSection(models.Model):
 
 
 class BulletinSectionReference(models.Model):
-    bulletinsection = models.ForeignKey('BulletinSection')
+    bulletinsection = models.ForeignKey('BulletinSection', on_delete=models.PROTECT)
     author = models.CharField(max_length=255, null=True, blank=True)
     title = models.CharField(max_length=255, null=True, blank=True)
     book = models.CharField(max_length=255, null=True, blank=True)
@@ -392,7 +399,7 @@ def bulletin_attachment_upload_to(instance, filename):
 
 
 class BulletinAttachment(models.Model):
-    bulletin = models.ForeignKey('Bulletin')
+    bulletin = models.ForeignKey('Bulletin', on_delete=models.PROTECT)
     attachment = models.FileField(upload_to=bulletin_attachment_upload_to)
     description = models.CharField(max_length=255)
 
@@ -429,7 +436,7 @@ def statewide_doc_upload_to(instance, filename):
 
 
 class StatewideDoc(models.Model):
-    doc_type = models.ForeignKey(StatewideDocType, verbose_name='Type')
+    doc_type = models.ForeignKey(StatewideDocType, verbose_name='Type', on_delete=models.PROTECT)
     doc = models.FileField(upload_to=statewide_doc_upload_to)
     author = models.CharField(max_length=255, null=True, blank=True)
     title = models.CharField(max_length=255, null=True, blank=True)
@@ -524,7 +531,7 @@ class FeaturePhoto(models.Model):
         (0, 0), (90, 90), (180, 180), (270, 270),
     )
 
-    feature = models.ForeignKey('Feature')
+    feature = models.ForeignKey('Feature', on_delete=models.CASCADE)
     filename = models.FileField('Primary Photo (color if you have it)', \
                                 upload_to=feature_photo_upload_to, \
                                  validators=[photo_filename_validator])
@@ -567,8 +574,8 @@ class FeaturePhoto(models.Model):
 
 
 class FeatureReferencedMap(models.Model):
-    feature = models.ForeignKey('Feature')
-    map = models.ForeignKey(FeaturePhoto, limit_choices_to={'type':'map'})
+    feature = models.ForeignKey('Feature', on_delete=models.CASCADE)
+    map = models.ForeignKey(FeaturePhoto, limit_choices_to={'type':'map'}, on_delete=models.CASCADE)
 
     create_date = models.DateTimeField("Creation Date", auto_now_add=True, editable=False, \
                                        null=True)
@@ -593,7 +600,7 @@ class FeatureAttachment(models.Model):
         ('other', 'Other'),
     )
 
-    feature = models.ForeignKey('Feature')
+    feature = models.ForeignKey('Feature', on_delete=models.CASCADE)
     attachment = models.FileField(upload_to=feature_attachment_upload_to)
     attachment_type = models.CharField(max_length=64, choices=ATTACHMENT_TYPE_CHOICES)
     user_visible_file_suffix = models.CharField(max_length=255, null=True, blank=True)
@@ -627,7 +634,7 @@ def feature_gis_lineplot_upload_to(instance, filename):
 
 
 class FeatureGisLineplot(models.Model):
-    feature = models.ForeignKey('Feature')
+    feature = models.ForeignKey('Feature', on_delete=models.CASCADE)
     attach_zip = models.FileField("Lineplot ZIP File", upload_to=feature_gis_lineplot_upload_to)
     shp_filename = models.CharField("SHP File Name", max_length=80)
     description = models.CharField(max_length=255, null=True, blank=True)
@@ -653,12 +660,13 @@ class FeatureEntrance(models.Model):
         ('Filled In', 'Filled In'), ('Google Earth', 'Google Earth'), ('Unknown', 'Unknown'),
     )
 
-    feature = models.ForeignKey('Feature')
+    feature = models.ForeignKey('Feature', on_delete=models.CASCADE)
     entrance_name = models.CharField(max_length=64, blank=True, null=True, db_index=True, \
                                      help_text='You should enter an entrance name only if the ' +
                                      'feature has multiple entrances.')
-    county = models.ForeignKey(County, db_index=True)
-    quad = models.ForeignKey(TopoQuad, db_index=True, blank=True, null=True)
+    county = models.ForeignKey(County, db_index=True, on_delete=models.PROTECT)
+    quad = models.ForeignKey(TopoQuad, db_index=True, blank=True, null=True,
+                             on_delete=models.PROTECT)
     coord_acquision = models.CharField('Coord Acquired By', max_length=64, \
                                        choices=COORD_METHOD_CHOICES, blank=True, null=True)
     datum = models.CharField(max_length=64, choices=DATUM_CHOICES)
@@ -666,7 +674,7 @@ class FeatureEntrance(models.Model):
                                        help_text='Note: The elevations will be automatically ' +
                                        'updated on a nightly basis based on the Digital ' +
                                        'Elevation Models (DEM) that are loaded into the system.')
-    utmzone = models.ForeignKey(UtmZone, verbose_name='UTM zone')
+    utmzone = models.ForeignKey(UtmZone, verbose_name='UTM zone', on_delete=models.PROTECT)
     utmeast = models.IntegerField('UTM Easting', blank=True, null=True, \
                                   help_text='You only have to enter a UTM or lat/lon coordinate. ' +
                                   'The system will automatically convert the coordinate for you. ' +
@@ -697,7 +705,7 @@ class FeatureEntrance(models.Model):
 
 
 class FeatureReference(models.Model):
-    feature = models.ForeignKey('Feature')
+    feature = models.ForeignKey('Feature', on_delete=models.CASCADE)
     author = models.CharField(max_length=255, null=True, blank=True)
     title = models.CharField(max_length=255, null=True, blank=True)
     book = models.CharField(max_length=255, null=True, blank=True)
@@ -743,9 +751,9 @@ class Feature(models.Model):
     name = models.CharField("Feature Name", max_length=80, db_index=True)
     alternate_names = models.CharField(max_length=255, null=True, blank=True, db_index=True)
     additional_index_names = models.CharField(max_length=255, null=True, blank=True)
-    bulletin_region = RegionChoice(BulletinRegion, db_index=True)
+    bulletin_region = RegionChoice(BulletinRegion, db_index=True, on_delete=models.PROTECT)
 
-    survey_county = models.ForeignKey(County, db_index=True)
+    survey_county = models.ForeignKey(County, db_index=True, on_delete=models.PROTECT)
     survey_id = models.CharField("Survey ID", max_length=9, blank=True, null=True, db_index=True)
     feature_type = models.CharField("Feature Type", max_length=64, choices=FEATURE_TYPE_CHOICES, \
                                     default='cave', db_index=True)
@@ -791,7 +799,7 @@ class Feature(models.Model):
 
 
 class CaveUserProfile(models.Model):
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, on_delete=models.PROTECT)
     bulletins = models.ManyToManyField(Bulletin, \
                                        help_text='Bulletins that the user is allowed to access.')
     can_download_docs = models.BooleanField(default=True)

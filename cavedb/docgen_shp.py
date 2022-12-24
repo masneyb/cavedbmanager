@@ -26,7 +26,7 @@ class Shp(cavedb.docgen_gis_common.GisCommon):
     def write_region_extents_csv(self):
         csv_filename = '%s/%s.csv' % \
                   (self.shp_dir, cavedb.docgen_gis_common.REGION_EXTENTS_SHP_LAYER_NAME)
-        with open(csv_filename, 'w') as output:
+        with open(csv_filename, 'w', encoding='utf-8') as output:
             output.write('region_name,wkt\n')
             for region_id, extents in list(self.region_extents.items()):
                 extents = self.region_extents[region_id]
@@ -50,7 +50,7 @@ class Shp(cavedb.docgen_gis_common.GisCommon):
 
         locs_ovffile = '%s/%s.ovf' % \
                        (self.shp_dir, cavedb.docgen_gis_common.LOCATIONS_SHP_LAYER_NAME)
-        with open(locs_ovffile, 'w') as output:
+        with open(locs_ovffile, 'w', encoding='utf-8') as output:
             output.write('<OGRVRTDataSource>')
             output.write('<OGRVRTLayer name="%s">' % \
                          (cavedb.docgen_gis_common.LOCATIONS_SHP_LAYER_NAME))
@@ -71,7 +71,7 @@ class Shp(cavedb.docgen_gis_common.GisCommon):
     def write_region_extents_ovf(self, csv_filename):
         extents_ovf_filename = '%s/%s.ovf' % \
                           (self.shp_dir, cavedb.docgen_gis_common.REGION_EXTENTS_SHP_LAYER_NAME)
-        with open(extents_ovf_filename, 'w') as output:
+        with open(extents_ovf_filename, 'w', encoding='utf-8') as output:
             output.write('<OGRVRTDataSource>')
             output.write('<OGRVRTLayer name="%s">' % \
                          (cavedb.docgen_gis_common.REGION_EXTENTS_SHP_LAYER_NAME))
@@ -116,7 +116,7 @@ class Shp(cavedb.docgen_gis_common.GisCommon):
 
 
 def create_epsg_4326_prjfile(prjfile):
-    with open(prjfile, 'w') as output:
+    with open(prjfile, 'w', encoding='utf-8') as output:
         output.write('GEOGCS["WGS 84",' + \
                      'DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,' + \
                      'AUTHORITY["EPSG","7030"]],TOWGS84[0,0,0,0,0,0,0],' + \

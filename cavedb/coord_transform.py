@@ -5,7 +5,7 @@ import osgeo.osr
 LAT_LON_WGS84 = osgeo.osr.SpatialReference()
 LAT_LON_WGS84.SetWellKnownGeogCS('WGS84')
 
-class TransformedCoordinate(object):
+class TransformedCoordinate():
     def __init__(self, src_datum, utm_zone, is_utm_zone_north, utm_easting, utm_northing, \
                  longitude, latitude):
         # pylint: disable=too-many-arguments
@@ -16,25 +16,23 @@ class TransformedCoordinate(object):
         else:
             self.in_srs = None
 
-        if utm_zone != None and is_utm_zone_north != None and utm_easting != None and \
-             utm_northing != None:
+        if utm_zone is not None and is_utm_zone_north is not None and utm_easting is not None and \
+             utm_northing is not None:
             self.in_srs.SetUTM(utm_zone, is_utm_zone_north)
             self.in_xy = (int(utm_easting), int(utm_northing))
-        elif longitude != None and latitude != None:
-            self.in_xy = (float(longitude), float(latitude))
+        elif longitude is not None and latitude is not None:
+            # With the upgrade from gdal 2.2.3 to 3.4.1, previously I would pass in
+            # (latitude, longitude). Now it needs to be switched here. The UTM input is still
+            # (easting, northing). We also need to swap the output below.
+            self.in_xy = (float(latitude), float(longitude))
         else:
             self.in_xy = (None, None)
 
-        if utm_zone != None and is_utm_zone_north != None:
-            self.utm_nad27 = osgeo.osr.SpatialReference()
-            self.utm_nad27.SetUTM(utm_zone, is_utm_zone_north)
-            self.utm_nad27.SetWellKnownGeogCS('NAD27')
-
+        if utm_zone is not None and is_utm_zone_north is not None:
             self.utm_nad83 = osgeo.osr.SpatialReference()
             self.utm_nad83.SetUTM(utm_zone, is_utm_zone_north)
             self.utm_nad83.SetWellKnownGeogCS('NAD83')
         else:
-            self.utm_nad27 = None
             self.utm_nad83 = None
 
         self.transform_cache = {}
@@ -62,11 +60,11 @@ class TransformedCoordinate(object):
 
 
     def get_lon_lat_wgs84(self):
-        return self.transform(LAT_LON_WGS84)
-
-
-    def get_utm_nad27(self):
-        return self.transform(self.utm_nad27)
+        (newx, newy) = self.transform(LAT_LON_WGS84)
+        # With the upgrade from gdal 2.2.3 to 3.4.1, previously it would return
+        # (longitude, latitude). Now it needs to be switched here. The UTM input is still
+        # returned as (easting, northing).
+        return (newy, newx)
 
 
     def get_utm_nad83(self):

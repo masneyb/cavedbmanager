@@ -14,8 +14,9 @@ class Kml(cavedb.docgen_common.Common):
 
 
     def open(self, all_regions_gis_hash):
+        # pylint: disable=consider-using-with
         cavedb.docgen_common.create_base_directory(self.kml_filename)
-        self.kmlfile = open(self.kml_filename, 'w')
+        self.kmlfile = open(self.kml_filename, 'w', encoding='utf-8')
 
         self.kmlfile.write('<?xml version="1.0" encoding="UTF-8"?>\n')
         self.kmlfile.write('<kml xmlns="http://earth.google.com/kml/2.2">\n')
