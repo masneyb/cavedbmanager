@@ -1,45 +1,13 @@
 # SPDX-License-Identifier: Apache-2.0
 
-from django.contrib.admin.options import BaseModelAdmin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib import admin
-from django import forms
 from django.contrib.auth.models import User
 import cavedb.models
 import cavedb.perms
 import cavedb.middleware
 
-class CavedbLatLonFormField(forms.CharField):
-    def __init__(self, **kwargs):
-        super().__init__(
-                 help_text='You can specify the latitude and longitude in one of the ' + \
-                           'following formats: dd mm ss[.frac secs], dd mm.frac mins or ' + \
-                            'dd.frac degrees. The coordinate will be automatically converted ' + \
-                           'to the format dd.frac degrees.')
-
-    def clean(self, value):
-        try:
-            return cavedb.utils.convert_lat_lon_to_decimal(value)
-        except Exception as ex:
-            print(ex)
-            raise forms.ValidationError('Invalid coordinate. Supported values are ' + \
-                                        'dd mm ss[.frac sec], dd mm.[ss] and ' + \
-                                        'dd.[decimal degrees]') from ex
-
-
-class CavedbModelAdmin(BaseModelAdmin):
-    def __init__(self, model, admin_site):
-        #pylint: disable=too-many-function-args,useless-super-delegation
-        super().__init__(model, admin_site)
-
-    def formfield_for_dbfield(self, db_field, request, **kwargs):
-        if isinstance(db_field, cavedb.models.LatLonField):
-            kwargs['form_class'] = CavedbLatLonFormField
-
-        return super().formfield_for_dbfield(db_field, request, **kwargs)
-
-
-class UtmZoneAdmin(CavedbModelAdmin, admin.ModelAdmin):
+class UtmZoneAdmin(admin.ModelAdmin):
     save_on_top = True
     list_display = ('utm_zone', 'utm_north', 'create_date', 'mod_date')
     list_filter = ['utm_north', 'create_date', 'mod_date']
@@ -47,32 +15,32 @@ class UtmZoneAdmin(CavedbModelAdmin, admin.ModelAdmin):
 admin.site.register(cavedb.models.UtmZone, UtmZoneAdmin)
 
 
-class BulletinRegionInline(CavedbModelAdmin, admin.TabularInline):
+class BulletinRegionInline(admin.TabularInline):
     model = cavedb.models.BulletinRegion
     extra = 1
 
 
-class BulletinGisLineplotInline(CavedbModelAdmin, admin.TabularInline):
+class BulletinGisLineplotInline(admin.TabularInline):
     model = cavedb.models.BulletinGisLineplot
     extra = 1
 
 
-class BulletinChapterInline(CavedbModelAdmin, admin.TabularInline):
+class BulletinChapterInline(admin.TabularInline):
     model = cavedb.models.BulletinChapter
     extra = 1
 
 
-class BulletinSectionInline(CavedbModelAdmin, admin.TabularInline):
+class BulletinSectionInline(admin.TabularInline):
     model = cavedb.models.BulletinSection
     extra = 1
 
 
-class BulletinAttachmentInline(CavedbModelAdmin, admin.TabularInline):
+class BulletinAttachmentInline(admin.TabularInline):
     model = cavedb.models.BulletinAttachment
     extra = 1
 
 
-class BulletinAdmin(CavedbModelAdmin, admin.ModelAdmin):
+class BulletinAdmin(admin.ModelAdmin):
     save_on_top = True
     list_display = ('bulletin_name', 'editors', 'generate_doc_links', 'show_maps')
     list_filter = ['create_date', 'mod_date']
@@ -123,7 +91,7 @@ class BulletinAdmin(CavedbModelAdmin, admin.ModelAdmin):
 admin.site.register(cavedb.models.Bulletin, BulletinAdmin)
 
 
-class StatewideDocTypeAdmin(CavedbModelAdmin, admin.ModelAdmin):
+class StatewideDocTypeAdmin(admin.ModelAdmin):
     save_on_top = True
     list_display = ('description', 'create_date', 'mod_date')
     list_filter = ['description', 'create_date', 'mod_date']
@@ -131,7 +99,7 @@ class StatewideDocTypeAdmin(CavedbModelAdmin, admin.ModelAdmin):
 admin.site.register(cavedb.models.StatewideDocType, StatewideDocTypeAdmin)
 
 
-class StatewideDocAdmin(CavedbModelAdmin, admin.ModelAdmin):
+class StatewideDocAdmin(admin.ModelAdmin):
     save_on_top = True
     list_display = ('doc_type', 'doc', 'title', 'volume', 'number', 'date', 'create_date',
                     'mod_date')
@@ -140,7 +108,7 @@ class StatewideDocAdmin(CavedbModelAdmin, admin.ModelAdmin):
 admin.site.register(cavedb.models.StatewideDoc, StatewideDocAdmin)
 
 
-class CountyAdmin(CavedbModelAdmin, admin.ModelAdmin):
+class CountyAdmin(admin.ModelAdmin):
     save_on_top = True
     list_display = ('county_name', 'survey_short_name', 'create_date', 'mod_date')
     list_filter = ['create_date', 'mod_date']
@@ -149,7 +117,7 @@ class CountyAdmin(CavedbModelAdmin, admin.ModelAdmin):
 admin.site.register(cavedb.models.County, CountyAdmin)
 
 
-class TopoQuadAdmin(CavedbModelAdmin, admin.ModelAdmin):
+class TopoQuadAdmin(admin.ModelAdmin):
     save_on_top = True
     list_display = ('quad_name', 'show_counties', 'create_date', 'mod_date')
     list_filter = ['create_date', 'mod_date']
@@ -158,37 +126,37 @@ class TopoQuadAdmin(CavedbModelAdmin, admin.ModelAdmin):
 admin.site.register(cavedb.models.TopoQuad, TopoQuadAdmin)
 
 
-class FeaturePhotoInline(CavedbModelAdmin, admin.TabularInline):
+class FeaturePhotoInline(admin.TabularInline):
     model = cavedb.models.FeaturePhoto
     extra = 1
 
 
-class FeatureReferencedMapInline(CavedbModelAdmin, admin.TabularInline):
+class FeatureReferencedMapInline(admin.TabularInline):
     model = cavedb.models.FeatureReferencedMap
     extra = 1
 
 
-class FeatureGisLineplotInline(CavedbModelAdmin, admin.TabularInline):
+class FeatureGisLineplotInline(admin.TabularInline):
     model = cavedb.models.FeatureGisLineplot
     extra = 1
 
 
-class FeatureAttachmentInline(CavedbModelAdmin, admin.TabularInline):
+class FeatureAttachmentInline(admin.TabularInline):
     model = cavedb.models.FeatureAttachment
     extra = 1
 
 
-class FeatureEntranceInline(CavedbModelAdmin, admin.StackedInline):
+class FeatureEntranceInline(admin.StackedInline):
     model = cavedb.models.FeatureEntrance
     extra = 1
 
 
-class FeatureReferenceInline(CavedbModelAdmin, admin.TabularInline):
+class FeatureReferenceInline(admin.TabularInline):
     model = cavedb.models.FeatureReference
     extra = 1
 
 
-class FeatureAdmin(CavedbModelAdmin, admin.ModelAdmin):
+class FeatureAdmin(admin.ModelAdmin):
     save_on_top = True
 
     list_display = ('name', 'survey_county', 'survey_id', 'feature_type',
@@ -258,7 +226,7 @@ admin.site.unregister(User)
 admin.site.register(User, CaveUserProfileAdmin)
 
 
-class GisLayerAdmin(CavedbModelAdmin, admin.ModelAdmin):
+class GisLayerAdmin(admin.ModelAdmin):
     save_on_top = True
     list_display = ('description', 'display', 'table_name', 'max_scale', 'type', 'color',
                     'label_item', 'font_color', 'font_size', 'line_type', 'symbol', 'symbol_size',
@@ -278,7 +246,7 @@ class GisLayerAdmin(CavedbModelAdmin, admin.ModelAdmin):
 admin.site.register(cavedb.models.GisLayer, GisLayerAdmin)
 
 
-class GisMapAdmin(CavedbModelAdmin, admin.ModelAdmin):
+class GisMapAdmin(admin.ModelAdmin):
     save_on_top = True
     list_display = ('name', 'description', 'map_label', 'website_url', 'license_url')
 

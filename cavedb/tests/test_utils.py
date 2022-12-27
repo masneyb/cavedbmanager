@@ -11,31 +11,6 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(cavedb.utils.get_normalized_date('Fall/Winter 1997'), '1997-10-01')
 
 
-    def test_convert_lat_lon_to_decimal(self):
-        self.assertAlmostEqual(cavedb.utils.convert_lat_lon_to_decimal('39.123456'), '39.123456')
-        self.assertAlmostEqual(cavedb.utils.convert_lat_lon_to_decimal('-39.123456'), '-39.123456')
-
-        self.assertAlmostEqual(cavedb.utils.convert_lat_lon_to_decimal('39 11 22'),
-                               '39.18944444444444')
-        self.assertAlmostEqual(cavedb.utils.convert_lat_lon_to_decimal('-39 11 22'),
-                               '-39.18944444444444')
-
-        self.assertAlmostEqual(cavedb.utils.convert_lat_lon_to_decimal('39 11 22.4'),
-                               '39.18955555555555')
-        self.assertAlmostEqual(cavedb.utils.convert_lat_lon_to_decimal('-39 11 22.4'),
-                               '-39.18955555555555')
-
-        self.assertAlmostEqual(cavedb.utils.convert_lat_lon_to_decimal('39 11.34567'), '39.1890945')
-        self.assertAlmostEqual(cavedb.utils.convert_lat_lon_to_decimal('-39 11.34567'),
-                               '-39.1890945')
-
-        self.assertEqual(cavedb.utils.convert_lat_lon_to_decimal(''), None)
-        self.assertEqual(cavedb.utils.convert_lat_lon_to_decimal(None), None)
-
-        self.assertRaises(SyntaxError, cavedb.utils.convert_lat_lon_to_decimal, '39.123a')
-        self.assertRaises(SyntaxError, cavedb.utils.convert_lat_lon_to_decimal, 'invalid')
-
-
     def test_sanitize_filename(self):
         self.assertEqual(cavedb.utils.sanitize_filename('Person1 and Person2.jpg'), \
                                                         'Person1_and_Person2.jpg')
