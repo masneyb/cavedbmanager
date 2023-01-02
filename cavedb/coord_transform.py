@@ -23,7 +23,8 @@ class TransformedCoordinate():
         elif longitude is not None and latitude is not None:
             # With the upgrade from gdal 2.2.3 to 3.4.1, previously I would pass in
             # (latitude, longitude). Now it needs to be switched here. The UTM input is still
-            # (easting, northing). We also need to swap the output below.
+            # (easting, northing). We also need to swap the output below. See
+            # https://github.com/OSGeo/gdal/issues/1546#issuecomment-616344351
             self.in_xy = (float(latitude), float(longitude))
         else:
             self.in_xy = (None, None)
