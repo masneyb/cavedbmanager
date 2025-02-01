@@ -30,7 +30,7 @@ if [ ! -f "${SSL_COMBINED_CERTS}" ] || [ ! -f "${SSL_KEY}" ] ; then
 	./cavedb/scripts/create-self-signed-https-certificate.sh
 fi
 
-sed "s/SSL_KEY/${SSL_KEY}/" /etc/nginx/default-site.template | \
-	sed "s/SSL_COMBINED_CERTS/${SSL_COMBINED_CERTS}" > /etc/nginx/sites-available/default
+sed "s%SSL_KEY%${SSL_KEY}%" /etc/nginx/default-site.template | \
+	sed "s%SSL_COMBINED_CERTS%${SSL_COMBINED_CERTS}%" > /etc/nginx/sites-available/default
 
 supervisord -n -c /etc/supervisor/supervisord.conf
