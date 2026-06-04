@@ -17,7 +17,7 @@ INSERT INTO cavedb_gislayer VALUES (9, 'Water', 'wv_water_polygons', '', true, N
 INSERT INTO cavedb_gislayer VALUES (10, 'Water', 'wv_hydro', '', true, 60000.00, 'LINE', '0 0 255', 'major1', '0 0 0', 6, 22, 'Solid', '', 1, 'wvgis.wvu.edu', '');
 INSERT INTO cavedb_gislayer VALUES (11, 'Major Power Lines', 'wv_census_misc_trans', '', true, 60000.00, 'LINE', '169 169 169', '', '', 0, 25, 'Solid', '', 1, 'wvgis.wvu.edu', '');
 INSERT INTO cavedb_gislayer VALUES (12, 'Rails', 'wv_census_rails', '', true, 60000.00, 'LINE', '0 0 0', '', '', 0, 31, 'Solid', '', 1, 'wvgis.wvu.edu', '');
-INSERT INTO cavedb_gislayer VALUES (13, 'Roads', 'wv_census_roads', '', true, 60000.00, 'LINE', '0 0 0', 'label', '0 0 0', 6, 32, 'Solid', '', 2, 'wvgis.wvu.edu', '');
+INSERT INTO cavedb_gislayer VALUES (13, 'Roads', 'wv_census_roads', '', true, 60000.00, 'LINE', '0 0 0', 'fullname', '0 0 0', 6, 32, 'Solid', '', 2, 'wvgis.wvu.edu', '');
 INSERT INTO cavedb_gislayer VALUES (14, 'US Highways', 'wv_us_highways', '', true, NULL, 'LINE', '0 0 0', 'sign1', '0 0 0', 6, 33, 'Solid', '', 6, 'wvgis.wvu.edu', '');
 INSERT INTO cavedb_gislayer VALUES (15, 'Interstates', 'wv_interstates', '', true, NULL, 'LINE', '0 0 0', 'sign1', '0 0 0', 12, 34, 'Solid', '', 8, 'wvgis.wvu.edu', '');
 INSERT INTO cavedb_gislayer VALUES (16, '100'' Contour Lines', 'wv_100ft_contours', '', true, 60000.00, 'LINE', '169 169 169', 'ele', '0 0 0', 6, 21, 'Solid', '', 2, 'wvgis.wvu.edu', 'Automatically generated from DEM using gdal_contour.');

@@ -69,8 +69,13 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'America/New_York'
 USE_I18N = True
-USE_L10N = True
 USE_TZ = True
+
+# Django 4.0+ checks the Origin header on unsafe (e.g. POST) requests. The web
+# container terminates HTTPS in nginx (see conf/nginx-app.conf), so browsers send
+# an https Origin that must be trusted here, otherwise admin logins/saves get a
+# 403. Derived from ALLOWED_HOSTS; localhost over http is matched automatically.
+CSRF_TRUSTED_ORIGINS = ['https://%s' % host for host in ALLOWED_HOSTS]
 
 SITE_ID = 1
 

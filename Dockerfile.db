@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:26.04
 
 ENV TZ=America/New_York
 RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && echo ${TZ} > /etc/timezone
@@ -6,9 +6,9 @@ RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && echo ${TZ} > /etc/timezo
 # Remove /var/lib/postgresql so that a new one will be initialized in the entrypoint.
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
-    apt-get install --no-install-recommends -y gosu locales postgis postgresql-14 \
-                                               postgresql-14-postgis-3 \
-                                               postgresql-14-postgis-3-scripts && \
+    apt-get install --no-install-recommends -y gosu locales postgis postgresql-18 \
+                                               postgresql-18-postgis-3 \
+                                               postgresql-18-postgis-3-scripts && \
     rm -rf /var/lib/postgresql/* && \
     echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
     ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \

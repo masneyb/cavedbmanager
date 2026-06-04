@@ -44,7 +44,7 @@ def create_map(mapfile, outfile, extents):
     existing_hashcode = get_existing_hashcode(outfile, hashcode_file)
     enabled = '#' if extents['gishash'] == existing_hashcode else ''
 
-    return '%sshp2img -m %s -o %s -e %s %s %s %s\n' % \
+    return '%smap2img -m %s -o %s -e %s %s %s %s\n' % \
            (enabled, mapfile, outfile, \
             extents['minx'], extents['miny'], extents['maxx'], extents['maxy']) + \
            '%sif [ $? = 0 ] ; then\n' % (enabled) + \

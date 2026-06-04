@@ -20,3 +20,8 @@ EXPOSE 80
 COPY . /usr/local/cavedbmanager
 
 WORKDIR /usr/local/cavedbmanager
+
+# Collect the admin static files shipped with the installed Django version into
+# cavedb/static/ (served directly by nginx, see conf/nginx-app.conf). These are
+# no longer vendored in the repo so they always match the packaged Django.
+RUN python3 manage.py collectstatic --noinput
