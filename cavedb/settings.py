@@ -69,8 +69,13 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'America/New_York'
 USE_I18N = True
-USE_L10N = True
 USE_TZ = True
+
+# Django 4.0+ checks the Origin header on unsafe (e.g. POST) requests. The web
+# container terminates HTTPS in nginx (see conf/nginx-app.conf), so browsers send
+# an https Origin that must be trusted here, otherwise admin logins/saves get a
+# 403. Derived from ALLOWED_HOSTS; localhost over http is matched automatically.
+CSRF_TRUSTED_ORIGINS = ['https://%s' % host for host in ALLOWED_HOSTS]
 
 SITE_ID = 1
 
@@ -82,7 +87,22 @@ GIS_INCLUDES_DIR = MEDIA_ROOT + '/gis_maps'
 MEDIA_URL = CONTEXT_PATH + 'cavedb/'
 
 STATIC_URL = '/static/'
-STATIC_ROOT = 'cavedb/static/'
+
+# Source static files that ship in the repo (robots.txt, favicon.ico).
+STATICFILES_SRC = os.path.join(BASE_DIR, 'cavedb', 'static')
+
+# Where `manage.py collectstatic` writes the assets that the web server serves.
+# Defaults to the in-repo location (used by the docker images) but can be pointed
+# at a directory outside the code tree for a host install, e.g.
+#   CAVEDB_STATIC_ROOT=/var/lib/cavedbmanager/static
+# so the checkout stays read-only and free of generated files.
+STATIC_ROOT = os.environ.get('CAVEDB_STATIC_ROOT') or STATICFILES_SRC
+
+# When STATIC_ROOT is moved out of the tree, treat the in-repo dir as a source so
+# collectstatic also copies robots.txt/favicon.ico into STATIC_ROOT. Django
+# forbids a STATICFILES_DIRS entry from equalling STATIC_ROOT, hence the guard.
+STATICFILES_DIRS = [] if os.path.abspath(STATIC_ROOT) == os.path.abspath(STATICFILES_SRC) \
+    else [STATICFILES_SRC]
 
 SECRET_KEY = os.environ.get('CAVEDB_SECRET_KEY', 'FIXME_CHANGE_THIS_SECRET_KEY')
 

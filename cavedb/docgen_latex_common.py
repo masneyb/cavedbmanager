@@ -190,8 +190,6 @@ class LatexCommon(cavedb.docgen_common.Common):
 
         self.__writeln(r'\documentclass[10pt,' + self.papersize + ',leqno,twoside,openany' + \
                      draftstr + ']{book}')
-        self.__writeln(r'\usepackage{etex}')
-        self.__writeln(r'\reserveinserts{200}')
         self.__writeln(r'\usepackage[utf8]{inputenc}')
         self.__writeln(r'\usepackage{amsmath,amssymb,amsfonts}')
         self.__writeln(r'\usepackage{graphicx}')

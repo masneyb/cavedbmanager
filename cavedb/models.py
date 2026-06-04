@@ -204,7 +204,6 @@ class Bulletin(models.Model):
         return mark_safe(ret)
 
     generate_doc_links.short_description = 'Documents'
-    generate_doc_links.allow_tags = True
 
 
     def show_maps(self):
@@ -245,7 +244,6 @@ class Bulletin(models.Model):
 
 
     show_maps.short_description = "GIS Maps"
-    show_maps.allow_tags = True
 
 
     class Meta:

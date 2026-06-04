@@ -1,6 +1,8 @@
 #!/bin/bash -u
 # SPDX-License-Identifier: Apache-2.0
 
+SCRIPT_DIR=$(dirname "$0")
+
 # This implements a very simple way to pass messages between different
 # containers on the same host. Each container mounts a common worker
 # volume and a message can be passed to the worker by writing an empty
@@ -42,24 +44,24 @@ inotifywait -q --format '%f' -m "${CAVEDB_WORKER_MSG_DIR}" --event close | while
 		echo "Generating bulletin documents for bulletin_id ${BULLETIN_ID}"
 
 		touch "${LOCK_FILE}"
-		/usr/local/cavedbmanager/cavedb/scripts/generate_single_bulletin.py "${BULLETIN_ID}" 2>&1 | tee "${BUILD_LOG}"
+		"${SCRIPT_DIR}/generate_single_bulletin.py" "${BULLETIN_ID}" 2>&1 | tee "${BUILD_LOG}"
 		RET=$?
 		rm -f "${LOCK_FILE}"
 	elif [ "${MSG_FILENAME}" == "generate:all" ] ; then
 		echo "Generating documents for all bulletins"
 
-		/usr/local/cavedbmanager/cavedb/scripts/generate_all_bulletins.py
+		"${SCRIPT_DIR}/generate_all_bulletins.py"
 		RET=$?
 	elif [ "${MSG_FILENAME}" == "elevation_dem_update" ] ; then
 		echo "Updating elevations based on DEMs"
 
 		LOG_FILE="${CAVEDB_DATA_BASE_DIR}"/elevation-dem-update.log
-		/usr/local/cavedbmanager/cavedb/scripts/elevation_dem_update.py "${CAVEDB_DEM_PATH}" 2>&1 | tee "${LOG_FILE}"
+		"${SCRIPT_DIR}/elevation_dem_update.py" "${CAVEDB_DEM_PATH}" 2>&1 | tee "${LOG_FILE}"
 		RET=$?
 	elif [ "${MSG_FILENAME}" == "backup" ] ; then
 		echo "Backing up data"
 
-		HOME="${CAVEDB_DATA_BASE_DIR}" /usr/local/cavedbmanager/cavedb/scripts/backup-data.sh
+		HOME="${CAVEDB_DATA_BASE_DIR}" "${SCRIPT_DIR}/backup-data.sh"
 		RET=$?
 	else
 		echo "Received unknown message ${MSG_FILENAME}"

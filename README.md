@@ -91,7 +91,7 @@ The [docker-compose file](docker-compose.yml) sets up four containers:
 - [A webserver container](Dockerfile.web) that runs [nginx](https://nginx.org/),
   [uWSGI](https://uwsgi-docs.readthedocs.io/en/latest/), 
   [supervisord](http://supervisord.org/), and [Django](https://www.djangoproject.com/).
-  Only the [Django Admin Site](https://docs.djangoproject.com/en/3.1/ref/contrib/admin/)
+  Only the [Django Admin Site](https://docs.djangoproject.com/en/5.2/ref/contrib/admin/)
   is used at the moment to make generating the pages easy. Note that the base Docker
   image `cavedbmanager_base` is defined in [Dockerfile.base](Dockerfile.base).
 - A [database container](Dockerfile.db) that runs

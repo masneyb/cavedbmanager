@@ -1,6 +1,8 @@
 #!/bin/bash -eu
 # SPDX-License-Identifier: Apache-2.0
 
+SCRIPT_DIR=$(dirname "$0")
+
 if [ "${CAVEDB_DATA_BASE_DIR}" = "" ] ; then
 	echo "usage: CAVEDB_DATA_BASE_DIR=<base directory> $0"
 fi
@@ -18,7 +20,7 @@ if [ ! -f .gitconfig ] ; then
 	git config --global user.name "Backups"
 fi
 
-/usr/local/cavedbmanager/cavedb/scripts/generate_index_txt.py
+"${SCRIPT_DIR}/generate_index_txt.py"
 
 pg_dump > "${CAVEDB_DATA_BASE_DIR}"/cavedb.sql
 
